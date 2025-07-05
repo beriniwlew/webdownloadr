@@ -1,0 +1,30 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="CleanArchitecture.nuspec" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/WebDownloadr.AspireHost/WebDownloadr.AspireHost.csproj" />
+    <Project Path="src/WebDownloadr.Core/WebDownloadr.Core.csproj" />
+    <Project Path="src/WebDownloadr.Infrastructure/WebDownloadr.Infrastructure.csproj" />
+    <Project Path="src/WebDownloadr.ServiceDefaults/WebDownloadr.ServiceDefaults.csproj" />
+    <Project Path="src/WebDownloadr.UseCases/WebDownloadr.UseCases.csproj" />
+    <Project Path="src/WebDownloadr.Web/WebDownloadr.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WebDownloadr.FunctionalTests/WebDownloadr.FunctionalTests.csproj">
+      <BuildDependency Project="src/WebDownloadr.Web/WebDownloadr.Web.csproj" />
+    </Project>
+    <Project Path="tests/WebDownloadr.IntegrationTests/WebDownloadr.IntegrationTests.csproj">
+      <BuildDependency Project="src/WebDownloadr.Infrastructure/WebDownloadr.Infrastructure.csproj" />
+    </Project>
+    <Project Path="tests/WebDownloadr.UnitTests/WebDownloadr.UnitTests.csproj" />
+  </Folder>
+</Solution>
