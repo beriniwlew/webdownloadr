@@ -2,6 +2,7 @@
 using WebDownloadr.Core.Services;
 using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.Infrastructure.Data.Queries;
+using WebDownloadr.Infrastructure.Web;
 using WebDownloadr.UseCases.Contributors.List;
 
 
@@ -19,10 +20,10 @@ public static class InfrastructureServiceExtensions
      options.UseSqlite(connectionString));
 
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
-           .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
-           .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
-           .AddScoped<IDeleteContributorService, DeleteContributorService>();
-
+      .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
+      .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
+      .AddScoped<IDeleteContributorService, DeleteContributorService>()
+      .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

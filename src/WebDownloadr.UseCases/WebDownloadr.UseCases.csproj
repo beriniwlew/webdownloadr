@@ -9,4 +9,9 @@
     <ProjectReference Include="..\WebDownloadr.Core\WebDownloadr.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="WebPages\Get\" />
+    <Folder Include="WebPages\List\" />
+  </ItemGroup>
+
 </Project>
