@@ -759,3 +759,7 @@ coverage*[.json, .xml, .info]
 
 # Ionide (cross platform F# VS Code tools) working folder
 
+# Clean Architecture
+
+/src/WebDownloadr.Web/database.sqlite
+/src/WebDownloadr.Web/log*.txt
