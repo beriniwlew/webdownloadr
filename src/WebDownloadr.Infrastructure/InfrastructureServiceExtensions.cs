@@ -23,7 +23,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
       .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
-      .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>();
+      .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
+      .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 
