@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace WebDownloadr.Infrastructure.Data.Config;
-
+// https://stevedunn.github.io/Vogen/overview.html
+// Working with IDs: https://stevedunn.github.io/Vogen/working-with-ids.html
 internal class VogenSequentialGuidValueGenerator<TId> : ValueGenerator<TId>
   where TId : IVogen<TId, Guid>
 {
