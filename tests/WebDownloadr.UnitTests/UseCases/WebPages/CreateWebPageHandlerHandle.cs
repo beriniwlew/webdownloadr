@@ -3,7 +3,7 @@ namespace WebDownloadr.UnitTests.UseCases.WebPages;
 public class CreateWebPageHandlerHandle
 {
   private readonly IRepository<WebPage> _repository = Substitute.For<IRepository<WebPage>>();
-  private readonly WebPageUrl _url = WebPageUrl.From("foo");
+  private readonly WebPageUrl _url = WebPageUrl.From("https://example.com");
   private readonly CreateWebPageHandler _handler;
 
   public CreateWebPageHandlerHandle()

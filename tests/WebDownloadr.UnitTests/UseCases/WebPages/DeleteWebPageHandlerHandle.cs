@@ -4,7 +4,7 @@ public class DeleteWebPageHandlerHandle
 {
   private readonly IRepository<WebPage> _repository = Substitute.For<IRepository<WebPage>>();
   private readonly DeleteWebPageHandler _handler;
-  private readonly WebPageUrl _url = WebPageUrl.From("foo");
+  private readonly WebPageUrl _url = WebPageUrl.From("https://example.com");
 
   public DeleteWebPageHandlerHandle()
   {
