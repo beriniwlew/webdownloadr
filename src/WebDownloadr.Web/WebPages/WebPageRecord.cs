@@ -2,4 +2,4 @@
 
 namespace WebDownloadr.Web.WebPages;
 
-public record WebPageRecord(Guid Id, string Url, DownloadStatus Status);
+public record WebPageRecord(Guid Id, string Url, string Status);
