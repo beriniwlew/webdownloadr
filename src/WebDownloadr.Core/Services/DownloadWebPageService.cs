@@ -39,7 +39,7 @@ public class DownloadWebPageService(
     webPage.UpdateStatus(DownloadStatus.DownloadError);
     await repository.UpdateAsync(webPage, cancellationToken);
 
-    return Result<Guid>.Error(result.Errors.ToArray());
+    return Result<Guid>.Error(string.Join("; ", result.Errors));
   }
 
   public async Task<IEnumerable<Result<Guid>>> DownloadWebPagesAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
