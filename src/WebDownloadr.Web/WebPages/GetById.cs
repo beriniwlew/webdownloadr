@@ -1,9 +1,9 @@
+using WebDownloadr.Core.WebPageAggregate;
 using WebDownloadr.UseCases.WebPages.Get;
 
 namespace WebDownloadr.Web.WebPages;
 
-public class GetById(IMediator _mediator)
-  : Endpoint<GetWebPageByIdRequest, WebPageRecord>
+public class GetById(IMediator _mediator) : Endpoint<GetWebPageByIdRequest, WebPageRecord>
 {
   public override void Configure()
   {
@@ -24,7 +24,8 @@ public class GetById(IMediator _mediator)
 
     if (result.IsSuccess)
     {
-      Response = new WebPageRecord(result.Value.Id, result.Value.Url, result.Value.Status);
+      var dto = result.Value;
+      Response = new WebPageRecord(dto.Id, dto.Url, dto.Status);
     }
   }
 }

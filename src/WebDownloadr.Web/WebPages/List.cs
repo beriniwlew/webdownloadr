@@ -1,5 +1,6 @@
 using WebDownloadr.UseCases.WebPages;
 using WebDownloadr.UseCases.WebPages.List;
+using WebDownloadr.Core.WebPageAggregate;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -13,15 +14,13 @@ public class List(IMediator _mediator) : EndpointWithoutRequest<WebPageListRespo
 
   public override async Task HandleAsync(CancellationToken cancellationToken)
   {
-    var result = await _mediator.Send(new ListWebPagesQuery(), cancellationToken);
+    var result = await _mediator.Send(new ListWebPagesQuery(null, null), cancellationToken);
 
     if (result.IsSuccess)
     {
       Response = new WebPageListResponse
       {
-        WebPages = result.Value
-          .Select(p => new WebPageRecord(p.Id, p.Url, p.Status))
-          .ToList()
+        WebPages = result.Value.Select(p => new WebPageRecord(p.Id, p.Url, p.Status)).ToList()
       };
     }
   }

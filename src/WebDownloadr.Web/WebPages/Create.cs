@@ -18,8 +18,7 @@ public class Create(IMediator _mediator)
 
   public override async Task HandleAsync(CreateWebPageRequest request, CancellationToken cancellationToken)
   {
-    var command = new CreateWebPageCommand(WebPageUrl.From(request.Url!));
-    var result = await _mediator.Send(command, cancellationToken);
+    var result = await _mediator.Send(new CreateWebPageCommand(WebPageUrl.From(request.Url!)), cancellationToken);
 
     if (result.IsSuccess)
     {

@@ -10,6 +10,6 @@ public class GetWebPageHandler(IReadRepository<WebPage> repository)
     var entity = await repository.GetByIdAsync(WebPageId.From(request.WebPageId), cancellationToken);
     if (entity == null) return Result.NotFound();
 
-    return new WebPageDTO(entity.Id.Value, entity.Url.Value, entity.Status.ToString());
+    return new WebPageDTO(entity.Id.Value, entity.Url.Value, entity.Status.Name);
   }
 }

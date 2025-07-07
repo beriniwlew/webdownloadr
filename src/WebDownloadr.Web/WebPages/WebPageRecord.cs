@@ -1,4 +1,4 @@
-﻿using WebDownloadr.Core.WebPageAggregate;
+using WebDownloadr.Core.WebPageAggregate;
 
 namespace WebDownloadr.Web.WebPages;
 

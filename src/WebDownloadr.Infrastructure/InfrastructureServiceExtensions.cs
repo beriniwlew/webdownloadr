@@ -4,6 +4,7 @@ using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.Infrastructure.Data.Queries;
 using WebDownloadr.Infrastructure.Web;
 using WebDownloadr.UseCases.Contributors.List;
+using WebDownloadr.UseCases.WebPages.List;
 
 
 namespace WebDownloadr.Infrastructure;
@@ -22,6 +23,7 @@ public static class InfrastructureServiceExtensions
     services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>))
       .AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>))
       .AddScoped<IListContributorsQueryService, ListContributorsQueryService>()
+      .AddScoped<IListWebPagesQueryService, ListWebPagesQueryService>()
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
       .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
       .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
