@@ -6,7 +6,7 @@ namespace WebDownloadr.Core.WebPageAggregate;
 public partial struct WebPageUrl
 {
   private static Validation Validate(in string url) =>
-    IsValidUrl(url) ? Validation.Invalid("Url must be valid") : Validation.Ok;
+    !IsValidUrl(url) ? Validation.Invalid("Url must be valid") : Validation.Ok;
 
   private static bool IsValidUrl(string url)
   {
