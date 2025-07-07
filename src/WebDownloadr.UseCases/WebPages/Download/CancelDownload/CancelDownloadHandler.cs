@@ -1,6 +1,10 @@
-﻿namespace WebDownloadr.UseCases.WebPages.Download.CancelDownload;
+using WebDownloadr.Core.Interfaces;
 
-public class CancelDownloadHandler
+namespace WebDownloadr.UseCases.WebPages.Download.CancelDownload;
+
+public class CancelDownloadHandler(IDownloadWebPageService service)
+  : ICommandHandler<CancelDownloadCommand, Result<Guid>>
 {
-  
+  public Task<Result<Guid>> Handle(CancelDownloadCommand request, CancellationToken cancellationToken) =>
+    service.CancelDownloadAsync(request.Id, cancellationToken);
 }
