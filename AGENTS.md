@@ -16,18 +16,18 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
 | **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, validators, and pipeline behaviors. Depends on **Core** only.                                                                                                                                                 |
-| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | [EF Core](https://learn.microsoft.com/ef/core/) `DbContext`, external service adapters, and persistence. Implements Core interfaces; depends on **Core** & **UseCases**.                                                                   |
+| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | [EF Core](https://learn.microsoft.com/ef/core/) `DbContext`, external service adapters, and persistence. Implements Core interfaces; depends on **Core**.                                                                                  |
 | **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints v2](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
 | **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview) and cloud hosting.                                                                                                                |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire.                                                                                                                                                                                               |
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
 
-> **Dependency rule** – References must flow **inward** (Web → Infrastructure → UseCases → Core). The build and CI will fail if an outer layer references an inner layer. Dependency rules are enforced via [NetArchTest](https://github.com/BenMorris/NetArchTest).
+> **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are enforced via [NetArchTest](https://github.com/BenMorris/NetArchTest).
 
 | Layer          | May Reference                             |
 | -------------- | ----------------------------------------- |
 | Web            | UseCases, Infrastructure, ServiceDefaults |
-| Infrastructure | Core, UseCases                            |
+| Infrastructure | Core                                      |
 | UseCases       | Core                                      |
 | Core           | —                                         |
 
