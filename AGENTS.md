@@ -28,7 +28,7 @@ Codifies the operational rules for this repository so that Codex‑style agents 
 
 ## Agent Responsibilities
 
-1. **Create** a branch named `feature/<short‑slug>`.
+1. **Create** a branch named `feature/<short‑slug>` (if your environment allows).
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0`.
 3. **Commit** with the message format `[Layer] <summary>`.
 4. **Push** and open a pull request.
@@ -136,11 +136,13 @@ set -euo pipefail
 
 dotnet restore WebDownloadr.sln
 
-dotnet build --no-restore -warnaserror
+dotnet build --no-restore -warnaserror WebDownloadr.sln
 
-dotnet test --no-build --no-restore WebDownloadr.sln
+dotnet test --no-build --no-restore WebDownloadr.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
 dotnet format --verify-no-changes WebDownloadr.sln --no-restore
+
+reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/coverage-report" -reporttypes:HtmlSummary
 ```
 
 Run this script locally **before every commit**. Any non‑zero exit code must abort the change.

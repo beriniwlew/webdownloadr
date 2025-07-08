@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <PreserveCompilationContext>true</PreserveCompilationContext>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
