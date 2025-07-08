@@ -1,7 +1,10 @@
-﻿using Vogen;
+using Vogen;
 
 namespace WebDownloadr.Core.WebPageAggregate;
- 
+
+/// <summary>
+/// Value object representing a valid HTTP or HTTPS URL.
+/// </summary>
 [ValueObject<string>(conversions: Conversions.SystemTextJson)]
 public partial struct WebPageUrl
 {

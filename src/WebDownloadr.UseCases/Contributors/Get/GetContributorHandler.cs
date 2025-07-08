@@ -1,14 +1,20 @@
-﻿using WebDownloadr.Core.ContributorAggregate;
+using WebDownloadr.Core.ContributorAggregate;
 using WebDownloadr.Core.ContributorAggregate.Specifications;
 
 namespace WebDownloadr.UseCases.Contributors.Get;
 
 /// <summary>
-/// Queries don't necessarily need to use repository methods, but they can if it's convenient
+/// Handles <see cref="GetContributorQuery"/> by loading the contributor from the repository.
 /// </summary>
 public class GetContributorHandler(IReadRepository<Contributor> _repository)
   : IQueryHandler<GetContributorQuery, Result<ContributorDTO>>
 {
+  /// <summary>
+  /// Retrieves contributor details.
+  /// </summary>
+  /// <param name="request">Query containing the contributor ID.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Contributor data or <see cref="Result.NotFound"/>.</returns>
   public async Task<Result<ContributorDTO>> Handle(GetContributorQuery request, CancellationToken cancellationToken)
   {
     var spec = new ContributorByIdSpec(request.ContributorId);

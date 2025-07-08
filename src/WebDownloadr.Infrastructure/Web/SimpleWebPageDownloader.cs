@@ -5,6 +5,10 @@ namespace WebDownloadr.Infrastructure.Web;
 using Flurl.Http;
 using Polly;
 
+/// <summary>
+/// Basic <see cref="IWebPageDownloader"/> implementation that retrieves pages
+/// via HTTP and saves them to disk.
+/// </summary>
 public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : IWebPageDownloader
 {
   private static IAsyncPolicy GetFlurlRetryPolicy() =>
@@ -16,6 +20,7 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : 
         sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt))
       );
 
+  /// <inheritdoc />
   public async Task<Result> DownloadWebPagesAsync(IEnumerable<string> urls, string outputDir,
     CancellationToken cancellationToken)
   {
@@ -31,6 +36,13 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : 
     return Result.Success();
   }
 
+  /// <summary>
+  /// Downloads a single web page using the provided retry <paramref name="policy"/>.
+  /// </summary>
+  /// <param name="url">Page URL to download.</param>
+  /// <param name="outputDir">Output directory.</param>
+  /// <param name="policy">Polly retry policy.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
   private async Task<Result> DownloadSingleWebPageAsync(string url, string outputDir, IAsyncPolicy policy,
     CancellationToken cancellationToken)
   {
@@ -48,6 +60,9 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : 
     return Result.Success();
   }
   
+  /// <summary>
+  /// Converts a URL into a safe file name.
+  /// </summary>
   private string GetSafeFilename(string url)
   {
     // Basic sanitization; we may want to use a better method
