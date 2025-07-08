@@ -13,12 +13,12 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 ## Solution & Project Layout
 
 | Layer               | Folder                             | Brief description                                                                                                                                                                                                                          |
-| ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|---------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
-| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                                                                                                                                                 |
-| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder. |
-| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
-| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                |
+| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                       |
+| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder.                                                                            |
+| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                          |
+| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                  |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire.                                                                                                                                                                                               |
 > **Note:** Usage of .NET Aspire is optional and remains preview in .NET 9.
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
@@ -26,7 +26,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 > **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are reviewed manually. If architectural drift becomes an issue, consider enforcing with tools like NetArchTest or ArchUnitNET.
 
 | Layer          | May Reference                             |
-| -------------- | ----------------------------------------- |
+|----------------|-------------------------------------------|
 | Web            | UseCases, Infrastructure, ServiceDefaults |
 | Infrastructure | Core                                      |
 | UseCases       | Core                                      |
@@ -45,7 +45,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 ### Typical Tasks
 
 | Scenario                                 | Destination folder / pattern                                                                                      |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+|------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
 | Add domain entity or value object        | `src/WebDownloadr.Core/<Aggregate>/<Entity>.cs`                                                                   |
 | Add repository interface / specification | `src/WebDownloadr.Core/Interfaces`                                                                                |
 | Implement repository & EF mapping        | `src/WebDownloadr.Infrastructure/Data`                                                                            |
@@ -53,7 +53,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Write unit test                          | `tests/WebDownloadr.UnitTests/<Feature>Tests.cs`                                                                  |
 | Expose REST endpoint                     | `src/WebDownloadr.Web/Modules/<Feature>/`                                                                         |
 | Write integration or functional test     | `tests/WebDownloadr.IntegrationTests/<Feature>Tests.cs` or `tests/WebDownloadr.FunctionalTests/<Feature>Tests.cs` |
-| Add domain event handler                 | `src/WebDownloadr.Core/<Aggregate>/Handlers/<EventHandler>.cs`                                                     |
+| Add domain event handler                 | `src/WebDownloadr.Core/<Aggregate>/Handlers/<EventHandler>.cs`                                                    |
 
 * **Naming tip:** prefer `XCommandHandler.cs` and `XQueryHandler.cs` for handler files.
 ---
@@ -73,7 +73,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 ## Quality Gates
 
 | Check                    | Requirement                                                                                                    |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+|--------------------------|----------------------------------------------------------------------------------------------------------------|
 | Build warnings           | **0**                                                                                                          |
 | Unit & integration tests | **100 % pass**                                                                                                 |
 | Line coverage            | **≥ 90 %** ([Coverlet](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)) |
@@ -254,7 +254,7 @@ They reside under `docs/architecture-decisions/` and mirror the
 * [StyleCop Analyzers](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)
 * [Microsoft Code Analysis](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/overview)
 * [Entity Framework Core Docs](https://learn.microsoft.com/ef/core/)
-* [.NET 9 SDK – What’s New](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-9)
+* [.NET 9 SDK – What’s New](https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0?view=aspnetcore-9.0)
 
 ---
 
