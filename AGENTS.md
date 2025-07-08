@@ -38,7 +38,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 
 1. **Create** a branch named `feature/<slug>` for new features. Use `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` for other updates.
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0`.
-3. **Commit** with the message format `[Layer] <Short descriptive summary>`.
+3. **Commit** using `[Layer] <type>: <summary>` format following [Conventional Commits](https://www.conventionalcommits.org/). Validate messages with commitlint.
 4. **Push** and open a pull request.
 5. Ensure **CI is green** (same steps as `selfcheck.sh`).
 
@@ -53,7 +53,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Write unit test                          | `tests/WebDownloadr.UnitTests/<Feature>Tests.cs`                                                                  |
 | Expose REST endpoint                     | `src/WebDownloadr.Web/Modules/<Feature>/`                                                                         |
 | Write integration or functional test     | `tests/WebDownloadr.IntegrationTests/<Feature>Tests.cs` or `tests/WebDownloadr.FunctionalTests/<Feature>Tests.cs` |
-| Add domain event handler                 | `src/WebDownloadr.Core/DomainEventHandlers/<EventHandler>.cs`                                                     |
+| Add domain event handler                 | `src/WebDownloadr.Core/<Aggregate>/Handlers/<EventHandler>.cs`                                                     |
 
 * **Naming tip:** prefer `XCommandHandler.cs` and `XQueryHandler.cs` for handler files.
 ---
@@ -79,7 +79,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Line coverage            | **≥ 90 %** ([Coverlet](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)) |
 | Formatter drift          | **0 files** (`dotnet format --verify-no-changes`)                                                              |
 
-The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). Consider adding a CI status badge to the README for visibility.
+The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). The README **must** display a CI status badge for `.github/workflows/ci.yml` to ensure build visibility.
 Branch protection on `main` requires these checks to pass before merging.
 
 ---

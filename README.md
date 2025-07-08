@@ -1,5 +1,5 @@
 # WebDownloadr
-![CI Status](https://github.com/<org>/<repo>/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg)
 
 WebDownloadr demonstrates how to apply Clean Architecture to a simple web page downloader built with .NET 9. The solution is organized into separate projects that isolate the domain model, application services, infrastructure and API.
 
