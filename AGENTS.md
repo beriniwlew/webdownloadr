@@ -173,16 +173,17 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
    - charset = utf-8-bom
    - trim_trailing_whitespace = true
    - insert_final_newline = true
+   - `.gitattributes` enforces CRLF for most files while shell scripts (`*.sh`) use LF
 
 2. **CI Enforcement**
    Formatting is enforced via `dotnet format --verify-no-changes`.
    Run `./scripts/format.sh` or `dotnet format` locally before committing.
    Set `git config --global core.autocrlf true` to avoid line-ending mismatches.
-   A one-time normalization may be required:
+   A one-time normalization may be required when `.gitattributes` is introduced or changed:
 
    ```bash
    git add --renormalize .
-   git commit -m "style: normalize line endings to match .editorconfig"
+   git commit -m "style: normalize line endings to match .editorconfig and .gitattributes"
    ```
 
 Formatting violations will block PRs.

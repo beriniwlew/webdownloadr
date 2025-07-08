@@ -27,7 +27,7 @@ Additional documentation lives in the `docs` folder and within each project. Sta
 
 ## Formatting
 
-Formatting is enforced in CI. Configure Git to honor `.editorconfig` line endings:
+Formatting is enforced in CI. Line endings are normalized via `.gitattributes` — CRLF for most files while `*.sh` scripts use LF. Configure Git to honor `.editorconfig` line endings:
 
 ```bash
 git config --global core.autocrlf true
