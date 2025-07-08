@@ -3,7 +3,7 @@ using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.UnitTests.Infrastructure.Web;
 
-public class SimpleWebPageDownloaderTests
+public class SimpleWebPageDownloader_DownloadWebPagesAsync
 {
     [Fact]
     public async Task SavesDownloadedContentToFile()
