@@ -1,4 +1,6 @@
 name: CI
+# After the repository is normalized with `git add --renormalize .` and
+# `dotnet format`, this workflow enforces formatting on every pull request.
 
 on:
   push:

@@ -165,7 +165,18 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
 
 ## Code Formatting
 
-Formatting is enforced in CI using `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally before committing. The repository's style is defined in `.editorconfig` and formatting violations will block PRs.
+Formatting is enforced in CI using `dotnet format --verify-no-changes`. The repository style, including CRLF line endings and UTF‑8 with BOM encoding, is defined in `.editorconfig`.
+
+* Run `./scripts/format.sh` or `dotnet format` locally before committing.
+* Set `git config --global core.autocrlf true` to avoid line‑ending mismatches.
+* A one‑time normalization may be required:
+
+  ```bash
+  git add --renormalize .
+  git commit -m "style: normalize line endings to match .editorconfig"
+  ```
+
+Formatting violations will block PRs.
 
 ---
 

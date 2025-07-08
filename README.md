@@ -27,7 +27,22 @@ Additional documentation lives in the `docs` folder and within each project. Sta
 
 ## Formatting
 
-Formatting is enforced in CI. Maintainers must normalize the repository once by running `dotnet format` and committing the result with the message `style: normalize formatting`. After this commit, `dotnet format --verify-no-changes` will run on every pull request.
+Formatting is enforced in CI. Configure Git to honor `.editorconfig` line endings:
+
+```bash
+git config --global core.autocrlf true
+```
+
+For the initial bootstrap, maintainers should normalize all files and format the solution:
+
+```bash
+git add --renormalize .
+git commit -m "style: normalize line endings to match .editorconfig"
+dotnet format
+git commit -am "style: normalize formatting"
+```
+
+After these commits, `dotnet format --verify-no-changes` runs on every pull request.
 
 ## License
 
