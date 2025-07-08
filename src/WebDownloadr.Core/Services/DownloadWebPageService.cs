@@ -5,6 +5,10 @@ using System.Collections.Concurrent;
 
 namespace WebDownloadr.Core.Services;
 
+/// <summary>
+/// Implements <see cref="IDownloadWebPageService"/> using an <see cref="IWebPageDownloader"/>
+/// and a repository for persisting <see cref="WebPage"/> entities.
+/// </summary>
 public class DownloadWebPageService(
   IRepository<WebPage> repository,
   IWebPageDownloader downloader,
@@ -13,6 +17,7 @@ public class DownloadWebPageService(
     private const string OutputDir = "downloads";
     private static readonly ConcurrentDictionary<Guid, CancellationTokenSource> _activeDownloads = new();
 
+  /// <inheritdoc />
   public async Task<Result<Guid>> DownloadWebPageAsync(Guid id, CancellationToken cancellationToken)
   {
     var webPage = await repository.GetByIdAsync(id, cancellationToken);
@@ -65,6 +70,7 @@ public class DownloadWebPageService(
     }
   }
 
+  /// <inheritdoc />
   public async Task<IEnumerable<Result<Guid>>> DownloadWebPagesAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
   {
     var results = new List<Result<Guid>>();
@@ -75,9 +81,11 @@ public class DownloadWebPageService(
     return results;
   }
 
+  /// <inheritdoc />
   public Task<Result<Guid>> RetryDownloadAsync(Guid id, CancellationToken cancellationToken) =>
     DownloadWebPageAsync(id, cancellationToken);
 
+  /// <inheritdoc />
   public async Task<Result<Guid>> CancelDownloadAsync(Guid id, CancellationToken cancellationToken)
   {
     var webPage = await repository.GetByIdAsync(id, cancellationToken);
@@ -97,6 +105,11 @@ public class DownloadWebPageService(
     return Result.Success(webPage.Id.Value);
   }
 
+  /// <summary>
+  /// Replaces invalid file name characters so the URL can be used as a file name.
+  /// </summary>
+  /// <param name="url">The original page URL.</param>
+  /// <returns>A sanitized string safe for use as a file name.</returns>
   private static string GetSafeFilename(string url)
   {
     foreach (var c in Path.GetInvalidFileNameChars())
