@@ -18,7 +18,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                                                                                                                                                 |
 | **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder. |
 | **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
-| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview) and cloud hosting.                                                                                                                |
+| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire.                                                                                                                                                                                               |
 > **Note:** Usage of .NET Aspire is optional and remains preview in .NET 9.
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
@@ -180,7 +180,7 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
 
 ## Testing Guidelines
 
-* Test framework: [xUnit](https://xunit.net/docs/getting-started/netcore) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/help/).
+* Test framework: [xUnit](https://xunit.net/) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/index.html).
 * Place tests in the matching project: `UnitTests`, `IntegrationTests`, `FunctionalTests`, `AspireTests`.
 * Maintain test isolation. Integration tests may use [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet) for external dependencies, and [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions) for concise HTTP assertions.
 
@@ -222,10 +222,10 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 * [Ardalis Guard Clauses](https://github.com/ardalis/GuardClauses)
 * [Ardalis Specification](https://github.com/ardalis/Specification)
 * [FastEndpoints Documentation](https://fast-endpoints.com/docs/introduction)
-* [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview)
-* [xUnit.net Getting Started](https://xunit.net/docs/getting-started/netcore)
+* [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
+* [xUnit.net Getting Started](https://xunit.net/)
 * [Shouldly Assertions](https://shouldly.readthedocs.io/en/latest/)
-* [NSubstitute](https://nsubstitute.github.io/help/)
+* [NSubstitute](https://nsubstitute.github.io/index.html)
 * [Coverlet Coverage Tool](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)
 * [ReportGenerator](https://danielpalme.github.io/ReportGenerator/)
 * [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
