@@ -20,7 +20,7 @@ jobs:
         run: dotnet restore WebDownloadr.sln
       - name: Verify formatting
         run: |
-          ./scripts/format.sh --verify || {
+          dotnet format --verify-no-changes WebDownloadr.sln || {
             echo "::error title=Formatting Issues::Run 'dotnet format' locally to fix.";
             exit 1
           }
@@ -32,6 +32,8 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - name: Restore solution
+        run: dotnet restore WebDownloadr.sln
       - run: ./scripts/selfcheck.sh
       - name: Verify Code Coverage Threshold
         run: |

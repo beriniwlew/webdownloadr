@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Restore packages
- dotnet restore WebDownloadr.sln
-
 # Build with warnings as errors
  dotnet build --no-restore -warnaserror WebDownloadr.sln
 
