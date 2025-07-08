@@ -15,14 +15,15 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Layer               | Folder                             | Brief description                                                                                                                                                                                                                          |
 | ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
-| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, validators, and pipeline behaviors. Depends on **Core** only.                                                                                                                                                 |
-| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | [EF Core](https://learn.microsoft.com/ef/core/) `DbContext`, external service adapters, and persistence. Implements Core interfaces; depends on **Core**.                                                                                  |
-| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints v2](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
+| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                                                                                                                                                 |
+| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder. |
+| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
 | **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview) and cloud hosting.                                                                                                                |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire.                                                                                                                                                                                               |
+> **Note:** Usage of .NET Aspire is optional and remains preview in .NET 9.
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
 
-> **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are enforced via [NetArchTest](https://github.com/BenMorris/NetArchTest).
+> **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are reviewed manually. If architectural drift becomes an issue, consider enforcing with tools like NetArchTest or ArchUnitNET.
 
 | Layer          | May Reference                             |
 | -------------- | ----------------------------------------- |
@@ -35,7 +36,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 
 ## Agent Responsibilities
 
-1. **Create** a branch named `feature/<short‑slug>`.
+1. **Create** a branch named `feature/<slug>` for new features. Use `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` for other updates.
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0`.
 3. **Commit** with the message format `[Layer] <Short descriptive summary>`.
 4. **Push** and open a pull request.
@@ -54,6 +55,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Write integration or functional test     | `tests/WebDownloadr.IntegrationTests/<Feature>Tests.cs` or `tests/WebDownloadr.FunctionalTests/<Feature>Tests.cs` |
 | Add domain event handler                 | `src/WebDownloadr.Core/DomainEventHandlers/<EventHandler>.cs`                                                     |
 
+* **Naming tip:** prefer `XCommandHandler.cs` and `XQueryHandler.cs` for handler files.
 ---
 
 ## DO NOT
@@ -77,7 +79,8 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Line coverage            | **≥ 90 %** ([Coverlet](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)) |
 | Formatter drift          | **0 files** (`dotnet format --verify-no-changes`)                                                              |
 
-The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml).
+The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). Consider adding a CI status badge to the README for visibility.
+Branch protection on `main` requires these checks to pass before merging.
 
 ---
 
@@ -109,7 +112,7 @@ dotnet ef migrations add <MIGRATION_NAME> \
 
 ### 2. Apply Migration (optional)
 
-The Web project’s startup automatically executes any **pending** migrations when it boots in *Development* or *Docker* environments. To verify the schema before running the host (e.g., in CI or local testing), apply manually:
+The Web project seeds the database via `EnsureCreated()`; pending migrations are not applied automatically. Run the command below whenever you need to update the schema:
 
 ```bash
 dotnet ef database update -c AppDbContext \
@@ -142,12 +145,23 @@ dotnet restore WebDownloadr.sln
 
 dotnet build --no-restore -warnaserror
 
-dotnet test --no-build --no-restore WebDownloadr.sln
+dotnet test --no-build --no-restore WebDownloadr.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
 dotnet format --verify-no-changes WebDownloadr.sln --no-restore
-```
 
-Run this script locally **before every commit**. Any non‑zero exit code must abort the change. PRs with failing checks will be auto-closed.
+reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/coverage-report" -reporttypes:HtmlSummary
+```
+To enforce the 90% coverage threshold in CI, add a step that fails when the summary XML shows less than 90% line coverage.
+
+```yaml
+- name: Verify Code Coverage Threshold
+  run: |
+    COVERAGE=$(grep -Po 'line-rate="\\K[0-9.]+(?=\")' TestResults/coverage-report/coverage.xml | head -1)
+    PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
+    echo "Line coverage: $PERCENT%"
+    awk -v p=$PERCENT 'BEGIN {exit (p<90)}'
+```
+Run this script locally **before pushing a branch or opening a PR**. Any non‑zero exit code must abort the change. PRs with failing checks will be auto-closed.
 
 ---
 
@@ -160,13 +174,13 @@ Run this script locally **before every commit**. Any non‑zero exit code must a
 * **File‑scoped namespaces**, **top‑level statements** in `Program.cs`.
 * Use [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) and raise **Domain Events** for invariants.
 * XML docs required for public Core APIs and complex methods.
-* Public methods in Core must have XML doc comments and matching unit tests.
+* Public methods in Core must include XML doc comments. If executable, they should have matching unit tests.
 
 ---
 
 ## Testing Guidelines
 
-* Test framework: [xUnit](https://xunit.net/docs/getting-started/net6) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/help/).
+* Test framework: [xUnit](https://xunit.net/docs/getting-started/netcore) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/help/).
 * Place tests in the matching project: `UnitTests`, `IntegrationTests`, `FunctionalTests`, `AspireTests`.
 * Maintain test isolation. Integration tests may use [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet) for external dependencies, and [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions) for concise HTTP assertions.
 
@@ -178,7 +192,7 @@ Run this script locally **before every commit**. Any non‑zero exit code must a
 * **Description** – Explain the change, list affected files, include test results.
 * If your PR addresses an issue, reference it in the description using `Fixes #<issue>` or `Closes #<issue>`.
 * Link related issues; close them via keywords if appropriate.
-* All quality gates must pass.
+* All quality gates must pass. Documentation-only or config-only changes may skip new tests if existing checks remain green.
 
 ---
 
@@ -193,8 +207,8 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 * Dependencies must flow **inward**.
 * Place new code in the correct layer.
 * Public APIs in **Core** require corresponding tests & docs.
-* Generated files (e.g., EF Core migrations) should not be edited manually.
-* If multiple bounded contexts emerge, propose an ADR before introducing a SharedKernel. Move truly cross‑cutting code into a **SharedKernel** package (replace `Ardalis.SharedKernel` with an internal NuGet).
+* Generated files (e.g., EF Core migrations) must remain unedited unless explicitly required and documented.
+* If multiple bounded contexts emerge, consider creating an internal `SharedKernel` package. Until then, the solution uses `Ardalis.SharedKernel`.
 
 ---
 
@@ -209,7 +223,7 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 * [Ardalis Specification](https://github.com/ardalis/Specification)
 * [FastEndpoints Documentation](https://fast-endpoints.com/docs/introduction)
 * [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview)
-* [xUnit.net Getting Started](https://xunit.net/docs/getting-started/net6)
+* [xUnit.net Getting Started](https://xunit.net/docs/getting-started/netcore)
 * [Shouldly Assertions](https://shouldly.readthedocs.io/en/latest/)
 * [NSubstitute](https://nsubstitute.github.io/help/)
 * [Coverlet Coverage Tool](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)
