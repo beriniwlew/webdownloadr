@@ -16,7 +16,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="Polly" />
-    <PackageReference Include="SQLite" />
   </ItemGroup>
   
   <ItemGroup>
@@ -24,7 +23,5 @@
     <ProjectReference Include="..\WebDownloadr.UseCases\WebDownloadr.UseCases.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
-  </PropertyGroup>
+  <PropertyGroup />
 </Project>

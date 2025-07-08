@@ -5,6 +5,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Suppress RID compatibility errors when using packages with older RIDs -->
+    <SuppressRuntimeIdentifierCompatibilityErrors>true</SuppressRuntimeIdentifierCompatibilityErrors>
   </PropertyGroup>
   <PropertyGroup>
     <NoWarn>1591</NoWarn> <!-- Remove this to turn on warnings for missing XML Comments -->
