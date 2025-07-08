@@ -16,10 +16,13 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-      - run: |
-          ./scripts/format.sh || {
-            echo "❌ Formatting issues detected. Run \`dotnet format\` to fix.";
-            exit 1;
+      - name: Restore solution
+        run: dotnet restore WebDownloadr.sln
+      - name: Verify formatting
+        run: |
+          ./scripts/format.sh --verify || {
+            echo "::error title=Formatting Issues::Run 'dotnet format' locally to fix.";
+            exit 1
           }
   build:
     runs-on: ubuntu-latest

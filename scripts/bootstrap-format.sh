@@ -9,11 +9,14 @@ fi
 # Ensure git respects .editorconfig line endings
 git config core.autocrlf true
 
+# Restore packages before formatting
+dotnet restore WebDownloadr.sln
+
 # Normalize all tracked files
 git add --renormalize .
 
 # Format the solution
-dotnet format WebDownloadr.sln
+dotnet format --fix-analyzers WebDownloadr.sln
 
 # Show a summary of changes
 echo "\nChanged files:"
