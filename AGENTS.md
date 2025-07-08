@@ -79,7 +79,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Line coverage            | **≥ 90 %** ([Coverlet](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)) |
 | Formatter drift          | **0 files** (`dotnet format --verify-no-changes`)                                                              |
 
-The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). Consider adding a CI status badge to the README for visibility.
+The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). The README **must** display a CI status badge for `.github/workflows/ci.yml` to ensure build visibility.
 Branch protection on `main` requires these checks to pass before merging.
 
 ---
