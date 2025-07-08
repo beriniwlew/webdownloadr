@@ -12,19 +12,22 @@ This repository implements a Clean Architecture approach. Projects are organized
 - **WebDownloadr.AspireHost** – Hosts the web project when using .NET Aspire.
 - **Tests** – `WebDownloadr.UnitTests`, `WebDownloadr.IntegrationTests`, `WebDownloadr.FunctionalTests` and `WebDownloadr.AspireTests`.
 
+The root solution file is `WebDownloadr.sln` and the required SDK version is
+specified in `global.json` (currently `9.0.301`). Package references are managed
+centrally via `Directory.Packages.props`.
 Documentation for architectural decisions lives in `docs/architecture-decisions`.
 
 ## Coding Standards
 
 - **Language** – C# 12 targeting .NET 9 (`net9.0`).
-- **Formatting and Naming** – Enforced via the repository `.editorconfig`. Run `dotnet format` before committing.
+- **Formatting and Naming** – Enforced via the repository `.editorconfig`. Run `dotnet format WebDownloadr.sln --no-restore` before committing.
 - **Naming conventions** – PascalCase for public members and classes, camelCase for locals and parameters.
 - **XML documentation** – Required for public APIs and complex methods.
 - **Treat warnings as errors** – Defined in `Directory.Build.props`.
 
 ## Build, Test, and Format
 
-The CI workflow in `.github/workflows/ci.yml` runs these commands. Run them locally before submitting a pull request:
+The CI workflow in `.github/workflows/ci.yml` runs the same commands shown below. Run them locally before submitting a pull request:
 
 ```bash
 # Restore dependencies
@@ -37,7 +40,7 @@ The CI workflow in `.github/workflows/ci.yml` runs these commands. Run them loca
  dotnet test --no-build --no-restore WebDownloadr.sln
 
 # Ensure formatting
- dotnet format
+ dotnet format WebDownloadr.sln --no-restore
 ```
 
 You may combine them:
@@ -46,7 +49,7 @@ You may combine them:
 dotnet restore WebDownloadr.sln && \
   dotnet build --no-restore WebDownloadr.sln && \
   dotnet test --no-build --no-restore WebDownloadr.sln && \
-  dotnet format
+  dotnet format WebDownloadr.sln --no-restore
 ```
 
 ## Testing Guidelines
