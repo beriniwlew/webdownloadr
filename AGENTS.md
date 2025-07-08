@@ -212,9 +212,28 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 
 ---
 
+## Architecture Decision Records (ADR)
+
+Architecture Decision Records capture key design choices and the options we considered.
+They reside under `docs/architecture-decisions/` and mirror the
+[ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture/tree/main/docs/architecture-decisions) format.
+
+- **When to write** – create one whenever the team debates multiple approaches or revisits a prior decision.
+- **Format** – Markdown file with an incrementing four-digit prefix and short slug,
+  e.g., `0001-use-fastendpoints.md`. Include `Status`, `Context`, `Decision`,
+  `Consequences`, and `References` sections. Clearly list alternatives considered and why they were rejected.
+- **Numbering** – use the next available number in sequence and keep the slug concise.
+- **Author** – whoever proposes the change (human or AI) drafts the ADR.
+- **Review** – submit via pull request. Reviewers verify numbering and clarity.
+- **Superseding** – once merged, ADRs are immutable. Create a new record that supersedes previous ones.
+- **Tools** – optional helpers like [adr-tools](https://github.com/npryce/adr-tools) may generate templates.
+
+---
+
 ## Additional Resources
 
 * [Architecture Decision Records](docs/architecture-decisions)
+* [Getting Started with Architecture Decision Records](https://ardalis.com/getting-started-with-architecture-decision-records/)
 * [CONTRIBUTING.md](CONTRIBUTING.md)
 * [CODE\_OF\_CONDUCT.md](CODE_OF_CONDUCT.md)
 * [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture)
