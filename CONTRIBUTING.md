@@ -7,7 +7,7 @@ Thank you for helping improve **WebDownloadr**. This repository follows the work
 1. Ensure the .NET SDK specified in `global.json` is installed.
 2. Run `./scripts/install-tools.sh` to set up required tools.
 3. Execute `./scripts/selfcheck.sh` and make sure it exits with `0`.
-4. Commit using the format `[Layer] <summary>`.
+4. Commit using the format `[Layer] <type>: <summary>` following [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## Pull Requests
 
