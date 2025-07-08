@@ -8,6 +8,12 @@ namespace WebDownloadr.UseCases.Contributors.Update;
 public class UpdateContributorHandler(IRepository<Contributor> _repository)
   : ICommandHandler<UpdateContributorCommand, Result<ContributorDTO>>
 {
+  /// <summary>
+  /// Updates an existing <see cref="Contributor"/>.
+  /// </summary>
+  /// <param name="request">Command containing the contributor ID and new name.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Updated contributor data or <see cref="Result.NotFound"/>.</returns>
   public async Task<Result<ContributorDTO>> Handle(UpdateContributorCommand request, CancellationToken cancellationToken)
   {
     var existingContributor = await _repository.GetByIdAsync(request.ContributorId, cancellationToken);

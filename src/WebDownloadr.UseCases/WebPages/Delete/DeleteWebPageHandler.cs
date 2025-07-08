@@ -14,6 +14,13 @@ public class DeleteWebPageHandler : ICommandHandler<DeleteWebPageCommand, Result
   {
     _repository = repository;
   }
+
+  /// <summary>
+  /// Removes the specified <see cref="WebPage"/> if it exists.
+  /// </summary>
+  /// <param name="request">Command containing the page identifier.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Success if deleted or <see cref="Result.NotFound"/> when missing.</returns>
   public async Task<Result> Handle(DeleteWebPageCommand request, CancellationToken cancellationToken)
   {
     var aggregateToDelete = await _repository.GetByIdAsync(request.Id, cancellationToken);

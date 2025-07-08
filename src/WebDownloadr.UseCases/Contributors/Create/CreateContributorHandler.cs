@@ -8,6 +8,12 @@ namespace WebDownloadr.UseCases.Contributors.Create;
 public class CreateContributorHandler(IRepository<Contributor> repository)
   : ICommandHandler<CreateContributorCommand, Result<int>>
 {
+  /// <summary>
+  /// Creates a new <see cref="Contributor"/> in the repository.
+  /// </summary>
+  /// <param name="request">Command containing contributor details.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Identifier of the newly created contributor.</returns>
   public async Task<Result<int>> Handle(CreateContributorCommand request,
     CancellationToken cancellationToken)
   {

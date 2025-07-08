@@ -8,6 +8,12 @@ namespace WebDownloadr.UseCases.Contributors.Delete;
 public class DeleteContributorHandler(IDeleteContributorService _deleteContributorService)
   : ICommandHandler<DeleteContributorCommand, Result>
 {
+  /// <summary>
+  /// Deletes a contributor by delegating to the domain service.
+  /// </summary>
+  /// <param name="request">Command containing the contributor identifier.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Result returned by the delete service.</returns>
   public async Task<Result> Handle(DeleteContributorCommand request, CancellationToken cancellationToken) =>
     // This Approach: Keep Domain Events in the Domain Model / Core project; this becomes a pass-through
     // This is @ardalis's preferred approach

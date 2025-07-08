@@ -9,6 +9,12 @@ namespace WebDownloadr.UseCases.Contributors.Get;
 public class GetContributorHandler(IReadRepository<Contributor> _repository)
   : IQueryHandler<GetContributorQuery, Result<ContributorDTO>>
 {
+  /// <summary>
+  /// Retrieves contributor details.
+  /// </summary>
+  /// <param name="request">Query containing the contributor ID.</param>
+  /// <param name="cancellationToken">Token used to cancel the operation.</param>
+  /// <returns>Contributor data or <see cref="Result.NotFound"/>.</returns>
   public async Task<Result<ContributorDTO>> Handle(GetContributorQuery request, CancellationToken cancellationToken)
   {
     var spec = new ContributorByIdSpec(request.ContributorId);
