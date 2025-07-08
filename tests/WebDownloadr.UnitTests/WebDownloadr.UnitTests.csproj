@@ -39,6 +39,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\WebDownloadr.Core\WebDownloadr.Core.csproj" />
     <ProjectReference Include="..\..\src\WebDownloadr.UseCases\WebDownloadr.UseCases.csproj" />
+    <ProjectReference Include="..\..\src\WebDownloadr.Web\WebDownloadr.Web.csproj" />
   </ItemGroup>
 
 </Project>
