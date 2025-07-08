@@ -9,6 +9,7 @@ on:
     branches: [ main ]
 
 jobs:
+  # ensure whitespace & analyzer rules match .editorconfig
   format:
     runs-on: ubuntu-latest
     steps:
@@ -18,11 +19,20 @@ jobs:
           global-json-file: global.json
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
-      - name: Verify formatting
+      # --- Verify EOL / indentation / trailing-whitespace
+      - name: Verify whitespace & EOL
         run: |
-          dotnet format --verify-no-changes WebDownloadr.sln || {
-            echo "::error title=Formatting Issues::Run 'dotnet format' locally to fix.";
-            exit 1
+          dotnet format whitespace --folder . --verify-no-changes || {
+            echo "::error title=EOL/Whitespace Issues::Run './scripts/bootstrap-format.sh' to fix.";
+            exit 1;
+          }
+
+      # --- Verify analyzer & style rules (using-order, blank lines, etc.)
+      - name: Verify analyzer rules
+        run: |
+          dotnet format analyzers --folder . --verify-no-changes || {
+            echo "::error title=Analyzer Formatting Issues::Run './scripts/bootstrap-format.sh' to fix.";
+            exit 1;
           }
   build:
     runs-on: ubuntu-latest

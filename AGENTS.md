@@ -165,16 +165,25 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
 
 ## Code Formatting
 
-Formatting is enforced in CI using `dotnet format --verify-no-changes`. The repository style, including CRLF line endings and UTF‑8 with BOM encoding, is defined in `.editorconfig`.
+1. **`.editorconfig` is canonical**
+   - indent_style = space
+   - `*.{cs,csx,vb,vbx}` → **2-space indentation**
+   - `*.{csproj,vbproj,vcxproj,proj,props,targets}` → **2-space indentation**
+   - end_of_line = crlf
+   - charset = utf-8-bom
+   - trim_trailing_whitespace = true
+   - insert_final_newline = true
 
-* Run `./scripts/format.sh` or `dotnet format` locally before committing.
-* Set `git config --global core.autocrlf true` to avoid line‑ending mismatches.
-* A one‑time normalization may be required:
+2. **CI Enforcement**
+   Formatting is enforced via `dotnet format --verify-no-changes`.
+   Run `./scripts/format.sh` or `dotnet format` locally before committing.
+   Set `git config --global core.autocrlf true` to avoid line-ending mismatches.
+   A one-time normalization may be required:
 
-  ```bash
-  git add --renormalize .
-  git commit -m "style: normalize line endings to match .editorconfig"
-  ```
+   ```bash
+   git add --renormalize .
+   git commit -m "style: normalize line endings to match .editorconfig"
+   ```
 
 Formatting violations will block PRs.
 
