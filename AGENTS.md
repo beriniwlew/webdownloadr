@@ -180,7 +180,7 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
 
 ## Testing Guidelines
 
-* Test framework: [xUnit](https://xunit.net/docs/getting-started/netcore) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/index.html).
+* Test framework: [xUnit](https://xunit.net/) with [Shouldly](https://shouldly.readthedocs.io/en/latest/) + [NSubstitute](https://nsubstitute.github.io/index.html).
 * Place tests in the matching project: `UnitTests`, `IntegrationTests`, `FunctionalTests`, `AspireTests`.
 * Maintain test isolation. Integration tests may use [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet) for external dependencies, and [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions) for concise HTTP assertions.
 
@@ -223,7 +223,7 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 * [Ardalis Specification](https://github.com/ardalis/Specification)
 * [FastEndpoints Documentation](https://fast-endpoints.com/docs/introduction)
 * [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
-* [xUnit.net Getting Started](https://xunit.net/docs/getting-started/netcore)
+* [xUnit.net Getting Started](https://xunit.net/)
 * [Shouldly Assertions](https://shouldly.readthedocs.io/en/latest/)
 * [NSubstitute](https://nsubstitute.github.io/index.html)
 * [Coverlet Coverage Tool](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)
