@@ -17,7 +17,7 @@ jobs:
         with:
           global-json-file: global.json
       - run: |
-          dotnet format --verify-no-changes WebDownloadr.sln || {
+          ./scripts/format.sh || {
             echo "❌ Formatting issues detected. Run \`dotnet format\` to fix.";
             exit 1;
           }
