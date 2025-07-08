@@ -25,6 +25,10 @@ Browse to `/swagger` for API documentation while the app is running.
 
 Additional documentation lives in the `docs` folder and within each project. Start with [`src/WebDownloadr.Core/README.md`](src/WebDownloadr.Core/README.md) to learn about the domain model.
 
+## Formatting
+
+Formatting is enforced in CI. Maintainers must normalize the repository once by running `dotnet format` and committing the result with the message `style: normalize formatting`. After this commit, `dotnet format --verify-no-changes` will run on every pull request.
+
 ## License
 
 This project is licensed under the [MIT](LICENSE) license.

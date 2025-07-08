@@ -163,6 +163,10 @@ To enforce the 90% coverage threshold in CI, add a step that fails when the summ
 ```
 Run this script locally **before pushing a branch or opening a PR**. Any non‑zero exit code must abort the change. PRs with failing checks will be auto-closed.
 
+## Code Formatting
+
+Formatting is enforced in CI using `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally before committing. The repository's style is defined in `.editorconfig` and formatting violations will block PRs.
+
 ---
 
 ## Coding Standards
