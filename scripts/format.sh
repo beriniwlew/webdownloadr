@@ -10,13 +10,15 @@ fi
 dotnet restore WebDownloadr.sln
 
 if [[ "$mode" == "fix" ]]; then
-  dotnet format --fix-analyzers WebDownloadr.sln
+  dotnet format WebDownloadr.sln
+  dotnet format analyzers WebDownloadr.sln
   if ! git diff --quiet; then
     git add -A
     git commit -m "style: apply dotnet format and analyzer fixes"
   fi
 else
-  dotnet format --verify-no-changes --fix-analyzers WebDownloadr.sln
+  dotnet format WebDownloadr.sln --verify-no-changes
+  dotnet format analyzers WebDownloadr.sln --verify-no-changes
 fi
 
 git diff --exit-code

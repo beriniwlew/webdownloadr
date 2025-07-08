@@ -40,6 +40,8 @@ git add --renormalize .
 git commit -m "style: normalize line endings to match .editorconfig"
 dotnet format
 git commit -am "style: normalize formatting"
+# or run the helper script
+./scripts/bootstrap-format.sh --commit
 ```
 
 After these commits, `dotnet format --verify-no-changes` runs on every pull request.

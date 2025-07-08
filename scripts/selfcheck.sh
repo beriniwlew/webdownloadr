@@ -9,7 +9,7 @@ set -euo pipefail
 
 # Verify formatting including analyzer rules
  dotnet format WebDownloadr.sln --verify-no-changes --no-restore
- dotnet format analyzers WebDownloadr.sln --verify-no-changes --no-restore
+ dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
 
 # Generate coverage report
  reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/coverage-report" -reporttypes:HtmlSummary

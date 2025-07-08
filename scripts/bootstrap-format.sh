@@ -16,7 +16,8 @@ dotnet restore WebDownloadr.sln
 git add --renormalize .
 
 # Format the solution
-dotnet format --fix-analyzers WebDownloadr.sln
+dotnet format WebDownloadr.sln
+dotnet format analyzers WebDownloadr.sln
 
 # Show a summary of changes
 echo "\nChanged files:"
