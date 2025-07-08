@@ -23,14 +23,15 @@ git status --short
 git diff --stat
 
 if $commit; then
-  if ! git diff --quiet; then
-    git commit -am "style: normalize line endings and encoding to match .editorconfig"
+  if ! git diff --cached --quiet || ! git diff --quiet; then
+    git add -A
+    git commit -m "style: normalize line endings and encoding to match .editorconfig"
   else
     echo "No changes to commit."
   fi
 fi
 
-if ! git diff --quiet; then
+if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "\n❌ Uncommitted changes remain."
   exit 1
 fi
