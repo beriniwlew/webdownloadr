@@ -47,7 +47,7 @@ jobs:
       - run: ./scripts/selfcheck.sh
       - name: Verify Code Coverage Threshold
         run: |
-          COVERAGE=$(grep -Po 'line-rate="\\K[0-9.]+(?=\")' TestResults/coverage-report/coverage.xml | head -1)
+          COVERAGE=$(grep -Po 'line-rate="\\K[0-9.]+(?=")' TestResults/coverage-report/coverage.xml | head -1)
           PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
           echo "Line coverage: $PERCENT%"
           awk -v p=$PERCENT 'BEGIN {exit (p<90)}'
