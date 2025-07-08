@@ -53,7 +53,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Write unit test                          | `tests/WebDownloadr.UnitTests/<Feature>Tests.cs`                                                                  |
 | Expose REST endpoint                     | `src/WebDownloadr.Web/Modules/<Feature>/`                                                                         |
 | Write integration or functional test     | `tests/WebDownloadr.IntegrationTests/<Feature>Tests.cs` or `tests/WebDownloadr.FunctionalTests/<Feature>Tests.cs` |
-| Add domain event handler                 | `src/WebDownloadr.Core/DomainEventHandlers/<EventHandler>.cs`                                                     |
+| Add domain event handler                 | `src/WebDownloadr.Core/<Aggregate>/Handlers/<EventHandler>.cs`                                                     |
 
 * **Naming tip:** prefer `XCommandHandler.cs` and `XQueryHandler.cs` for handler files.
 ---
