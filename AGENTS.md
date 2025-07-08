@@ -38,7 +38,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 
 1. **Create** a branch named `feature/<slug>` for new features. Use `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` for other updates.
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0`.
-3. **Commit** with the message format `[Layer] <Short descriptive summary>`.
+3. **Commit** using `[Layer] <type>: <summary>` format following [Conventional Commits](https://www.conventionalcommits.org/). Validate messages with commitlint.
 4. **Push** and open a pull request.
 5. Ensure **CI is green** (same steps as `selfcheck.sh`).
 
