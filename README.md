@@ -5,7 +5,7 @@ WebDownloadr demonstrates how to apply Clean Architecture to a simple web page d
 ## Projects
 
 - **WebDownloadr.Core** – domain model containing the [`WebPage` aggregate](src/WebDownloadr.Core/WebPageAggregate/README.md).
-- **WebDownloadr.UseCases** – application layer describing operations such as requesting downloads.
+- **WebDownloadr.UseCases** – application layer describing operations such as requesting downloads (see [README](src/WebDownloadr.UseCases/README.md)).
 - **WebDownloadr.Infrastructure** – implementations of external dependencies like HTTP clients.
 - **WebDownloadr.Web** – minimal API exposing endpoints (see [README](src/WebDownloadr.Web/README.md)).
 - **Tests** – unit, integration and functional test projects.

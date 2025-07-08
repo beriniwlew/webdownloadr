@@ -1,7 +1,10 @@
-﻿using WebDownloadr.Core.WebPageAggregate;
+using WebDownloadr.Core.WebPageAggregate;
 
 namespace WebDownloadr.UseCases.WebPages.Update;
 
+/// <summary>
+/// Handles <see cref="UpdateWebPageCommand"/> by loading the entity and updating its status.
+/// </summary>
 public class UpdateWebPageHandler(IRepository<WebPage> repository)
  : ICommandHandler<UpdateWebPageCommand, Result<WebPageDTO>>
 {
@@ -13,11 +16,11 @@ public class UpdateWebPageHandler(IRepository<WebPage> repository)
     {
       return Result.NotFound();
     }
-    
+
     existingEntity.UpdateStatus(request.NewStatus);
-    
+
     await repository.UpdateAsync(existingEntity, cancellationToken);
-    
+
     return new WebPageDTO(existingEntity.Id.Value, existingEntity.Url.Value, existingEntity.Status.ToString());
   }
 }

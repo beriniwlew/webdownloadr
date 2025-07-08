@@ -1,7 +1,10 @@
-﻿using WebDownloadr.Core.ContributorAggregate;
+using WebDownloadr.Core.ContributorAggregate;
 
 namespace WebDownloadr.UseCases.Contributors.Update;
 
+/// <summary>
+/// Handles <see cref="UpdateContributorCommand"/> by changing the contributor's name.
+/// </summary>
 public class UpdateContributorHandler(IRepository<Contributor> _repository)
   : ICommandHandler<UpdateContributorCommand, Result<ContributorDTO>>
 {

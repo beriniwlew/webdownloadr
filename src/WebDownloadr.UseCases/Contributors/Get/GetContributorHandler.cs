@@ -1,10 +1,10 @@
-﻿using WebDownloadr.Core.ContributorAggregate;
+using WebDownloadr.Core.ContributorAggregate;
 using WebDownloadr.Core.ContributorAggregate.Specifications;
 
 namespace WebDownloadr.UseCases.Contributors.Get;
 
 /// <summary>
-/// Queries don't necessarily need to use repository methods, but they can if it's convenient
+/// Handles <see cref="GetContributorQuery"/> by loading the contributor from the repository.
 /// </summary>
 public class GetContributorHandler(IReadRepository<Contributor> _repository)
   : IQueryHandler<GetContributorQuery, Result<ContributorDTO>>

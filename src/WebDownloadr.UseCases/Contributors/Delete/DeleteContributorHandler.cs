@@ -1,7 +1,10 @@
-﻿using WebDownloadr.Core.Interfaces;
+using WebDownloadr.Core.Interfaces;
 
 namespace WebDownloadr.UseCases.Contributors.Delete;
 
+/// <summary>
+/// Handles <see cref="DeleteContributorCommand"/> by delegating deletion to the service.
+/// </summary>
 public class DeleteContributorHandler(IDeleteContributorService _deleteContributorService)
   : ICommandHandler<DeleteContributorCommand, Result>
 {
