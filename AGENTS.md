@@ -16,14 +16,14 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
 | **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                                                                                                                                                 |
-| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | [EF Core](https://learn.microsoft.com/ef/core/) `DbContext`, external service adapters, and persistence. Implements Core interfaces; depends on **Core**.                                                                                   EF Core `DbContext` and repository implementations live under `Data/`.|
+| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder. |
 | **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                         |
 | **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/overview) and cloud hosting.                                                                                                                |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire.                                                                                                                                                                                               |
 > **Note:** Usage of .NET Aspire is optional and remains preview in .NET 9.
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
 
-> **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are reviewed manually; consider adding NetArchTest tests under `tests/Architecture`.
+> **Dependency rule** – References must flow **inward**: `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are reviewed manually. If architectural drift becomes an issue, consider enforcing with tools like NetArchTest or ArchUnitNET.
 
 | Layer          | May Reference                             |
 | -------------- | ----------------------------------------- |
@@ -79,7 +79,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 | Line coverage            | **≥ 90 %** ([Coverlet](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)) |
 | Formatter drift          | **0 files** (`dotnet format --verify-no-changes`)                                                              |
 
-The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml).
+The pull‑request will be blocked if any gate fails. CI runs via [GitHub Actions](.github/workflows/ci.yml). Consider adding a CI status badge to the README for visibility.
 Branch protection on `main` requires these checks to pass before merging.
 
 ---
@@ -153,6 +153,14 @@ reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:Tes
 ```
 To enforce the 90% coverage threshold in CI, add a step that fails when the summary XML shows less than 90% line coverage.
 
+```yaml
+- name: Verify Code Coverage Threshold
+  run: |
+    COVERAGE=$(grep -Po 'line-rate="\\K[0-9.]+(?=\")' TestResults/coverage-report/coverage.xml | head -1)
+    PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
+    echo "Line coverage: $PERCENT%"
+    awk -v p=$PERCENT 'BEGIN {exit (p<90)}'
+```
 Run this script locally **before pushing a branch or opening a PR**. Any non‑zero exit code must abort the change. PRs with failing checks will be auto-closed.
 
 ---
@@ -166,7 +174,7 @@ Run this script locally **before pushing a branch or opening a PR**. Any non‑z
 * **File‑scoped namespaces**, **top‑level statements** in `Program.cs`.
 * Use [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) and raise **Domain Events** for invariants.
 * XML docs required for public Core APIs and complex methods.
-* Public methods in Core must have XML doc comments and matching unit tests.
+* Public methods in Core must include XML doc comments. If executable, they should have matching unit tests.
 
 ---
 
@@ -199,7 +207,7 @@ Never commit secrets or sensitive config. Local `.env` files are git‑ignored b
 * Dependencies must flow **inward**.
 * Place new code in the correct layer.
 * Public APIs in **Core** require corresponding tests & docs.
-* Generated files (e.g., EF Core migrations) must remain unedited to ensure schema consistency.
+* Generated files (e.g., EF Core migrations) must remain unedited unless explicitly required and documented.
 * If multiple bounded contexts emerge, consider creating an internal `SharedKernel` package. Until then, the solution uses `Ardalis.SharedKernel`.
 
 ---
