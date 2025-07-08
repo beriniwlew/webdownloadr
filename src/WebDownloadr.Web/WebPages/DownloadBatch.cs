@@ -1,4 +1,4 @@
-using WebDownloadr.UseCases.WebPages.Download.DownloadWebPages;
+﻿using WebDownloadr.UseCases.WebPages.Download.DownloadWebPages;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -6,7 +6,7 @@ namespace WebDownloadr.Web.WebPages;
 /// API endpoint for starting multiple downloads in a single request.
 /// </summary>
 public class DownloadBatch(IMediator _mediator) : Endpoint<DownloadWebPagesRequest, IEnumerable<Guid>>
-{ 
+{
   /// <inheritdoc />
   public override void Configure()
   {

@@ -1,4 +1,4 @@
-namespace WebDownloadr.Web.WebPages;
+﻿namespace WebDownloadr.Web.WebPages;
 
 public record DeleteWebPageRequest
 {

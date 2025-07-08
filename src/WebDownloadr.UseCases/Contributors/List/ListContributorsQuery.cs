@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.Contributors.List;
+﻿namespace WebDownloadr.UseCases.Contributors.List;
 
 /// <summary>
 /// Query to list contributors with optional paging.

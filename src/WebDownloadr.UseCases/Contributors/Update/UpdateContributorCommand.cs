@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.Contributors.Update;
+﻿namespace WebDownloadr.UseCases.Contributors.Update;
 
 /// <summary>
 /// Command to rename an existing contributor.

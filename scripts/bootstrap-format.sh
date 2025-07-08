@@ -13,7 +13,7 @@ git config core.autocrlf true
 git add --renormalize .
 
 # Format the solution
-dotnet format
+dotnet format WebDownloadr.sln
 
 # Show a summary of changes
 echo "\nChanged files:"

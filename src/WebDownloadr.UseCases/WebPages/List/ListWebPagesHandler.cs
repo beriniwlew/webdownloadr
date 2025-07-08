@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.WebPages.List;
+﻿namespace WebDownloadr.UseCases.WebPages.List;
 
 /// <summary>
 /// Handles <see cref="ListWebPagesQuery"/> by invoking the query service.

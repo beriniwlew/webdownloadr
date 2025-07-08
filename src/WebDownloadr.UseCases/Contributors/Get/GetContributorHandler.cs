@@ -1,4 +1,4 @@
-using WebDownloadr.Core.ContributorAggregate;
+﻿using WebDownloadr.Core.ContributorAggregate;
 using WebDownloadr.Core.ContributorAggregate.Specifications;
 
 namespace WebDownloadr.UseCases.Contributors.Get;

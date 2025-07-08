@@ -1,10 +1,10 @@
-namespace WebDownloadr.Web.WebPages;
+﻿namespace WebDownloadr.Web.WebPages;
 
 /// <summary>
 /// Request payload for cancelling a running download.
 /// </summary>
 public class CancelDownloadRequest
-{ 
+{
   /// <summary>API route for the endpoint.</summary>
   public const string Route = "/WebPages/{WebPageId:guid}/download/cancel";
 

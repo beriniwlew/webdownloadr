@@ -1,7 +1,7 @@
+﻿using System.Collections.Concurrent;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.WebPageAggregate;
 using WebDownloadr.Core.WebPageAggregate.Events;
-using System.Collections.Concurrent;
 
 namespace WebDownloadr.Core.Services;
 
@@ -13,9 +13,9 @@ public class DownloadWebPageService(
   IRepository<WebPage> repository,
   IWebPageDownloader downloader,
   IMediator mediator) : IDownloadWebPageService
-  {
-    private const string OutputDir = "downloads";
-    private static readonly ConcurrentDictionary<Guid, CancellationTokenSource> _activeDownloads = new();
+{
+  private const string OutputDir = "downloads";
+  private static readonly ConcurrentDictionary<Guid, CancellationTokenSource> _activeDownloads = new();
 
   /// <inheritdoc />
   public async Task<Result<Guid>> DownloadWebPageAsync(Guid id, CancellationToken cancellationToken)

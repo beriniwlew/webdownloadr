@@ -1,4 +1,4 @@
-namespace WebDownloadr.Core.WebPageAggregate;
+﻿namespace WebDownloadr.Core.WebPageAggregate;
 
 /// <summary>
 /// Aggregate root representing a web page that can be downloaded.

@@ -1,4 +1,4 @@
-namespace WebDownloadr.Core.WebPageAggregate;
+﻿namespace WebDownloadr.Core.WebPageAggregate;
 
 /// <summary>
 /// Enumerates the possible states of a web page download.
@@ -23,6 +23,6 @@ public class DownloadStatus : SmartEnum<DownloadStatus>
 
   /// <summary>Status has not been set.</summary>
   public static readonly DownloadStatus NotSet = new(nameof(NotSet), 6);
-  
+
   protected DownloadStatus(string name, int value) : base(name, value) { }
 }
