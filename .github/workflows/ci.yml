@@ -14,5 +14,6 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-      - run: ./scripts/install-tools.sh
-      - run: ./scripts/selfcheck.sh
+      - run: dotnet restore WebDownloadr.sln
+      - run: dotnet build --no-restore WebDownloadr.sln
+      - run: dotnet test --no-build --no-restore WebDownloadr.sln
