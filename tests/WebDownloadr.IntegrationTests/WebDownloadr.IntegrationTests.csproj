@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <NoWarn>$(NoWarn);NETSDK1206</NoWarn>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
