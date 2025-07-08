@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.WebPages.List;
+﻿namespace WebDownloadr.UseCases.WebPages.List;
 
 /// <summary>
 /// Query to list tracked pages with optional paging.

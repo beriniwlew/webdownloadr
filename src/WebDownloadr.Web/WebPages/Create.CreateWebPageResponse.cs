@@ -7,7 +7,7 @@ public class CreateWebPageResponse
     Id = id;
     Url = url;
   }
-  
+
   public Guid Id { get; set; }
   public string Url { get; set; }
 }

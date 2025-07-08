@@ -1,6 +1,6 @@
+﻿using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.UseCases.WebPages;
 using WebDownloadr.UseCases.WebPages.List;
-using WebDownloadr.Infrastructure.Data;
 
 namespace WebDownloadr.Infrastructure.Data.Queries;
 

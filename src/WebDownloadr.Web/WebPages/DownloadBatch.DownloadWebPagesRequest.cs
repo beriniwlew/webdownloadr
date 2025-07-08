@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -6,7 +6,7 @@ namespace WebDownloadr.Web.WebPages;
 /// Request payload for downloading multiple pages at once.
 /// </summary>
 public class DownloadWebPagesRequest
-{ 
+{
   /// <summary>API route for the endpoint.</summary>
   public const string Route = "/WebPages/download";
 

@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.WebPages.Get;
+﻿namespace WebDownloadr.UseCases.WebPages.Get;
 
 /// <summary>
 /// Query to fetch a single web page.

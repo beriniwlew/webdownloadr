@@ -1,4 +1,4 @@
-namespace WebDownloadr.UnitTests.Core.WebPageAggregate;
+﻿namespace WebDownloadr.UnitTests.Core.WebPageAggregate;
 
 public class WebPageUrl_From
 {

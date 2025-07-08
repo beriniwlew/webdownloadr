@@ -1,4 +1,4 @@
-namespace WebDownloadr.Core.Interfaces;
+﻿namespace WebDownloadr.Core.Interfaces;
 
 /// <summary>
 /// Provides high level operations for downloading <see cref="WebPage" />

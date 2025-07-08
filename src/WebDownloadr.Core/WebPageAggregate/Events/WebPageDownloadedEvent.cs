@@ -1,4 +1,4 @@
-namespace WebDownloadr.Core.WebPageAggregate.Events;
+﻿namespace WebDownloadr.Core.WebPageAggregate.Events;
 
 /// <summary>
 /// Raised when a web page download completes successfully.

@@ -1,4 +1,4 @@
-using Vogen;
+﻿using Vogen;
 
 namespace WebDownloadr.Core.WebPageAggregate;
 

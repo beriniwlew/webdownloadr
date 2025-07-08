@@ -1,12 +1,12 @@
-namespace WebDownloadr.Web.WebPages;
+﻿namespace WebDownloadr.Web.WebPages;
 
 /// <summary>
 /// Request payload for retrying a failed download.
 /// </summary>
 public class RetryDownloadRequest
-{ 
+{
   /// <summary>API route for the endpoint.</summary>
-  public const string Route = "/WebPages/{WebPageId:guid}/download/retry"; 
+  public const string Route = "/WebPages/{WebPageId:guid}/download/retry";
 
   /// <summary>
   /// Builds the route with the supplied identifier.

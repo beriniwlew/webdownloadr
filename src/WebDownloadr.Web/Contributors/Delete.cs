@@ -34,7 +34,8 @@ public class Delete(IMediator _mediator)
     if (result.IsSuccess)
     {
       await SendNoContentAsync(cancellationToken);
-    };
+    }
+    ;
     // TODO: Handle other issues as needed
   }
 }

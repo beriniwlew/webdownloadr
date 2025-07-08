@@ -1,6 +1,6 @@
-﻿using WebDownloadr.Infrastructure.Data.Config;
-using FastEndpoints;
+﻿using FastEndpoints;
 using FluentValidation;
+using WebDownloadr.Infrastructure.Data.Config;
 
 namespace WebDownloadr.Web.Contributors;
 

@@ -1,13 +1,13 @@
-using WebDownloadr.Core.WebPageAggregate;
+﻿using WebDownloadr.Core.WebPageAggregate;
 
 namespace WebDownloadr.UseCases.WebPages.Get;
 
 /// <summary>
 /// Handles <see cref="GetWebPageQuery"/> by retrieving the page entity from the repository.
 /// </summary>
-  public class GetWebPageHandler(IReadRepository<WebPage> repository)
-    : IQueryHandler<GetWebPageQuery, Result<WebPageDTO>>
-  {
+public class GetWebPageHandler(IReadRepository<WebPage> repository)
+  : IQueryHandler<GetWebPageQuery, Result<WebPageDTO>>
+{
   /// <summary>
   /// Retrieves a <see cref="WebPage"/> by identifier.
   /// </summary>

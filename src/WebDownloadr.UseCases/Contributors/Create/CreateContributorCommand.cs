@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.Contributors.Create;
+﻿namespace WebDownloadr.UseCases.Contributors.Create;
 
 /// <summary>
 /// Command to create a new <see cref="Contributor"/>.

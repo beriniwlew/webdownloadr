@@ -25,6 +25,24 @@ Browse to `/swagger` for API documentation while the app is running.
 
 Additional documentation lives in the `docs` folder and within each project. Start with [`src/WebDownloadr.Core/README.md`](src/WebDownloadr.Core/README.md) to learn about the domain model.
 
+## Formatting
+
+Formatting is enforced in CI. Configure Git to honor `.editorconfig` line endings:
+
+```bash
+git config --global core.autocrlf true
+```
+
+For the initial bootstrap, maintainers should normalize all files and format the solution:
+
+```bash
+git add --renormalize .
+git commit -m "style: normalize line endings to match .editorconfig"
+./scripts/bootstrap-format.sh --commit
+```
+
+After this commit, `./scripts/format.sh` (or `dotnet format`) runs in CI and must report no changes.
+
 ## License
 
 This project is licensed under the [MIT](LICENSE) license.

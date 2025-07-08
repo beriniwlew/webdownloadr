@@ -1,8 +1,8 @@
-﻿using Ardalis.SharedKernel;
+﻿using System.Reflection;
+using Ardalis.SharedKernel;
+using MediatR;
 using WebDownloadr.Core.ContributorAggregate;
 using WebDownloadr.UseCases.Contributors.Create;
-using MediatR;
-using System.Reflection;
 
 namespace WebDownloadr.Web.Configurations;
 

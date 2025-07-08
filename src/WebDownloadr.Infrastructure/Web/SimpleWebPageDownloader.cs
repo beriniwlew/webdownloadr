@@ -59,7 +59,7 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : 
 
     return Result.Success();
   }
-  
+
   /// <summary>
   /// Converts a URL into a safe file name.
   /// </summary>

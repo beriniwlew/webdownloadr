@@ -7,7 +7,7 @@ namespace WebDownloadr.Infrastructure.Data.Config;
 internal class VogenSequentialGuidValueGenerator<TId> : ValueGenerator<TId>
   where TId : IVogen<TId, Guid>
 {
-  
+
   public override TId Next(EntityEntry entry)
     => TId.From(NewSequential());
 

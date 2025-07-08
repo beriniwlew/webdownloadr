@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.Contributors.Delete;
+﻿namespace WebDownloadr.UseCases.Contributors.Delete;
 
 /// <summary>
 /// Command to remove a contributor from the system.

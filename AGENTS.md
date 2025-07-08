@@ -163,6 +163,30 @@ To enforce the 90% coverage threshold in CI, add a step that fails when the summ
 ```
 Run this script locally **before pushing a branch or opening a PR**. Any non‑zero exit code must abort the change. PRs with failing checks will be auto-closed.
 
+## Code Formatting
+
+1. **`.editorconfig` is canonical**
+   - indent_style = space
+   - `*.{cs,csx,vb,vbx}` → **2-space indentation**
+   - `*.{csproj,vbproj,vcxproj,proj,props,targets}` → **2-space indentation**
+   - end_of_line = crlf
+   - charset = utf-8-bom
+   - trim_trailing_whitespace = true
+   - insert_final_newline = true
+
+2. **CI Enforcement**
+   Formatting is enforced via `dotnet format --verify-no-changes`.
+   Run `./scripts/format.sh` or `dotnet format` locally before committing.
+   Set `git config --global core.autocrlf true` to avoid line-ending mismatches.
+   A one-time normalization may be required:
+
+   ```bash
+   git add --renormalize .
+   git commit -m "style: normalize line endings to match .editorconfig"
+   ```
+
+Formatting violations will block PRs.
+
 ---
 
 ## Coding Standards

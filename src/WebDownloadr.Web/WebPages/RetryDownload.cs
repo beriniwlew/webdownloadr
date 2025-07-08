@@ -1,4 +1,4 @@
-using WebDownloadr.UseCases.WebPages.Download.RetryDownload;
+﻿using WebDownloadr.UseCases.WebPages.Download.RetryDownload;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -6,7 +6,7 @@ namespace WebDownloadr.Web.WebPages;
 /// API endpoint that retries a failed download.
 /// </summary>
 public class RetryDownload(IMediator _mediator) : Endpoint<RetryDownloadRequest, Guid>
-{ 
+{
   /// <inheritdoc />
   public override void Configure()
   {

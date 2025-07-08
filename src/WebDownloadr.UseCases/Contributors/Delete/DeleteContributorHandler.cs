@@ -1,4 +1,4 @@
-using WebDownloadr.Core.Interfaces;
+﻿using WebDownloadr.Core.Interfaces;
 
 namespace WebDownloadr.UseCases.Contributors.Delete;
 
@@ -18,11 +18,11 @@ public class DeleteContributorHandler(IDeleteContributorService _deleteContribut
     // This Approach: Keep Domain Events in the Domain Model / Core project; this becomes a pass-through
     // This is @ardalis's preferred approach
     await _deleteContributorService.DeleteContributor(request.ContributorId);
-    // Another Approach: Do the real work here including dispatching domain events - change the event from internal to public
-    // @ardalis prefers using the service above so that **domain** event behavior remains in the **domain model** (core project)
-    // var aggregateToDelete = await _repository.GetByIdAsync(request.ContributorId);
-    // if (aggregateToDelete == null) return Result.NotFound();
-    // await _repository.DeleteAsync(aggregateToDelete);
-    // var domainEvent = new ContributorDeletedEvent(request.ContributorId);
-    // await _mediator.Publish(domainEvent);// return Result.Success();
+  // Another Approach: Do the real work here including dispatching domain events - change the event from internal to public
+  // @ardalis prefers using the service above so that **domain** event behavior remains in the **domain model** (core project)
+  // var aggregateToDelete = await _repository.GetByIdAsync(request.ContributorId);
+  // if (aggregateToDelete == null) return Result.NotFound();
+  // await _repository.DeleteAsync(aggregateToDelete);
+  // var domainEvent = new ContributorDeletedEvent(request.ContributorId);
+  // await _mediator.Publish(domainEvent);// return Result.Success();
 }

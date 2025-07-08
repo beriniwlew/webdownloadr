@@ -1,12 +1,12 @@
-namespace WebDownloadr.Web.WebPages;
+﻿namespace WebDownloadr.Web.WebPages;
 
 /// <summary>
 /// Request payload for initiating a web page download.
 /// </summary>
 public class DownloadWebPageRequest
-{ 
+{
   /// <summary>API route for the endpoint.</summary>
-  public const string Route = "/WebPages/{WebPageId:guid}/download"; 
+  public const string Route = "/WebPages/{WebPageId:guid}/download";
 
   /// <summary>
   /// Builds the route with a specific identifier.

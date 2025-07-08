@@ -1,4 +1,4 @@
-using WebDownloadr.UseCases.WebPages.Download.DownloadWebPage;
+﻿using WebDownloadr.UseCases.WebPages.Download.DownloadWebPage;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -6,7 +6,7 @@ namespace WebDownloadr.Web.WebPages;
 /// API endpoint that triggers a single web page download.
 /// </summary>
 public class Download(IMediator _mediator) : Endpoint<DownloadWebPageRequest, Guid>
-{ 
+{
   /// <inheritdoc />
   public override void Configure()
   {

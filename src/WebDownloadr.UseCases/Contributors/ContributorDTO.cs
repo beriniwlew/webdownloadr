@@ -1,4 +1,4 @@
-namespace WebDownloadr.UseCases.Contributors;
+﻿namespace WebDownloadr.UseCases.Contributors;
 
 /// <summary>
 /// Data transfer object returned when listing or retrieving contributors.

@@ -1,4 +1,4 @@
-using WebDownloadr.Core.Interfaces;
+﻿using WebDownloadr.Core.Interfaces;
 
 namespace WebDownloadr.UseCases.WebPages.Download.DownloadWebPage;
 
@@ -7,9 +7,9 @@ namespace WebDownloadr.UseCases.WebPages.Download.DownloadWebPage;
 /// </summary>
 public class DownloadWebPageHandler(IDownloadWebPageService service)
   : ICommandHandler<DownloadWebPageCommand, Result<Guid>>
-  {
+{
   /// <inheritdoc />
   public Task<Result<Guid>> Handle(DownloadWebPageCommand request,
     CancellationToken cancellationToken) =>
       service.DownloadWebPageAsync(request.Id, cancellationToken);
-  }
+}

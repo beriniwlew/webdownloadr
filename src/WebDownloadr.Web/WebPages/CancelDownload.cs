@@ -1,4 +1,4 @@
-using WebDownloadr.UseCases.WebPages.Download.CancelDownload;
+﻿using WebDownloadr.UseCases.WebPages.Download.CancelDownload;
 
 namespace WebDownloadr.Web.WebPages;
 
@@ -6,7 +6,7 @@ namespace WebDownloadr.Web.WebPages;
 /// API endpoint used to cancel a running download.
 /// </summary>
 public class CancelDownload(IMediator _mediator) : Endpoint<CancelDownloadRequest, Guid>
-{ 
+{
   /// <inheritdoc />
   public override void Configure()
   {

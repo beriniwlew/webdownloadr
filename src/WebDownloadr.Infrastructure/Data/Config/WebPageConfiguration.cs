@@ -10,7 +10,7 @@ public class WebPageConfiguration : IEntityTypeConfiguration<WebPage>
       .HasValueGenerator<VogenSequentialGuidValueGenerator<WebPageId>>()
       .HasVogenConversion()
       .IsRequired();
-    
+
     builder.Property(p => p.Url)
       .HasConversion(
         v => v.Value,
