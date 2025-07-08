@@ -36,7 +36,7 @@ Codifies the operational rules for this repository so that **AI-powered agents a
 
 ## Agent Responsibilities
 
-1. **Create** a branch named `feature/<slug>` for new features. Use `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` for other updates.
+1. **Commit** on the provided branch unless project maintainers instruct otherwise. If asked to create a new branch, use `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` as appropriate.
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0`.
 3. **Commit** using `[Layer] <type>: <summary>` format following [Conventional Commits](https://www.conventionalcommits.org/). Validate messages with commitlint.
 4. **Push** and open a pull request.
