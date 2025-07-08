@@ -1,6 +1,7 @@
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.WebPageAggregate;
 using WebDownloadr.Core.WebPageAggregate.Events;
+using System.Collections.Concurrent;
 
 namespace WebDownloadr.Core.Services;
 
@@ -8,8 +9,9 @@ public class DownloadWebPageService(
   IRepository<WebPage> repository,
   IWebPageDownloader downloader,
   IMediator mediator) : IDownloadWebPageService
-{
-  private const string OutputDir = "downloads";
+  {
+    private const string OutputDir = "downloads";
+    private static readonly ConcurrentDictionary<Guid, CancellationTokenSource> _activeDownloads = new();
 
   public async Task<Result<Guid>> DownloadWebPageAsync(Guid id, CancellationToken cancellationToken)
   {
@@ -22,24 +24,45 @@ public class DownloadWebPageService(
     webPage.UpdateStatus(DownloadStatus.DownloadInProgress);
     await repository.UpdateAsync(webPage, cancellationToken);
 
-    var result = await downloader.DownloadWebPagesAsync(new[] { webPage.Url.Value }, OutputDir);
-
-    if (result.IsSuccess)
+    using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+    _activeDownloads[webPage.Id.Value] = linkedCts;
+    try
     {
-      webPage.UpdateStatus(DownloadStatus.DownloadCompleted);
+      var result = await downloader.DownloadWebPagesAsync(new[] { webPage.Url.Value }, OutputDir, linkedCts.Token);
+
+      if (result.IsSuccess && !linkedCts.IsCancellationRequested)
+      {
+        webPage.UpdateStatus(DownloadStatus.DownloadCompleted);
+        await repository.UpdateAsync(webPage, cancellationToken);
+
+        var filePath = Path.Combine(OutputDir, GetSafeFilename(webPage.Url.Value) + ".html");
+        var content = await File.ReadAllTextAsync(filePath, cancellationToken);
+        await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), cancellationToken);
+
+        return Result.Success(webPage.Id.Value);
+      }
+      if (linkedCts.IsCancellationRequested)
+      {
+        webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
+        await repository.UpdateAsync(webPage, cancellationToken);
+        return Result.Success(webPage.Id.Value);
+      }
+
+      webPage.UpdateStatus(DownloadStatus.DownloadError);
       await repository.UpdateAsync(webPage, cancellationToken);
 
-      var filePath = Path.Combine(OutputDir, GetSafeFilename(webPage.Url.Value) + ".html");
-      var content = await File.ReadAllTextAsync(filePath, cancellationToken);
-      await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), cancellationToken);
-
+      return Result<Guid>.Error(string.Join("; ", result.Errors));
+    }
+    catch (OperationCanceledException)
+    {
+      webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
+      await repository.UpdateAsync(webPage, cancellationToken);
       return Result.Success(webPage.Id.Value);
     }
-
-    webPage.UpdateStatus(DownloadStatus.DownloadError);
-    await repository.UpdateAsync(webPage, cancellationToken);
-
-    return Result<Guid>.Error(string.Join("; ", result.Errors));
+    finally
+    {
+      _activeDownloads.TryRemove(webPage.Id.Value, out _);
+    }
   }
 
   public async Task<IEnumerable<Result<Guid>>> DownloadWebPagesAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
@@ -61,6 +84,11 @@ public class DownloadWebPageService(
     if (webPage is null)
     {
       return Result.NotFound();
+    }
+
+    if (_activeDownloads.TryRemove(id, out var cts))
+    {
+      cts.Cancel();
     }
 
     webPage.UpdateStatus(DownloadStatus.DownloadCancelled);

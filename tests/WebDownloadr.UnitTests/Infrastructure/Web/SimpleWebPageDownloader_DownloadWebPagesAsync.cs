@@ -1,5 +1,6 @@
 using Flurl.Http.Testing;
 using WebDownloadr.Infrastructure.Web;
+using System.Threading;
 
 namespace WebDownloadr.UnitTests.Infrastructure.Web;
 
@@ -16,7 +17,7 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
         var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         try
         {
-            await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir);
+            await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir, CancellationToken.None);
 
             var files = Directory.GetFiles(outputDir);
             files.Length.ShouldBe(1);
@@ -42,7 +43,7 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
         var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         try
         {
-            await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir);
+            await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir, CancellationToken.None);
 
             httpTest.CallLog.Count.ShouldBe(2);
         }
