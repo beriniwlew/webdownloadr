@@ -36,7 +36,7 @@ public class DownloadWebPageService_CancelDownloadAsync
         var page = new WebPage(WebPageUrl.From("https://example.com")) { Id = WebPageId.From(Guid.NewGuid()) };
         _repository.GetByIdAsync<Guid>(page.Id.Value, Arg.Any<CancellationToken>())
             .Returns(page);
-        _repository.UpdateAsync(page, Arg.Any<CancellationToken>()).Returns(Task.FromResult(page));
+        _repository.UpdateAsync(page, Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
 
         var downloadTask = _service.DownloadWebPageAsync(page.Id.Value, CancellationToken.None);
         await _downloader.Started.Task;

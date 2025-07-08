@@ -38,9 +38,9 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger) : 
 
     // Use Flurl to build the request, and Polly to handle retries.
     var response = await policy.ExecuteAsync(ct =>
-      url.WithTimeout(20).GetAsync(ct), cancellationToken);
+      url.WithTimeout(20).GetAsync(cancellationToken: ct), cancellationToken);
 
-    var content = await response.GetStringAsync(cancellationToken);
+    var content = await response.GetStringAsync();
 
     var fileName = Path.Combine(outputDir, GetSafeFilename(url) + ".html");
     await File.WriteAllTextAsync(fileName, content, cancellationToken);
