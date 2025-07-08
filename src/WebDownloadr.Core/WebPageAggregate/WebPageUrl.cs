@@ -2,10 +2,10 @@ using Vogen;
 
 namespace WebDownloadr.Core.WebPageAggregate;
 
-[ValueObject<string>(conversions: Conversions.SystemTextJson)]
 /// <summary>
 /// Value object representing a valid HTTP or HTTPS URL.
 /// </summary>
+[ValueObject<string>(conversions: Conversions.SystemTextJson)]
 public partial struct WebPageUrl
 {
   private static Validation Validate(in string url) =>
