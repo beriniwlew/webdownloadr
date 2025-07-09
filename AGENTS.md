@@ -1148,17 +1148,16 @@ When tasks are ambiguous, consider asking:
 
 ## Follow-Up: Further Enhancements
 
-Even with the above guidelines, there are opportunities to further improve or extend the development workflow and AI integration:
+### Living Maintenance
 
-- **Automate Architecture Enforcement:** Implement tools like ArchUnitNET (as referenced above) in the CI pipeline to automatically enforce the layer dependency rules. This will catch any forbidden project references or architectural drift during pull request checks.
+This file is a *living contract*.
+**Owner:** Berin Iwlew (or their delegate).
+**Cadence:** Review quarterly — on Jan 1, Apr 1, Jul 1, Oct 1 — or immediately after any major tooling or architectural change.
 
-- **Leverage Nested `AGENTS.md` Files:** If the repository grows into multiple distinct areas or modules (for example, adding a frontend or additional services), consider adding localized `AGENTS.md` files in those subdirectories. The AI agent will automatically apply those context-specific instructions (overriding the root rules) when working in that scope.
+- **Minor edits** (typos, link fixes) → direct PR, 1 reviewer.
+- **Substantive changes** (new rules, lifted constraints) → open a new ADR + PR; require full team review.
 
-- **Include Code Examples for Patterns:** Augment this guide with small code snippets demonstrating important patterns or conventions (e.g., how to raise a domain event, use a guard clause, or format a log message). These examples can help AI agents follow established practices more closely when generating new code.
-
-- **Keep Guidelines Up-to-Date:** Periodically revise this document to reflect evolving best practices and tooling. For instance, when .NET 10 is released or if [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/) moves out of preview, update the relevant sections. Similarly, incorporate any new analyzers or frameworks that become standard so the AI is always guided by current conventions.
-
-- **Expand CI Quality Checks:** Consider extending the CI workflow with additional checks. For example, enforce the 90% code coverage threshold by integrating the provided script into the CI configuration (if not already done). Additionally, you could use tools like `dotnet-outdated` to detect stale dependencies or add security/static analysis scanners. Such enhancements will ensure that both human and AI contributions continue to meet the project’s high standards.
+The owner is responsible for scheduling reviews, merging routine fixes, and flagging stale guidance.
 
 ## Performance & Safety Controls
 
