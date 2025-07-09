@@ -33,6 +33,7 @@ date_modified: 2025-07-09T11:17:25+02:00
 ## Table of Contents
 
 - [Purpose](#purpose)
+- [Nested AGENTS.md Inheritance & Layer-Specific Overrides](#nested-agentsmd-inheritance--layer-specific-overrides)
 - [Solution & Project Layout](#solution--project-layout)
 - [Agent Responsibilities](#agent-responsibilities)
 - [DO NOT](#do-not)
@@ -62,6 +63,31 @@ date_modified: 2025-07-09T11:17:25+02:00
 Codifies the operational rules for this repository so that **AI-powered agents (e.g., OpenAI Codex)** and human contributors can work safely within a **Clean Architecture** codebase based on the [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture) template while following modern .NET 9 best practices.
 
 ---
+
+## Nested **AGENTS.md** Inheritance & Layer-Specific Overrides
+
+> **Precedence** (lowest → highest):
+> **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested** `/<repo>/<folder>/AGENTS.md`
+> A nested file automatically **inherits** every rule from its parent.
+> If the nested file restates a rule, **the nested version wins** for that folder and its descendants.
+
+| Layer / Folder                                                    | Scope of Nested File                          | Typical Overrides or Extensions                                                                                                                                                                     | Why Overrides Make Sense in Clean Architecture                                                                       |
+| ----------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Core** (`/src/<Solution>.Core`)                                 | Domain entities, value objects, domain events | *Tighten* rules: <br>• Forbid any package refs except `Ardalis.GuardClauses`, `Ardalis.Specification`.<br>• Raise line-coverage to ≥ 95 %.                                                          | Core must stay pure and fully tested; stricter quality gates prevent leakage of infrastructure concerns.             |
+| **UseCases** (`/src/<Solution>.UseCases`)                         | CQRS handlers, DTOs, validators               | *Clarify* dependencies: may reference **Core** and MediatR/FluentValidation; **must not** reference **Infrastructure** or **Web**.<br>*Optionally* relax XML-doc requirement on trivial handlers.   | Ensures application logic mediates between UI and domain without coupling to infra or UI frameworks.                 |
+| **Infrastructure** (`/src/<Solution>.Infrastructure`)             | EF Core context, external service adapters    | *Permit* external SDKs (e.g., EF Core, Azure).<br>*Lower* unit-test coverage if integration tests exist.<br>*Allow* broader exception handling patterns.                                            | Infrastructure is where external details live; pragmatic rules acknowledge harder unit-testing and external libs.    |
+| **Web** (`/src/<Solution>.Web`)                                   | HTTP API / FastEndpoints host                 | *Enforce* that endpoints do not call **Infrastructure** directly (except in `Program.cs`).<br>*Allow* longer composition-root methods.<br>*Require* mapping DTOs—not domain entities—over the wire. | Keeps UI thin and decoupled; composition root is the single place allowed to wire infra implementations.             |
+| **Tests** (`/tests/*`)                                            | Unit, Integration, Functional tests           | *Relax* style analyzers (e.g., allow underscores in test method names).<br>*Exclude* tests from coverage metrics.<br>*Require* new/changed code to ship with matching tests.                        | Test code values readability over production style; enforcing test presence is more important than stylistic purity. |
+| **Migrations** (`/src/<Solution>.Infrastructure/Data/Migrations`) | EF Core-generated migration classes           | Disable analyzers & formatting drift checks.<br>Exclude from coverage.<br>“Do not hand-edit migrations—generate new ones instead.”                                                                  | Migrations are machine-generated history; linting & coverage add no value and manual edits break traceability.       |
+
+### Authoring Guidelines for Nested Files
+
+1. **State only deltas** – list *only* rules that differ from the repo-root file.
+2. **Document exceptions** – if overriding a core architectural guard, add a brief “*Why*”.
+3. **Keep under version control** – treat nested AGENTS.md edits like code; open a PR, run CI.
+4. **Avoid duplication** – link back to the root file instead of copying unchanged rules.
+
+Use these layer-specific nested files sparingly—only when a folder truly needs different rules to uphold Clean-Architecture boundaries while removing friction for contributors and AI agents.
 
 ## Solution & Project Layout
 
