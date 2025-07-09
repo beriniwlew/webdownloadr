@@ -20,7 +20,7 @@ ci_requirements:
 commit_convention: "Conventional Commits ([Layer] <type>: <summary>)"
 agents_md_inheritance: "Global (~/.codex) → Repo root → Nested (deeper overrides parent)"
 date_created: 2025-07-09T09:41:12+02:00
-date_modified: 2025-07-09T10:05:25+02:00
+date_modified: 2025-07-09T11:17:25+02:00
 ---
 
 # AGENTS.md
@@ -51,6 +51,7 @@ date_modified: 2025-07-09T10:05:25+02:00
 - [Additional Resources](#additional-resources)
 - [Guidance for AI Agents](#guidance-for-ai-agents)
 - [Prompt Engineering for Agents](#prompt-engineering-for-agents)
+- [State and Context Awareness](#state-and-context-awareness)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
 
 ---
@@ -459,6 +460,16 @@ When tasks are ambiguous, consider asking:
 - [ ] Format code via `dotnet format --verify-no-changes`.
 - [ ] Add or update tests for new behavior.
 - [ ] Commit using `[Layer] <type>: <summary>`.
+
+## State and Context Awareness
+
+- Maintain continuity across related tasks by referencing the same **UseCase**,
+  **Domain aggregate**, or other shared concept when editing multiple files.
+- Keep track of decisions made earlier in the pull request so subsequent changes
+  remain consistent with that context.
+- Long-term state is **not persisted** between sessions unless explicitly
+  instructed, so each PR should include enough details or references for future
+  contributors to understand the rationale.
 
 ---
 
