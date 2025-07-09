@@ -58,11 +58,14 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Environment & Secrets](#environment--secrets)
 - [Architectural Notes](#architectural-notes)
 - [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
-- [Additional Resources](#additional-resources)
+- [Example Repositories & Further Reading](#example-repositories--further-reading)
 - [Guidance for AI Agents](#guidance-for-ai-agents)
 - [Prompt Engineering for Agents](#prompt-engineering-for-agents)
 - [State and Context Awareness](#state-and-context-awareness)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
+- [Performance & Safety Controls](#performance--safety-controls)
+- [Fallbacks & Escalation](#fallbacks--escalation)
+- [Quick Reference for Agents](#quick-reference-for-agents)
 
 ---
 
@@ -360,18 +363,30 @@ _Only add if UI requirements outgrow FastEndpoints._
 >     
 > - Create an ADR for any non-trivial architectural change.
 >     
-## Agent Responsibilities
 
-1. **Commit** on the provided branch unless project maintainers instruct otherwise. New branches must start with one of these prefixes:
-   - `feature/` – new functionality
-   - `fix/` – bug fixes
-   - `chore/` – maintenance or tooling
-   - `docs/` – documentation updates
-   Example: `feature/add-download-endpoint`
-2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0` (fix any issues until it does).
-3. **Commit** messages must follow [Conventional Commits](#commit-message-format).
-4. **Push** and open a pull request.
-5. Ensure **CI is green** (all the same checks as `selfcheck.sh` must pass in CI).
+### Agent Workflow Checklist
+
+1. **Create or switch to a feature branch**  
+   Use one of the allowed prefixes: `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>`.
+
+2. **Run local quality gates**  
+   ```bash
+   ./scripts/selfcheck.sh
+   ```
+   The script **must exit 0**. Fix any errors or warnings before continuing.
+
+3. **Commit changes**
+   Follow [Conventional Commits](#commit-message-format) with a layer prefix, e.g.
+   `[UseCases] feat: add download queue processor`
+
+4. **Push and open a Pull Request**
+   Title the PR `[Layer] <summary>` and complete the PR template (link issues, add screenshots/tests as needed).
+
+5. **Verify CI is green**
+   All required checks—build, tests, ≥ 90 % coverage, formatting drift, architecture rules—must pass before requesting review.
+
+> **AI agents:** Tick off each step internally. If any stage fails twice in a row, stop and escalate to a human reviewer.
+
 
 ### Commit & Branch-Naming Conventions
 
@@ -1010,6 +1025,8 @@ Never commit secrets, credentials, or API keys to the repository under any circu
 3. **GitHub Actions secrets** – Add tokens or passwords required for CI to the repository's Secrets settings and reference them as `${{ secrets.NAME }}` in workflow YAML. Do not print these values to the logs.
 
 If environment variables or secrets are needed for integration tests, configure them through User Secrets or GitHub Actions secrets—never in code or configuration committed to the repository. If a credential is accidentally committed, contact the maintainers immediately so the history can be scrubbed.
+For local development, use **dotnet user-secrets** (`ManageUserSecrets` MSBuild property) to avoid committing credentials; CI pipelines can read the same secrets by mounting the generated `secrets.json` as an environment file.
+In production or shared test environments, reference secrets from a managed store such as **Azure Key Vault** or AWS Secrets Manager and inject them via `IConfiguration`—never hard-code or check them into source control.
 
 ---
 
@@ -1220,17 +1237,16 @@ When tasks are ambiguous, consider asking:
 
 ## Follow-Up: Further Enhancements
 
-Even with the above guidelines, there are opportunities to further improve or extend the development workflow and AI integration:
+### Living Maintenance
 
-- **Automate Architecture Enforcement:** Implement tools like ArchUnitNET (as referenced above) in the CI pipeline to automatically enforce the layer dependency rules. This will catch any forbidden project references or architectural drift during pull request checks.
+This file is a *living contract*.
+**Owner:** Berin Iwlew (or their delegate).
+**Cadence:** Review quarterly — on Jan 1, Apr 1, Jul 1, Oct 1 — or immediately after any major tooling or architectural change.
 
-- **Leverage Nested `AGENTS.md` Files:** If the repository grows into multiple distinct areas or modules (for example, adding a frontend or additional services), consider adding localized `AGENTS.md` files in those subdirectories. The AI agent will automatically apply those context-specific instructions (overriding the root rules) when working in that scope.
+- **Minor edits** (typos, link fixes) → direct PR, 1 reviewer.
+- **Substantive changes** (new rules, lifted constraints) → open a new ADR + PR; require full team review.
 
-- **Include Code Examples for Patterns:** Augment this guide with small code snippets demonstrating important patterns or conventions (e.g., how to raise a domain event, use a guard clause, or format a log message). These examples can help AI agents follow established practices more closely when generating new code.
-
-- **Keep Guidelines Up-to-Date:** Periodically revise this document to reflect evolving best practices and tooling. For instance, when .NET 10 is released or if [.NET Aspire](https://learn.microsoft.com/dotnet/aspire/) moves out of preview, update the relevant sections. Similarly, incorporate any new analyzers or frameworks that become standard so the AI is always guided by current conventions.
-
-- **Expand CI Quality Checks:** Consider extending the CI workflow with additional checks. For example, enforce the 90% code coverage threshold by integrating the provided script into the CI configuration (if not already done). Additionally, you could use tools like `dotnet-outdated` to detect stale dependencies or add security/static analysis scanners. Such enhancements will ensure that both human and AI contributions continue to meet the project’s high standards.
+The owner is responsible for scheduling reviews, merging routine fixes, and flagging stale guidance.
 
 ## Performance & Safety Controls
 
@@ -1240,62 +1256,70 @@ Even with the above guidelines, there are opportunities to further improve or ex
 
 ---
 
-## Fallbacks and Escalation
+## Fallbacks & Escalation
 
-Agents must halt and request clarification whenever a repository rule or instruction is unclear or appears conflicting.
+AI agents should handle routine contributions autonomously, **but must not get stuck in endless clarification loops**.  
+Follow this safety protocol whenever requirements are ambiguous:
 
-* **Stop** – If you cannot interpret a domain rule or architectural guideline with confidence, pause implementation.
-* **Ask** – Seek guidance from project maintainers via a comment or PR description when uncertain about next steps.
-* **Defer** – If a decision risks violating the codebase's principles, escalate to human review before proceeding.
+1. **First Clarification** – Ask a concise, targeted question in the PR or chat.  
+2. **Second Clarification** – If the reply is still unclear, rephrase once and reference the relevant spec or code line numbers.  
+3. **Escalate to Human Reviewer** –  
+   * If **after two clarification attempts** the task remains ambiguous **or** the answer conflicts with repository rules,  
+   * **Stop** further automation.  
+   * Tag the assigned human reviewer (e.g., `@maintainers`) and add the label `needs-human-input`.  
+   * Post a short summary of what is unclear and link any related files or ADRs.
 
-Err on the side of caution and avoid speculative changes. Explicit confirmation from maintainers resolves any ambiguity.
+> **Never** commit speculative changes when the requirement is still unresolved.  
+> The goal is to prevent silent failures and ensure architectural integrity while minimising wasted agent cycles.
 
+
+## Quick Reference for Agents
+
+| Principle | Why It Matters (1-liner) |
+|-----------|--------------------------|
+| **Nested‐file precedence** | Rules closest to the file win ─ prevents accidental override of Core purity. |
+| **Layer boundaries** | Web → UseCases / Infra → Core only; keeps Clean Architecture intact. |
+| **Minimal diffs** | Easier code reviews & fewer merge conflicts; unrelated reformatting is CI-blocked. |
+| **90 %+ coverage** | High confidence that business logic remains correct; enforced in CI. |
+| **ADR for every big decision** | Preserves architectural history; no “Why did we choose X?” mysteries. |
+| **No secrets in repo** | Security first; use User Secrets or CI vaults. |
+| **Commit style: `[Layer] type: summary`** | Lets humans & CI trace changes by layer and intent. |
+| **Run `./scripts/selfcheck.sh` before PR** | Guarantees local build = CI build; saves back-and-forth fixes. |
+| **Generated code exceptions** | EF migrations & snapshots bypass analyzers; avoids pointless linter noise. |
+| **Ask clarifying questions** | AI (and humans) should pause if requirements are ambiguous—better than guessing. |
+| **Escalate after 2 failed attempts** | Prevents infinite AI loops; hand off to human reviewer when stuck. |
+| **Use provided tool catalog** | Standardized CLI/tools (dotnet-adr, archtest) keep workflow predictable. |
+| **Structured logging** | Template-based logs enable searchable key–value pairs in APM dashboards. |
+| **Guard clauses in Core** | Fail fast, keep domain objects always-valid; fewer null checks elsewhere. |
+| **One test project per src project** | Mirrors folder layout; newcomers locate tests instantly. |
 
 ## Example Repositories & Further Reading
 
-> This section provides curated links to AGENTS.md examples, agent frameworks, and tools that align with best practices for AI-assisted software development. Resources are grouped by relevance to .NET / Clean Architecture, broader agent ecosystems, and experimental prototypes. Each entry is marked as **Production-Ready** or **Experimental**.
+> Curated references for AGENTS.md patterns, AI-agent frameworks, and Clean-Architecture-friendly tooling.  
+> Each entry is tagged **Production-Ready** 🟢 or **Experimental** 🧪 so you can gauge stability.
 
----
+### 🟢 Production-Ready
 
-### Production-Ready
+- **agentsmd.net** – Community site with 14 + structured AGENTS.md templates (includes a .NET Blazor + Clean-Architecture sample).  
+- **gakeez/agents_md_collection** – GitHub repo bundling those templates; each file has YAML metadata for easy parsing.  
+- **OpenAI Codex CLI** – Official terminal-first agent; reads AGENTS.md to guide coding, testing, and refactoring.  
+- **LangChain** – Framework for orchestrating LLM agents (Python / JS); offers memory, tool-use, and JSON-schema enforcement modules.  
+- **Microsoft Semantic Kernel** – C#/.NET SDK for building AI agents with plugins, planners, and vector memory—enterprise-ready.  
+- **Qodo PR-Agent** – GitHub Action that reviews pull requests with GPT-4; demonstrates production AI/DevOps integration.
 
-- **[agentsmd.net](https://agentsmd.net)** – Community-curated templates for AGENTS.md across stacks. Includes a **.NET Blazor** app and **Clean Architecture–inspired Go** service.
-    
-- **[gakeez/agents_md_collection](https://github.com/gakeez/agents_md_collection)** – GitHub repo with 14+ structured AGENTS.md examples, each with YAML headers for tooling. Great for bootstrapping your own.
-    
-- **[OpenAI Codex CLI](https://github.com/openai/openai-codex-cli)** – Terminal-first Codex agent that reads AGENTS.md to guide coding, formatting, and test generation in real-world repos.
-    
-- **[LangChain](https://www.langchain.com/)** – Agent orchestration framework (Python & JS). Offers modular tools for memory, multistep planning, tool use, and schema enforcement.
-    
-- **[Microsoft Semantic Kernel](https://github.com/microsoft/semantic-kernel)** – C#/.NET LLM orchestration framework with plugins, semantic plans, and memory—ideal for building AI agents in enterprise apps.
-    
-- **[Qodo PR-Agent](https://github.com/cirolini/qodome-oss)** – GitHub Action for AI-powered pull request reviews, designed with extensibility and structured outputs in mind.
-    
----
+### 🧪 Experimental & Exploratory
 
-### Experimental & Exploratory
+- **Auto-GPT** – Fully autonomous loop agent that plans and executes tasks end-to-end. Powerful but resource-heavy.  
+- **BabyAGI** – 200-line prototype that cycles task creation, prioritisation, execution—great for concept exploration.  
+- **GPT-Engineer** – Generates entire codebases from natural-language specs; rapidly evolving, expect manual polish.  
+- **Clean-Architecture PR Reviewer (demo)** – Community PoC of a .NET Clean-Architecture agent reviewing GitHub PRs.
 
-- **[Auto-GPT](https://github.com/Torantulino/Auto-GPT)** – Fully autonomous task agent that self-plans and executes projects via a loop. Impressive, but still unstable.
-    
-- **[BabyAGI](https://github.com/yoheinakajima/babyagi)** – Minimalist Python agent that loops task creation, prioritization, and execution. Inspired dozens of clones.
-    
-- **[GPT-Engineer](https://github.com/AntonOsika/gpt-engineer)** – Given a plain-text spec, this agent generates an entire codebase, tests, and docs. Useful for bootstrapping ideas.
-    
-- **[Clean Architecture PR Reviewer (Community Demo)](https://www.reddit.com/r/dotnet/comments/1e1bdrq/ai_pr_agent_for_clean_architecture/)** – A proof-of-concept .NET PR review agent with layered design, built to respect Clean Architecture boundaries.
-    
----
+### 🧠 Further Reading
 
-### Further Reading
+- **Introducing Codex – OpenAI Blog** – Explains how AGENTS.md boosts alignment and safety in autonomous coding.  
+- **Martin Fowler: Autonomous Agents in Codebases** – Case study of a Codex agent using AGENTS.md & README as its compass.  
+- **LangChain Docs** – Deep dives on memory, tool plugins, and schema-constrained output for robust agent design.  
+- **Awesome AI Agents (GitHub)** – Living index of frameworks, libraries, and research papers in the autonomous-agent ecosystem.
 
-- **[Introducing Codex – OpenAI Blog](https://openai.com/index/introducing-codex/)** – Explains Codex agent architecture, and how AGENTS.md boosts performance and alignment.
-    
-- **[Martin Fowler: Autonomous Agents in Codebases](https://martinfowler.com/articles/exploring-gen-ai/autonomous-agents-codex-example.html)** – Case study of a Codex agent navigating a repo using AGENTS.md and README as anchors.
-    
-- **[LangChain Documentation](https://docs.langchain.com/)** – Deep dive into memory, tool usage, schema-constrained output, and multi-agent planning for LLM systems.
-    
-- **[Awesome AI Agents (GitHub)](https://github.com/ai-collection/awesome-ai-agents)** – A living list of multi-agent systems, toolkits, demos, and research papers in the agent space.
-    
----
-
-> **Want to contribute?** If you find a new AGENTS.md pattern or agent system worth sharing, submit a PR to extend this section. Future contributors and AI agents will thank you.
+> **Contribute:** Found a valuable pattern or tool? Open a PR to append it here—future humans & AI will thank you!
 
