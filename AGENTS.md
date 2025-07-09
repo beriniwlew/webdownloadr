@@ -43,6 +43,7 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Agent Responsibilities](#agent-responsibilities)
 - [DO NOT](#do-not)
 - [Quality Gates](#quality-gates)
+- [Output Schemas](#output-schemas)
 - [Runtime Environment](#runtime-environment)
 - [Allowed Tools & APIs](#allowed-tools--apis)
 - [Database & Migrations](#database--migrations)
@@ -440,6 +441,72 @@ The pull‑request will be blocked if any gate fails. Continuous Integration run
 
 ---
 
+## Output Schemas
+
+> **Why?** Explicit JSON / YAML contracts let CI pipelines and custom tooling parse AI-generated artifacts automatically—no guesswork, no brittle regex.
+
+### 1. Task Status Report (JSON)
+
+When an AI agent finishes a multi-step task (e.g., code change + tests), it **must output** a final JSON block that matches this schema:
+
+```jsonc
+{
+  "status": "success | failure",      // REQUIRED: overall result
+  "message": "Short human summary",   // REQUIRED: 1-2 sentence outcome
+  "filesChanged": [                   // OPTIONAL: paths relative to repo root
+    "src/WebDownloadr.Core/NewEntity.cs",
+    "tests/WebDownloadr.UnitTests/NewEntityTests.cs"
+  ],
+  "testsPassed": 123,                 // OPTIONAL: integer
+  "testsFailed": 0,                   // OPTIONAL: integer
+  "coverage": 92.4                    // OPTIONAL: line-coverage percent
+}
+```
+
+*Agents*: **Output only the JSON**—no prose above or below the fenced block.
+
+### 2. Test Execution Summary (YAML)
+
+Long CI logs are noisy. For quick dashboards, agents executing `dotnet test` should emit a YAML summary:
+
+```yaml
+status: success          # success | failure
+total_tests: 120
+passed: 120
+failed: 0
+skipped: 0
+coverage: 92.4           # percent (float)
+report_path: TestResults/coverage-report/index.html
+```
+
+### 3. Code Generation List (JSON)
+
+If the agent generates multiple new files (scaffolding, ADR drafts), list them in this minimal schema:
+
+```json
+{
+  "generatedFiles": [
+    { "path": "docs/architecture-decisions/0008-new-choice.md", "type": "adr" },
+    { "path": "src/WebDownloadr.UseCases/Commands/Foo/CreateFooCommand.cs", "type": "code" }
+  ]
+}
+```
+
+### Validation Rules
+
+1. **No extra keys** — unknown properties break the contract.
+2. **Exact casing** — field names are case-sensitive.
+3. **Single block** — agents should not stream partial objects; emit once when done.
+4. **JSON mode preferred** — unless YAML is explicitly requested (e.g., for test summary).
+
+> CI will fail any PR whose agent output is invalid JSON/YAML or missing required fields.
+
+---
+
+*Following these schemas ensures humans, AI agents, and automated checks all speak the same, machine-parsable language when reporting results.*
+
+---
+
 ## Runtime Environment
 
 - **.NET SDK 9.0.301** must be on the `PATH` (see `global.json`).
@@ -760,37 +827,6 @@ _Only update an ADR’s **Status** or add a supersession notice—**do not** rew
     
 - Add the new ADR file to the same PR as the code change that depends on it.
 
-## Output Schemas
-
-Agent generated responses may be consumed by other tools and therefore must
-adhere to strict JSON or YAML schemas. Every defined property is required and no
-additional fields are permitted.
-
-### Example
-
-```json
-{
-  "status": "success",
-  "tests": {
-    "total": 42,
-    "passed": 42,
-    "failed": 0
-  }
-}
-```
-
-The `status` value communicates success or failure while the `tests` object
-captures overall results. Use the same structure when emitting YAML:
-
-```yaml
-status: success
-tests:
-  total: 42
-  passed: 42
-  failed: 0
-```
-
-Responses **must match these schemas exactly**—omit any extraneous properties.
 
 
 ## Guidance for AI Agents
