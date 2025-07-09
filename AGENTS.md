@@ -635,9 +635,9 @@ If environment variables or secrets are needed for integration tests, configure 
 
 ### 1. When to Write an ADR
 
-|Write a **new ADR** when…|Don’t bother when…|
-|---|---|
-|• Choosing / replacing a framework, library, persistence or messaging strategy.• Changing a cross-cutting pattern (e.g., switch from Mediator to Minimal APIs).• Revisiting or overturning a previous ADR.• Any decision that sparked extended debate or could puzzle a newcomer.|• The change follows an established team convention.• It is purely cosmetic or refactoring with no design impact.• A minor tweak to configuration or build scripts.|
+| Write a **new ADR** when…                                                                                                                                                                                                                                                         | Don’t bother when…                                                                                                                                                  |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| • Choosing / replacing a framework, library, persistence or messaging strategy.• Changing a cross-cutting pattern (e.g., switch from Mediator to Minimal APIs).• Revisiting or overturning a previous ADR.• Any decision that sparked extended debate or could puzzle a newcomer. | • The change follows an established team convention.• It is purely cosmetic or refactoring with no design impact.• A minor tweak to configuration or build scripts. |
 
 > **AI agents:** If your task introduces a design decision that meets the left-hand criteria, you **must** draft an ADR in the pull request.
 
@@ -688,13 +688,13 @@ Links to discussions, spikes, benchmarks, external docs.
 
 ### 4. Status Vocabulary
 
-|Status|Meaning|
-|---|---|
-|**Proposed**|Draft under discussion.|
-|**Accepted**|Approved; implementation may proceed.|
-|**Rejected**|Considered but declined (capture _why_).|
-|**Superseded**|Replaced by a newer ADR—add “Superseded by ADR-00XX” at top.|
-|**Deprecated**|Still in effect but slated for removal.|
+| Status         | Meaning                                                      |
+|----------------|--------------------------------------------------------------|
+| **Proposed**   | Draft under discussion.                                      |
+| **Accepted**   | Approved; implementation may proceed.                        |
+| **Rejected**   | Considered but declined (capture _why_).                     |
+| **Superseded** | Replaced by a newer ADR—add “Superseded by ADR-00XX” at top. |
+| **Deprecated** | Still in effect but slated for removal.                      |
 
 _Only update an ADR’s **Status** or add a supersession notice—**do not** rewrite history._
 
@@ -730,11 +730,11 @@ _Only update an ADR’s **Status** or add a supersession notice—**do not** rew
 
 ### 7. Tooling (Optional but Encouraged)
 
-|Tool|Purpose|
-|---|---|
-|**adr-tools** / **dotnet-adr**|CLI to initialise, number, and link ADRs.|
-|**Log4Brains**|Generates a searchable ADR site from markdown.|
-|**VS Code ADR extension**|Snippets & status commands inside the editor.|
+| Tool                           | Purpose                                        |
+|--------------------------------|------------------------------------------------|
+| **adr-tools** / **dotnet-adr** | CLI to initialise, number, and link ADRs.      |
+| **Log4Brains**                 | Generates a searchable ADR site from markdown. |
+| **VS Code ADR extension**      | Snippets & status commands inside the editor.  |
 
 ---
 
