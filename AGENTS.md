@@ -38,6 +38,7 @@ date_modified: 2025-07-09T11:17:25+02:00
 - [DO NOT](#do-not)
 - [Quality Gates](#quality-gates)
 - [Runtime Environment](#runtime-environment)
+- [Allowed Tools & APIs](#allowed-tools--apis)
 - [Database & Migrations](#database--migrations)
 - [Validation & Invariants](#validation--invariants)
 - [Build, Test & Format](#build-test--format)
@@ -149,6 +150,17 @@ The pull‑request will be blocked if any gate fails. Continuous Integration run
 - The reference build environment is Ubuntu 22.04 (Docker image `mcr.microsoft.com/dotnet/sdk:9.0`).
 
 - Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. Sourcing this script sets `DOTNET_ROOT` and updates the `PATH` for the current shell, persisting them in `~/.bashrc`. It invokes `setup-dotnet.sh` and `install-tools.sh` under the hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
+
+## Allowed Tools & APIs
+
+- **`scripts/setup-codex.sh`** – Run once when setting up a development environment. Installs the .NET SDK and required global tools, exporting `DOTNET_ROOT` and updating `PATH`.
+- **`scripts/selfcheck.sh`** – Mirrors the CI pipeline. Builds with warnings as errors, runs tests, and verifies formatting. Execute before pushing commits.
+- **`dotnet format`** – Ensures code complies with `.editorconfig` and analyzer rules. Used in CI and by `selfcheck.sh`; run manually via `scripts/format.sh` to check formatting only.
+- **`scripts/bootstrap-format.sh`** – Optional helper to normalize whitespace and analyzer fixes across the repository. Useful after cloning or when analyzer packages change.
+- **`dotnet-outdated`** – Global tool (installed through `install-tools.sh`) for auditing NuGet dependencies. Run periodically to spot upgrades.
+- **`ReportGenerator`** – Produces HTML code coverage reports from Coverlet output. Triggered in `selfcheck.sh` after tests complete.
+- **`NetArchTest`** – Optional library for testing Clean Architecture boundaries. Add to test projects if you want automated dependency assertions.
+- Before introducing any unlisted tool or API, confirm with the maintainers.
 
 ---
 
