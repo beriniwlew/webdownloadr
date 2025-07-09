@@ -65,6 +65,7 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
 - [Performance & Safety Controls](#performance--safety-controls)
 - [Fallbacks & Escalation](#fallbacks--escalation)
+- [Quick Reference for Agents](#quick-reference-for-agents)
 
 ---
 
@@ -1184,6 +1185,26 @@ Follow this safety protocol whenever requirements are ambiguous:
 > **Never** commit speculative changes when the requirement is still unresolved.  
 > The goal is to prevent silent failures and ensure architectural integrity while minimising wasted agent cycles.
 
+
+## Quick Reference for Agents
+
+| Principle | Why It Matters (1-liner) |
+|-----------|--------------------------|
+| **Nested‐file precedence** | Rules closest to the file win ─ prevents accidental override of Core purity. |
+| **Layer boundaries** | Web → UseCases / Infra → Core only; keeps Clean Architecture intact. |
+| **Minimal diffs** | Easier code reviews & fewer merge conflicts; unrelated reformatting is CI-blocked. |
+| **90 %+ coverage** | High confidence that business logic remains correct; enforced in CI. |
+| **ADR for every big decision** | Preserves architectural history; no “Why did we choose X?” mysteries. |
+| **No secrets in repo** | Security first; use User Secrets or CI vaults. |
+| **Commit style: `[Layer] type: summary`** | Lets humans & CI trace changes by layer and intent. |
+| **Run `./scripts/selfcheck.sh` before PR** | Guarantees local build = CI build; saves back-and-forth fixes. |
+| **Generated code exceptions** | EF migrations & snapshots bypass analyzers; avoids pointless linter noise. |
+| **Ask clarifying questions** | AI (and humans) should pause if requirements are ambiguous—better than guessing. |
+| **Escalate after 2 failed attempts** | Prevents infinite AI loops; hand off to human reviewer when stuck. |
+| **Use provided tool catalog** | Standardized CLI/tools (dotnet-adr, archtest) keep workflow predictable. |
+| **Structured logging** | Template-based logs enable searchable key–value pairs in APM dashboards. |
+| **Guard clauses in Core** | Fail fast, keep domain objects always-valid; fewer null checks elsewhere. |
+| **One test project per src project** | Mirrors folder layout; newcomers locate tests instantly. |
 
 ## Example Repositories & Further Reading
 
