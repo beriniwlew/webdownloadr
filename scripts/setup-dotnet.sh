@@ -5,35 +5,23 @@ IFS=$'\n\t'
 #------------------------------------------------------------------------------
 # 1) Core prerequisites (apt)
 #------------------------------------------------------------------------------
-sudo apt-get update
-sudo apt-get install -y \
-  curl wget gnupg ca-certificates lsb-release apt-transport-https
+apt-get update
+apt-get install -y \
+  curl wget gnupg ca-certificates lsb-release apt-transport-https software-properties-common
 
 #------------------------------------------------------------------------------
 # 2) .NET 9 SDK installation
 #------------------------------------------------------------------------------
 UBUNTU_VERSION="$(lsb_release -rs)"
-if [[ "${UBUNTU_VERSION}" =~ ^(20\.04|22\.04)$ ]]; then
-  echo "Registering Microsoft feed for Ubuntu ${UBUNTU_VERSION}..."
-  wget -q \
-    "https://packages.microsoft.com/config/ubuntu/${UBUNTU_VERSION}/packages-microsoft-prod.deb" \
-    -O packages-microsoft-prod.deb
-  sudo dpkg -i packages-microsoft-prod.deb
-  rm packages-microsoft-prod.deb
-  sudo apt-get update
-  sudo apt-get install -y dotnet-sdk-9.0
-else
-  echo "Ubuntu ${UBUNTU_VERSION} not in Microsoft feed; using dotnet-install.sh..."
-  curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
-  chmod +x dotnet-install.sh
-  ./dotnet-install.sh --channel 9.0
-  rm dotnet-install.sh
-fi
+echo "Registering Microsoft backports feed for Ubuntu ${UBUNTU_VERSION}..."
+add-apt-repository -y ppa:dotnet/backports
+apt-get update
+apt-get install -y dotnet-sdk-9.0
 
 #------------------------------------------------------------------------------
 # 3) Ensure dotnet is on PATH for *this session* (critical for CI & Codex)
 #------------------------------------------------------------------------------
-export DOTNET_ROOT="$HOME/.dotnet"
+export DOTNET_ROOT="/usr/lib/dotnet"
 export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$HOME/.local/bin:$PATH"
 
 #------------------------------------------------------------------------------
@@ -48,10 +36,9 @@ echo "✅ .NET version: $(dotnet --version)"
 #------------------------------------------------------------------------------
 # 5) Persist env-vars for future shells (good for local use)
 #------------------------------------------------------------------------------
-if ! grep -q '^export DOTNET_ROOT=' ~/.bashrc || \
-   ! grep -q '\.dotnet/tools' ~/.bashrc; then
+if ! grep -q '^export DOTNET_ROOT=' ~/.bashrc || ! grep -q '/usr/lib/dotnet' ~/.bashrc; then
   cat <<'EOF_BASHRC' >> ~/.bashrc
-export DOTNET_ROOT="$HOME/.dotnet"
+export DOTNET_ROOT="/usr/lib/dotnet"
 export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$HOME/.local/bin:$PATH"
 EOF_BASHRC
 fi

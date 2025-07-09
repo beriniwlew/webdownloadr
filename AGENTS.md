@@ -724,13 +724,13 @@ When tasks are ambiguous, consider asking:
 
 ## Runtime Environment
 
-- **.NET SDK 9.0.301** must be on the `PATH` (see `global.json`).
+- **.NET SDK 9.x** must be on the `PATH` (see `global.json`).
 
 - The reference build environment is Ubuntu 22.04 (Docker image `mcr.microsoft.com/dotnet/sdk:9.0`).
 
-- Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. Sourcing this script sets `DOTNET_ROOT` and
-  updates the `PATH` for the current shell, persisting them in `~/.bashrc`. It invokes `setup-dotnet.sh` and `install-tools.sh` under the
-  hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
+- Run `./scripts/setup-codex.sh` to install the SDK via the `dotnet/backports` PPA and required global tools. Sourcing this script sets `DOTNET_ROOT`
+  and updates the `PATH` for the current shell, persisting them in `~/.bashrc`.
+
 
 ## Allowed Tools & APIs
 
