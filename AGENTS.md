@@ -30,6 +30,30 @@ date_modified: 2025-07-09T10:05:25+02:00
 
 ---
 
+## Table of Contents
+
+- [Purpose](#purpose)
+- [Solution & Project Layout](#solution--project-layout)
+- [Agent Responsibilities](#agent-responsibilities)
+- [DO NOT](#do-not)
+- [Quality Gates](#quality-gates)
+- [Runtime Environment](#runtime-environment)
+- [Database & Migrations](#database--migrations)
+- [Validation & Invariants](#validation--invariants)
+- [Build, Test & Format](#build-test--format)
+- [Code Formatting](#code-formatting)
+- [Coding Standards](#coding-standards)
+- [Testing Guidelines](#testing-guidelines)
+- [Pull‑Request Guidelines](#pull-request-guidelines)
+- [Environment & Secrets](#environment--secrets)
+- [Architectural Notes](#architectural-notes)
+- [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
+- [Additional Resources](#additional-resources)
+- [Guidance for AI Agents](#guidance-for-ai-agents)
+- [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
+
+---
+
 ## Purpose
 
 Codifies the operational rules for this repository so that **AI-powered agents (e.g., OpenAI Codex)** and human contributors can work safely within a **Clean Architecture** codebase based on the [ardalis/CleanArchitecture](https://github.com/ardalis/CleanArchitecture) template while following modern .NET 9 best practices.
@@ -64,6 +88,7 @@ Codifies the operational rules for this repository so that **AI-powered agents (
 1. **Commit** on the provided branch unless project maintainers instruct otherwise. If asked to create a new branch, use `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` as appropriate.
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0` (fix any issues until it does).
 3. **Commit** using `[Layer] <type>: <summary>` format, following the [Conventional Commits](https://www.conventionalcommits.org/) standard (validate commit messages with commitlint).
+Example: `[UseCases] feat: add download queue processor`
 4. **Push** and open a pull request.
 5. Ensure **CI is green** (all the same checks as `selfcheck.sh` must pass in CI).
 
@@ -121,7 +146,7 @@ The pull‑request will be blocked if any gate fails. Continuous Integration run
 
 - The reference build environment is Ubuntu 22.04 (Docker image `mcr.microsoft.com/dotnet/sdk:9.0`).
 
-- Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. This script invokes `setup-dotnet.sh` and `install-tools.sh` under the hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
+- Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. Sourcing this script sets `DOTNET_ROOT` and updates the `PATH` for the current shell, persisting them in `~/.bashrc`. It invokes `setup-dotnet.sh` and `install-tools.sh` under the hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
 
 ---
 
