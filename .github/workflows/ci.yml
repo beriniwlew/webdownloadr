@@ -1,6 +1,4 @@
 name: CI
-# After the repository is normalized with `git add --renormalize .` and
-# `dotnet format`, this workflow enforces formatting on every pull request.
 
 on:
   push:
@@ -9,17 +7,27 @@ on:
     branches: [ main ]
 
 jobs:
-  # ensure whitespace & analyzer rules match .editorconfig
-  format:
+  setup-and-format:
+    name: Check Formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
-      # --- Verify EOL / indentation / trailing-whitespace
+
       - name: Verify whitespace & EOL
         run: |
           dotnet format whitespace --folder . --verify-no-changes || {
@@ -27,21 +35,34 @@ jobs:
             exit 1;
           }
 
-      # --- Verify analyzer & style rules (using-order, blank lines, etc.)
       - name: Verify analyzer rules
         run: |
           dotnet format WebDownloadr.sln analyzers --verify-no-changes || {
             echo "::error title=Analyzer Formatting Issues::Run './scripts/bootstrap-format.sh' to fix.";
             exit 1;
           }
+
   build:
+    name: Build and Selfcheck
     runs-on: ubuntu-latest
-    needs: format
+    needs: setup-and-format
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
-      - run: ./scripts/selfcheck.sh
+
+      - name: Selfcheck script
+        run: ./scripts/selfcheck.sh
