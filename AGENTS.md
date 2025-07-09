@@ -354,10 +354,19 @@ _Only add if UI requirements outgrow FastEndpoints._
 >     
 ## Agent Responsibilities
 
-1. **Commit** on the provided branch unless project maintainers instruct otherwise. If asked to create a new branch, use `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` as appropriate.
+1. **Commit** on the provided branch unless project maintainers instruct otherwise. When creating a new branch, prefix it with one of:
+   - `feature/` – new functionality
+   - `fix/` – bug fixes
+   - `chore/` – maintenance or tooling
+   - `docs/` – documentation updates
+   Example: `feature/add-download-endpoint`
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0` (fix any issues until it does).
-3. **Commit** using `[Layer] <type>: <summary>` format, following the [Conventional Commits](https://www.conventionalcommits.org/) standard (validate commit messages with commitlint).
-Example: `[UseCases] feat: add download queue processor`
+3. **Commit** messages use `[Layer] <type>: <summary>` where `<type>` is one of `feat`, `fix`, `chore`, or `docs`.
+   Examples:
+   - `[UseCases] feat: add download queue processor`
+   - `[Web] fix: return correct status codes`
+   - `[Infrastructure] chore: update EF Core version`
+   - `[Docs] docs: clarify setup instructions`
 4. **Push** and open a pull request.
 5. Ensure **CI is green** (all the same checks as `selfcheck.sh` must pass in CI).
 
