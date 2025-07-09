@@ -17,3 +17,5 @@ dotnet test --no-build --no-restore WebDownloadr.sln
 # Validate commit messages
 npm install --no-save @commitlint/config-conventional
 npx --yes commitlint --from HEAD~1
+npx --yes markdownlint-cli2 "**/*.md" "#node_modules"
+npx --yes prettier --check "**/*.md"

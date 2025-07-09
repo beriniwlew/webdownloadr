@@ -79,7 +79,7 @@ while following modern .NET 9 best practices.
 
 ## Nested **AGENTS.md** Inheritance & Layer-Specific Overrides
 
-> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested**
+> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested** >
 > `/<repo>/<folder>/AGENTS.md` A nested file automatically **inherits** every rule from its parent. If the nested file restates a rule,
 > **the nested version wins** for that folder and its descendants.
 
@@ -745,6 +745,8 @@ When tasks are ambiguous, consider asking:
 | **adr-tools / dotnet-adr**                                      | Docs                           | Scaffold new `docs/architecture-decisions/00NN-*.md` files and update index.                                                               | Required when an ADR is part of the task.                                              |
 | **FastEndpoints CLI** (`fastendpoints`) – _optional_            | Web                            | Generate Endpoint skeletons:<br>`bash fastendpoints new Customer/GetById`                                                                  | Use only if adding new API endpoints; follow folder conventions.                       |
 | **GitHub CLI** (`gh`)                                           | Local automation               | Create PRs, manage secrets:<br>`bash gh pr create`                                                                                         | Optional convenience; repo access tokens must be in env vars or GitHub CLI keychain.   |
+| **markdownlint-cli2**                                           | Docs                           | Lint Markdown against `.markdownlint.json`:<br>`bash npx markdownlint-cli2`                                                                | Runs in `scripts/selfcheck.sh`.                                                        |
+| **Prettier**                                                    | Docs                           | Enforce Markdown formatting via `.prettierrc`:<br>`bash npx prettier --check "**/*.md"`                                                    | Runs in `scripts/selfcheck.sh`.                                                        |
 | **OpenAI / Azure OpenAI APIs**                                  | _Agents / Scripts_             | Allowed only within AI-assist tooling or spikes. **Do not** embed keys in repo—use secrets.                                                | New agent scripts invoking LLMs require an ADR + security review.                      |
 
 ### Rules of Engagement
@@ -792,6 +794,7 @@ dotnet ef database update -c AppDbContext \
 ## Validation & Invariants
 
 - **Input validation** occurs in two layers:
+
   1. **Web endpoints** – validate incoming requests via FluentValidation or FastEndpoints’ built‑in validators.
 
   2. **UseCases handlers** – re-validate commands/queries via pipeline behaviors (to guard against bypassing Web validation).
@@ -844,6 +847,7 @@ will be auto-closed by CI.
 ## Code Formatting
 
 1. **`.editorconfig` is canonical** – the project enforces specific formatting settings:
+
    - `indent_style = space`
 
    - `*.{cs,csx,vb,vbx}` → **2-space indentation**
@@ -860,6 +864,7 @@ will be auto-closed by CI.
 
 2. **CI Enforcement** – Formatting is enforced via `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally
    before committing. Also set `git config --global core.autocrlf true` to avoid line-ending issues.
+
    - A one-time line-ending normalization may be required if inconsistencies exist:
 
      ```bash
@@ -1043,6 +1048,7 @@ public sealed class EfRepository<T> : IRepository<T>
   report (or a screenshot) in the PR description to demonstrate coverage.
 
 - **Analyzer relaxations for test code**
+
   - The test projects suppress **StyleCop rule CA1707** (identifiers should not contain underscores) so that test method names can use a
     descriptive pattern such as  
     `MethodUnderTest_ShouldReturnExpectedResult_WhenCondition`.
