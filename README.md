@@ -21,6 +21,11 @@ dotnet run --project src/WebDownloadr.Web/WebDownloadr.Web.csproj
 
 Browse to `/swagger` for API documentation while the app is running.
 
+## Environment Setup
+
+Run `./scripts/setup-codex.sh` to install the .NET SDK and required global
+tools before building the solution.
+
 ## Documentation
 
 Additional documentation lives in the `docs` folder and within each project. Start with [`src/WebDownloadr.Core/README.md`](src/WebDownloadr.Core/README.md) to learn about the domain model.
