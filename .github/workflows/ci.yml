@@ -64,7 +64,8 @@ jobs:
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
 
-      - name: Selfcheck script        run: ./scripts/selfcheck.sh
+      - name: Selfcheck script
+        run: ./scripts/selfcheck.sh
       - name: Validate commit messages
         run: npx commitlint --from ${{ github.event.before }} --to ${{ github.sha }}
 
