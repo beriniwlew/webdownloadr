@@ -499,4 +499,10 @@ Even with the above guidelines, there are opportunities to further improve or ex
 
 - **Expand CI Quality Checks:** Consider extending the CI workflow with additional checks. For example, enforce the 90% code coverage threshold by integrating the provided script into the CI configuration (if not already done). Additionally, you could use tools like `dotnet-outdated` to detect stale dependencies or add security/static analysis scanners. Such enhancements will ensure that both human and AI contributions continue to meet the project’s high standards.
 
+## Performance & Safety Controls
+
+- **Default to safe limits.** When mocking external services is unavailable, restrict outbound API calls to the bare minimum, ideally none.
+- **Monitor resource usage.** If tasks require excessive CPU, memory, or I/O, reduce workload or halt execution.
+- **Escalate when uncertain.** When limits are exceeded or instructions remain ambiguous, pause work and request human guidance before proceeding.
+
 ---
