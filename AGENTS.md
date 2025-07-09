@@ -592,7 +592,13 @@ Run this script locally **before pushing a branch or opening a PR**. Any non-zer
 
 ## Environment & Secrets
 
-Never commit secrets or sensitive configuration values to the repository. For local development, use tools like [ASP.NET Core User Secrets](https://learn.microsoft.com/dotnet/core/extensions/user-secrets) or environment variables (local `.env` files are git-ignored by default). If certain environment variables or secrets are required for CI or integration tests, configure them in the CI pipeline (for example, via GitHub Actions secrets) rather than checking them into source control.
+Never commit secrets, credentials, or API keys to the repository under any circumstance. Keep configuration outside of source control by following these patterns:
+
+1. **ASP.NET Core User Secrets** – In development, run `dotnet user-secrets init` inside the Web project and store values with `dotnet user-secrets set`. These secrets live in `secrets.json` under your user profile and are never checked in.
+2. **`.env` files** – Optionally place environment variables in a local `.env` file at the solution root. `.env` files are ignored by Git. Load them in `Program.cs` using `DotNetEnv` or a similar helper.
+3. **GitHub Actions secrets** – Add tokens or passwords required for CI to the repository's Secrets settings and reference them as `${{ secrets.NAME }}` in workflow YAML. Do not print these values to the logs.
+
+If environment variables or secrets are needed for integration tests, configure them through User Secrets or GitHub Actions secrets—never in code or configuration committed to the repository. If a credential is accidentally committed, contact the maintainers immediately so the history can be scrubbed.
 
 ---
 
