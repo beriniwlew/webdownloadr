@@ -11,7 +11,7 @@ layers:
   ServiceDefaults: "Cross-cutting: startup & telemetry for .NET Aspire / cloud"
   AspireHost: "Hosting: .NET Aspire entry point (preview in .NET 9)"
   Tests: "Unit, Integration, Functional, Aspire tests (mirror src structure)"
-dependency_flow: "References flow inward (Web → UseCases, Infrastructure → Core; UseCases & Infrastructure never reference each other)"
+dependency_flow: "References flow inward. Core → none; UseCases → Core; Infrastructure → Core; Web → UseCases (+ Infrastructure only in Program/Startup for DI)."
 ci_requirements:
   build_warnings: 0
   tests_pass: "100%"
@@ -101,7 +101,7 @@ Use these layer-specific nested files sparingly—only when a folder truly needs
 | **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
 | **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                       |
 | **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder.                                                                            |
-| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**.                                                          |
+| **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**. Except for dependency-injection wiring in `Program.cs`, Web code must call Infrastructure **only via interfaces or UseCase handlers**. |
 | **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                  |
 | **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire (optional preview in .NET 9).                                                                                                                                                                  |
 | **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
@@ -401,7 +401,8 @@ _Only add if UI requirements outgrow FastEndpoints._
 
 - **Do not** change files in `docs/architecture-decisions/` unless the change _is_ an ADR.
 
-- **Do not** add references from **Web** or **Infrastructure** back to **Core** (violates dependency flow).
+- Do **NOT** add references **from Core to any other project**.
+- Do **NOT** add references **from UseCases to Infrastructure or Web**.
 
 - **Do not** commit secrets or credentials; use environment variables or user-secrets instead.
 
@@ -423,6 +424,17 @@ _Only add if UI requirements outgrow FastEndpoints._
 | Unit & integration tests | **100%** pass                                                                                   |
 | Line coverage            | **≥ 90%** (via [Coverlet](https://github.com/coverlet-coverage/coverlet)) (not implemented yet) |
 | Formatter drift          | **0** files (`dotnet format --verify-no-changes`)                                               |
+
+### Architecture Enforcement (CI)
+- The `Project.ArchitectureTests` project verifies layer rules using **NetArchTest.Rules**.
+- CI step `dotnet test ./tests/Project.ArchitectureTests` must pass.
+- Rules:
+  * Core **must not** depend on any other project.
+  * UseCases **must not** depend on Infrastructure or Web.
+  * Infrastructure **must not** depend on Web.
+  * Web may reference Infrastructure **only** in the `Program` (composition-root) namespace.
+- If a new project is added, extend `DependencyRulesTests` to include it before merging.
+- Also check for circular dependencies (e.g., `Types().That().ResideInProject("Core").ShouldNotHaveCircularDependencies()`).
 
 The pull‑request will be blocked if any gate fails. Continuous Integration runs via GitHub Actions. The README **must** display a CI status badge for the `.github/workflows/ci.yml` workflow to ensure build visibility. Branch protection on `main` requires all these checks to pass before merging.
 
