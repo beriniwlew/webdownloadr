@@ -88,7 +88,7 @@ Branch protection on `main` requires these checks to pass before merging.
 
 * **.NET SDK 9.0.301** must be on `PATH` (see `global.json`).
 * Ubuntu 22.04 image `mcr.microsoft.com/dotnet/sdk:9.0` is the reference container.
-* Install extra tooling via `./scripts/install-tools.sh` (e.g., `dotnet-outdated`, `reportgenerator`). If new tools are required, update this script and document their use in this file or in `CONTRIBUTING.md`.
+* Run `./scripts/setup-codex.sh` to ensure the SDK and global tools are installed. This script invokes `setup-dotnet.sh` and `install-tools.sh` under the hood. If new tools are required, update those scripts and document their use here or in `CONTRIBUTING.md`.
 
 ---
 
