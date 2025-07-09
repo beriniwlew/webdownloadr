@@ -44,6 +44,7 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [DO NOT](#do-not)
 - [Quality Gates](#quality-gates)
 - [Output Schemas](#output-schemas)
+- [Prompt Engineering for AI Agents](#prompt-engineering-for-ai-agents)
 - [Runtime Environment](#runtime-environment)
 - [Allowed Tools & APIs](#allowed-tools--apis)
 - [Database & Migrations](#database--migrations)
@@ -504,6 +505,56 @@ If the agent generates multiple new files (scaffolding, ADR drafts), list them i
 ---
 
 *Following these schemas ensures humans, AI agents, and automated checks all speak the same, machine-parsable language when reporting results.*
+
+---
+
+## Prompt Engineering for AI Agents
+
+> These rules help AI contributors deliver high-quality, low-friction output.
+> Humans may ignore—AI **must** comply.
+
+### 1. Reasoning Checklist  
+Before returning any result, an AI agent **MUST** internally step through:
+
+1. **Understand the ask**  
+   *Paraphrase the task in your head; identify target layer & file.*
+2. **Locate context**  
+   *Open relevant code / docs (start with AGENTS.md + README).*
+3. **Ask clarifying questions** (if still <80 % certain).  
+4. **Plan step-by-step**  
+   *List sub-steps or functions you’ll touch; ensure no layer violation.*  
+5. **Generate minimal diff**  
+   *Change only what the task requires.*  
+6. **Self-check** (`./scripts/selfcheck.sh`)  
+   *Green checks locally before proposing PR.*  
+7. **Explain** (in PR description)  
+   *Summarise reasoning in ≤ 5 sentences; cite ADRs or rules followed.*
+
+### 2. Clarifying-Question Guide  
+Ask **exactly one** concise question when:
+
+| Situation | Example Question |
+|-----------|------------------|
+| Ambiguous requirement | “Which HTTP status codes should this endpoint return on validation failure?” |
+| Missing domain rule | “Is negative quantity ever valid in `OrderLine`?” |
+| Conflicting source | “Core forbids EF types, yet `Product` entity has `[Key]`; should I remove?” |
+
+If no answer after two attempts ⇒ **escalate to human reviewer**.
+
+### 3. Example Prompts  
+
+| Scenario | Prompt |
+|----------|--------|
+| **Bug fix, known layer** | *“Fix the null-ref in `ContributorListQueryHandler.cs` (UseCases layer) without adding new deps. Ensure unit tests pass.”* |
+| **Add ADR** | *“Draft an ADR proposing PostgreSQL instead of SQLite. Follow ADR template; Status: Proposed.”* |
+| **Refactor with diff** | *“Refactor `src/WebDownloadr.Core/Project.cs` to raise `ProjectCompletedEvent` when all tasks done. Show minimal diff only.”* |
+
+### 4. Forbidden Prompt Styles  
+* ❌ Open-ended “rewrite everything” requests  
+* ❌ Mass formatting or lint-only changes  
+* ❌ Skipping self-check
+
+> Agents deviating from this guidance will have their PR auto-closed by CI.
 
 ---
 
