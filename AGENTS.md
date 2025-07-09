@@ -443,6 +443,39 @@ The pull‑request will be blocked if any gate fails. Continuous Integration run
 
 ---
 
+## Performance & Safety Controls
+
+The guidelines below protect CI budgets, API quotas, and human reviewers from runaway tasks. **All contributors—human *and* AI—must honour these limits.**
+
+| Area                        | Hard Limit                                  | Agent Rule                                                                                    |
+| --------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **External HTTP/CLI calls** | **Max 3** per workflow run                  | Batch fetches when possible. If a 4th call is required, **stop and request human approval**.  |
+| **Call timeout**            | **30 s** per request                        | Abort and escalate if an endpoint exceeds the timeout twice.                                  |
+| **Download size**           | **10 MB** per individual fetch              | Skip large assets; log a TODO for manual retrieval.                                           |
+| **Runtime budget**          | **10 min** total wall-clock per CI job      | Ensure long-running scripts (e.g., `dotnet test`) stream progress; abort if the limit is hit. |
+| **Memory footprint**        | **512 MB** for any spawned process          | Use streaming / chunked parsing; avoid loading entire datasets in RAM.                        |
+| **Token usage (AI calls)**  | **≤ 30 k tokens** per PR iteration          | Summarise context before invoking LLMs; chunk analysis.                                       |
+| **Retry logic**             | Max **2** retries with exponential back-off | Log failures; do **not** loop indefinitely.                                                   |
+| **Cost ceiling**            | Free-tier / zero-cost services only         | If a paid resource is required, escalate to a human owner.                                    |
+| **Secrets & keys**          | Must come from CI secrets manager           | Abort if a secret is missing; never prompt for interactive entry.                             |
+
+#### Escalate to Humans When…
+
+1. A required API or service is **unreachable** after 2 retries.
+2. You encounter an **ambiguous domain model change** (e.g., conflicting migration history).
+3. Test failures persist after a single automated fix attempt.
+4. Implementation would break any “Hard Limit” above.
+
+> **AI agents:** Emit a clear JSON status block—`{"status":"escalate","reason":"<short text>"}`—when invoking an escalation. Humans will review and unblock you.
+
+#### Logging & Metrics
+
+* Use **structured logging** (`ILogger` placeholders) to record:
+  `CallCount`, `ElapsedMs`, `BytesDownloaded`, `Retries`, `TokenCost`.
+* CI surfaces resource-usage summaries in job artifacts; PRs failing limits are auto-closed.
+
+---
+
 ## Output Schemas
 
 > **Why?** Explicit JSON / YAML contracts let CI pipelines and custom tooling parse AI-generated artifacts automatically—no guesswork, no brittle regex.
