@@ -939,6 +939,8 @@ Never commit secrets, credentials, or API keys to the repository under any circu
 3. **GitHub Actions secrets** – Add tokens or passwords required for CI to the repository's Secrets settings and reference them as `${{ secrets.NAME }}` in workflow YAML. Do not print these values to the logs.
 
 If environment variables or secrets are needed for integration tests, configure them through User Secrets or GitHub Actions secrets—never in code or configuration committed to the repository. If a credential is accidentally committed, contact the maintainers immediately so the history can be scrubbed.
+For local development, use **dotnet user-secrets** (`ManageUserSecrets` MSBuild property) to avoid committing credentials; CI pipelines can read the same secrets by mounting the generated `secrets.json` as an environment file.
+In production or shared test environments, reference secrets from a managed store such as **Azure Key Vault** or AWS Secrets Manager and inject them via `IConfiguration`—never hard-code or check them into source control.
 
 ---
 
