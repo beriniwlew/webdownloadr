@@ -628,75 +628,126 @@ If environment variables or secrets are needed for integration tests, configure 
 
 ## Architecture Decision Records (ADR)
 
-Architecture Decision Records document important decisions and the reasoning behind them.
-
-All ADR files reside under `docs/architecture-decisions/` and follow the [ardalis/CleanArchitecture ADR template](https://github.com/ardalis/CleanArchitecture/tree/main/docs/architecture-decisions).
-
-- **When to write** – Create an ADR whenever the team is faced with a significant decision (especially if multiple approaches were considered or an old decision is being revisited).
-
-- **Format** – Markdown file with an incrementing four-digit prefix and short descriptive slug (e.g., `0001-use-fastendpoints.md`). Include sections: **Status**, **Context**, **Decision**, **Consequences**, and **References**. List any alternatives considered and why they were not chosen.
-
-- **Numbering** – Use the next available number in sequence, and keep the slug concise.
-
-- **Author** – Whoever proposes the change (human or AI agent) should draft the ADR.
-
-- **Review** – Submit the ADR as a pull request. Reviewers will check numbering and clarity before approval.
-
-- **Immutability** – Once an ADR is merged, it becomes a historical record. Do not modify an ADR retroactively; if a decision changes, create a new ADR that supersedes the old one.
-
-- **Tools** – You may use utilities like [adr-tools](https://github.com/npryce/adr-tools) to generate ADR templates, though this is optional.
+> **Why ADRs?**  
+> ADRs capture _significant_ architectural choices—what was decided, why it was chosen, and the impact—so future contributors (human **or AI**) never have to re-debate settled questions.
 
 ---
 
-## Additional Resources
+### 1. When to Write an ADR
 
-- [Markdown Architecture Decision Records](https://adr.github.io/madr/)
+|Write a **new ADR** when…|Don’t bother when…|
+|---|---|
+|• Choosing / replacing a framework, library, persistence or messaging strategy.• Changing a cross-cutting pattern (e.g., switch from Mediator to Minimal APIs).• Revisiting or overturning a previous ADR.• Any decision that sparked extended debate or could puzzle a newcomer.|• The change follows an established team convention.• It is purely cosmetic or refactoring with no design impact.• A minor tweak to configuration or build scripts.|
 
-- [Getting Started with Architecture Decision Records](https://ardalis.com/getting-started-with-architecture-decision-records/)
-
-- [CONTRIBUTING.md]
-
-- [CODE_OF_CONDUCT.md]
-
-- [ardalis/CleanArchitecture Repository](https://github.com/ardalis/CleanArchitecture)
-
-- [.NET Official Docs](https://learn.microsoft.com/dotnet/)
-
-- [Ardalis Guard Clauses](https://github.com/ardalis/GuardClauses)
-
-- [Ardalis Specification](https://github.com/ardalis/Specification)
-
-- [FastEndpoints Documentation](https://fast-endpoints.com/docs/introduction)
-
-- [.NET Aspire (Preview)](https://learn.microsoft.com/en-us/dotnet/aspire/)
-
-- [xUnit.net – Getting Started](https://xunit.net/)
-
-- [Shouldly Assertions](https://shouldly.readthedocs.io/en/latest/)
-
-- [NSubstitute](https://nsubstitute.github.io/index.html)
-
-- [Coverlet Code Coverage](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/GlobalTool.md)
-
-- [ReportGenerator](https://danielpalme.github.io/ReportGenerator/)
-
-- [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
-
-- [NetArchTest](https://github.com/BenMorris/NetArchTest)
-
-- [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions)
-
-- [dotnet-outdated](https://github.com/dotnet-outdated/dotnet-outdated)
-
-- [StyleCop Analyzers](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)
-
-- [Microsoft Code Analysis](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/overview)
-
-- [Entity Framework Core Docs](https://learn.microsoft.com/ef/core/)
-
-- [.NET 9 SDK – What’s New](https://learn.microsoft.com/aspnet/core/release-notes/aspnetcore-9.0?view=aspnetcore-9.0)
+> **AI agents:** If your task introduces a design decision that meets the left-hand criteria, you **must** draft an ADR in the pull request.
 
 ---
+
+### 2. Location & Naming
+
+```
+docs/architecture-decisions/
+└── 0007-use-minimal-apis.md   # four-digit, zero-padded index + short slug
+```
+
+- Use the **next available number** in sequence.
+    
+- Keep the slug concise, lowercase, hyphen-separated.
+    
+- Once merged, **never rename or delete** an ADR. Historical integrity matters.
+
+---
+
+### 3. Template (Markdown)
+
+```markdown
+# 0007 – Use Minimal APIs for Lightweight Endpoints
+
+**Status**: Proposed | Accepted | Rejected | Superseded (by ADR-00XX)
+
+## Context
+Explain the problem or forces driving this decision.
+
+## Decision
+State the chosen option in one sentence.
+
+## Consequences
+*Positive* and *negative* outcomes, trade-offs, follow-up tasks.
+
+## Alternatives Considered
+- Option A – why not
+- Option B – why not
+
+## References
+Links to discussions, spikes, benchmarks, external docs.
+```
+
+> Place this template in `docs/architecture-decisions/0000-template.md` for quick reuse.
+
+---
+
+### 4. Status Vocabulary
+
+|Status|Meaning|
+|---|---|
+|**Proposed**|Draft under discussion.|
+|**Accepted**|Approved; implementation may proceed.|
+|**Rejected**|Considered but declined (capture _why_).|
+|**Superseded**|Replaced by a newer ADR—add “Superseded by ADR-00XX” at top.|
+|**Deprecated**|Still in effect but slated for removal.|
+
+_Only update an ADR’s **Status** or add a supersession notice—**do not** rewrite history._
+
+---
+
+### 5. Workflow
+
+1. **Draft** – Author (human or AI) creates `docs/architecture-decisions/00NN-my-decision.md` with _Status: Proposed_.
+    
+2. **Pull Request** – Open a PR titled `[ADR] 00NN My Decision`.
+    
+3. **Review** – Team discusses, edits, and either **Accepts** or **Rejects**.
+    
+4. **Merge** – Merge the PR; the ADR becomes read-only (except status tag).
+    
+5. **Reference** – Future commits and PRs that implement or rely on this decision should cite the ADR ID.
+
+---
+
+### 6. Immutability & Supersession
+
+- **Never** edit accepted ADR content.
+    
+- To change course, write a new ADR that:
+    
+    - References the old one in **Context** (“Supersedes ADR-0007”).
+        
+    - Sets the old ADR’s status to **Superseded** (add a one-line note at top).
+        
+    - Explains the _new_ decision and why circumstances changed.
+
+---
+
+### 7. Tooling (Optional but Encouraged)
+
+|Tool|Purpose|
+|---|---|
+|**adr-tools** / **dotnet-adr**|CLI to initialise, number, and link ADRs.|
+|**Log4Brains**|Generates a searchable ADR site from markdown.|
+|**VS Code ADR extension**|Snippets & status commands inside the editor.|
+
+---
+
+### 8. AI-Specific Reminders
+
+- Use the template verbatim; fill in every section.
+    
+- Ensure file name and status are correct.
+    
+- Scan `docs/architecture-decisions/` to pick the next ID—avoid collisions.
+    
+- Add the new ADR file to the same PR as the code change that depends on it.
+
 ## Output Schemas
 
 Agent generated responses may be consumed by other tools and therefore must
