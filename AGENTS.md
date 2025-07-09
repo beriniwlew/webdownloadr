@@ -364,26 +364,28 @@ _Only add if UI requirements outgrow FastEndpoints._
 >     
 ## Agent Responsibilities
 
-1. **Commit** on the provided branch unless project maintainers instruct otherwise. New branches must start with one of these prefixes:
-   - `feature/` – new functionality
-   - `fix/` – bug fixes
-   - `chore/` – maintenance or tooling
-   - `docs/` – documentation updates
-   Example: `feature/add-download-endpoint`
-2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0` (fix any issues until it does).
-3. **Commit** messages must follow the format `[Layer] <type>: <summary>`.
-   Allowed `<type>` values:
-   - `feat`  – new features
-   - `fix`   – bug fixes
-   - `chore` – maintenance
-   - `docs`  – documentation
-   Example commits:
-   - `[UseCases] feat: add download queue processor`
-   - `[Web] fix: return correct status codes`
-   - `[Infrastructure] chore: update EF Core version`
-   - `[Docs] docs: clarify setup instructions`
-4. **Push** and open a pull request.
-5. Ensure **CI is green** (all the same checks as `selfcheck.sh` must pass in CI).
+### Agent Workflow Checklist
+
+1. **Create or switch to a feature branch**  
+   Use one of the allowed prefixes: `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>`.
+
+2. **Run local quality gates**  
+   ```bash
+   ./scripts/selfcheck.sh
+   ```
+   The script **must exit 0**. Fix any errors or warnings before continuing.
+
+3. **Commit changes**
+   Follow Conventional Commits with a layer prefix, e.g.
+   `[UseCases] feat: add download queue processor`
+
+4. **Push and open a Pull Request**
+   Title the PR `[Layer] <summary>` and complete the PR template (link issues, add screenshots/tests as needed).
+
+5. **Verify CI is green**
+   All required checks—build, tests, ≥ 90 % coverage, formatting drift, architecture rules—must pass before requesting review.
+
+> **AI agents:** Tick off each step internally. If any stage fails twice in a row, stop and escalate to a human reviewer.
 
 ### Typical Task Locations
 
