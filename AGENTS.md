@@ -52,6 +52,7 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Build, Test & Format](#build-test--format)
 - [Code Formatting](#code-formatting)
 - [Coding Standards](#coding-standards)
+- [Code Patterns (Ready-to-Copy Examples)](#code-patterns-ready-to-copy-examples)
 - [Testing Guidelines](#testing-guidelines)
 - [Pull‑Request Guidelines](#pull-request-guidelines)
 - [Environment & Secrets](#environment--secrets)
@@ -719,6 +720,140 @@ Run this script locally **before pushing a branch or opening a PR**. Any non-zer
 - Provide XML documentation for public Core APIs and any complex methods.
 
 - Ensure all public methods in Core have corresponding unit tests if they contain business logic.
+
+## Code Patterns (Ready-to-Copy Examples)
+
+> These snippets illustrate **idiomatic Clean Architecture** techniques for each layer.
+> AI agents should mimic these styles when generating new code.
+
+---
+
+### 1  Core – Domain Event + Guard Clause
+
+```csharp
+namespace WebDownloadr.Core.DownloadAggregate;
+
+public sealed class DownloadRequest : EntityBase, IAggregateRoot
+{
+    public Uri TargetUrl { get; private set; }
+
+    // EF Core constructor
+    private DownloadRequest() { }
+
+    public DownloadRequest(string url)
+    {
+        // Fail-fast input validation
+        TargetUrl = Guard.Against
+            .NullOrWhiteSpace(url, nameof(url))
+            .Pipe(u => new Uri(u, UriKind.Absolute));
+
+        // Emit domain event for downstream handlers
+        RegisterDomainEvent(new DownloadRequestedEvent(this));
+    }
+
+    public void MarkSucceeded()
+        => RegisterDomainEvent(new DownloadSucceededEvent(this));
+}
+```
+
+*Key points*
+
+* No external dependencies except **Ardalis.GuardClauses**.
+* Entity raises events, it **does not** call infrastructure services directly.
+* Domain events are registered, not dispatched; the dispatcher lives in Infrastructure/Web.
+
+---
+
+### 2  UseCases – CQRS Handler with Validation & Structured Log
+
+```csharp
+namespace WebDownloadr.UseCases.Downloads;
+
+public sealed record StartDownloadCommand(string Url) 
+    : IRequest<Result<Guid>>;
+
+public sealed class StartDownloadHandler 
+    : IRequestHandler<StartDownloadCommand, Result<Guid>>
+{
+    private readonly IRepository<DownloadRequest> _repo;
+    private readonly ILogger<StartDownloadHandler> _logger;
+
+    public StartDownloadHandler(IRepository<DownloadRequest> repo,
+                                ILogger<StartDownloadHandler> logger)
+    {
+        _repo   = repo;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid>> Handle(
+        StartDownloadCommand request, CancellationToken ct)
+    {
+        Guard.Against.NullOrWhiteSpace(request.Url);
+
+        var download = new DownloadRequest(request.Url);
+        await _repo.AddAsync(download, ct);
+
+        // Structured logging – name placeholders, no string-interpolation
+        _logger.LogInformation(
+            "Scheduled download {DownloadId} for {Url}",
+            download.Id, download.TargetUrl);
+
+        return Result.Success(download.Id);
+    }
+}
+```
+
+*Key points*
+
+* Uses **Guard.Against** inside handler to re-validate.
+* Calls domain via repository abstraction – never talks to DbContext directly.
+* Logs with **named placeholders** so Serilog / Seq etc. capture key-value pairs.
+
+---
+
+### 3  Infrastructure – Repository Implementation + Structured Log
+
+```csharp
+namespace WebDownloadr.Infrastructure.Data;
+
+public sealed class EfRepository<T> : IRepository<T>
+    where T : class, IAggregateRoot
+{
+    private readonly AppDbContext _db;
+    private readonly ILogger<EfRepository<T>> _logger;
+
+    public EfRepository(AppDbContext db,
+                        ILogger<EfRepository<T>> logger)
+    {
+        _db     = db;
+        _logger = logger;
+    }
+
+    public async Task AddAsync(T entity, CancellationToken ct = default)
+    {
+        _logger.LogDebug(
+            "Persisting {EntityType} (Id ={EntityId})",
+            typeof(T).Name,
+            (entity as EntityBase)?.Id);
+
+        _db.Set<T>().Add(entity);
+        await _db.SaveChangesAsync(ct);
+    }
+}
+```
+
+*Key points*
+
+* Implements Core’s abstraction; **Infrastructure depends on Core**, not vice versa.
+* Structured log at `Debug` level—safe for high-volume operations.
+* No business rules here—only persistence logic.
+
+---
+
+**How to use these examples**
+
+* AI agents: **clone** patterns (guard clauses, event registration, structured `ILogger` calls) instead of inventing new styles.
+* Human reviewers: compare PR code against these snippets; discrepancies may signal architectural drift.
 
 ---
 
