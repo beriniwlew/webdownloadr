@@ -298,6 +298,9 @@ Run this script locally **before pushing a branch or opening a PR**. Any non-zer
 - Place tests in the matching test project: `WebDownloadr.UnitTests`, `WebDownloadr.IntegrationTests`, `WebDownloadr.FunctionalTests`, `WebDownloadr.AspireTests` (mirroring the structure of the `src/` projects).
 
 - Maintain test isolation. Integration tests may use [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet) for external dependencies (e.g., databases), and use [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions) for concise HTTP response assertions in functional tests.
+- **Validate agent-generated tests** – Run the tests locally (for example via `./scripts/selfcheck.sh`) to ensure they compile and pass before committing.
+- **Coverage threshold** – Each pull request must keep overall line coverage **≥ 90%**. `selfcheck.sh` collects coverage via Coverlet and generates an `HtmlSummary` under `TestResults/coverage-report/`.
+- **Verifiable output** – Include the generated coverage report (for example `TestResults/coverage-report/index.html`) in CI artifacts or PR comments so reviewers can confirm coverage.
 
 ---
 
