@@ -898,6 +898,17 @@ public sealed class EfRepository<T> : IRepository<T>
 - **Coverage validation** – Run `dotnet test --collect:"XPlat Code Coverage"` for all test projects and invoke `reportgenerator -reporttypes:HtmlSummary` on the results. Line coverage must remain **>= 90%**.
 - **Agent-generated tests** – When an AI agent adds or modifies tests, verify they compile and pass. Include the resulting `HtmlSummary` report (or a screenshot) in the PR description to demonstrate coverage.
 
+- **Analyzer relaxations for test code**
+
+  - The test projects suppress **StyleCop rule CA1707** (identifiers should not contain underscores) so that test method names can use a descriptive pattern such as  
+    `MethodUnderTest_ShouldReturnExpectedResult_WhenCondition`.  
+  - Additional StyleCop or Roslyn rules may be disabled in test assemblies **only** when they improve test readability and do **not** affect production code.
+
+- **Snapshot-test exception to minimal-diff rule**
+
+  - Files under `tests/**/Snapshots/` (e.g., approval or snapshot assets) are treated as *generated artifacts*; the **“always output minimal diffs”** rule is waived for these files.  
+    When a functional change legitimately updates a snapshot, commit the full new file—even if it is large—to preserve the canonical expected output.
+
 ---
 
 ## Pull‑Request Guidelines
