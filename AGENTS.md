@@ -533,11 +533,11 @@ Run this script locally **before pushing a branch or opening a PR**. Any non-zer
 
 ## Testing Guidelines
 
-- **Test Framework** – Use [xUnit](https://xunit.net/) for tests, along with [Shouldly](https://shouldly.readthedocs.io/en/latest/) for fluent assertions and [NSubstitute](https://nsubstitute.github.io/index.html) for mocking.
-
+- **Test Framework** – All test projects **must** use [xUnit](https://xunit.net/), [Shouldly](https://shouldly.readthedocs.io/en/latest/), and [NSubstitute](https://nsubstitute.github.io/index.html).
 - Place tests in the matching test project: `WebDownloadr.UnitTests`, `WebDownloadr.IntegrationTests`, `WebDownloadr.FunctionalTests`, `WebDownloadr.AspireTests` (mirroring the structure of the `src/` projects).
-
 - Maintain test isolation. Integration tests may use [TestContainers for .NET](https://github.com/testcontainers/testcontainers-dotnet) for external dependencies (e.g., databases), and use [HttpClientTestExtensions](https://github.com/ardalis/HttpClientTestExtensions) for concise HTTP response assertions in functional tests.
+- **Coverage validation** – Run `dotnet test --collect:"XPlat Code Coverage"` for all test projects and invoke `reportgenerator -reporttypes:HtmlSummary` on the results. Line coverage must remain **>= 90%**.
+- **Agent-generated tests** – When an AI agent adds or modifies tests, verify they compile and pass. Include the resulting `HtmlSummary` report (or a screenshot) in the PR description to demonstrate coverage.
 
 ---
 
