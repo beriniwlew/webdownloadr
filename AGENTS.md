@@ -685,7 +685,7 @@ Responses **must match these schemas exactly**—omit any extraneous properties.
 
 - If multiple valid approaches exist, choose the **simplest and most idiomatic** .NET solution.
 
-- Always output **minimal diffs**. Avoid broad formatting or style changes that are outside the scope of your PR.
+- Always output **minimal diffs** so commits stay focused and avoid unrelated changes. Widen your changes only to fix formatting errors or analyzer warnings, or if the instructions explicitly request a broader update.
 
 ---
 
