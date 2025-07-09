@@ -63,6 +63,8 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Prompt Engineering for Agents](#prompt-engineering-for-agents)
 - [State and Context Awareness](#state-and-context-awareness)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
+- [Performance & Safety Controls](#performance--safety-controls)
+- [Fallbacks & Escalation](#fallbacks--escalation)
 
 ---
 
@@ -1120,15 +1122,21 @@ Even with the above guidelines, there are opportunities to further improve or ex
 
 ---
 
-## Fallbacks and Escalation
+## Fallbacks & Escalation
 
-Agents must halt and request clarification whenever a repository rule or instruction is unclear or appears conflicting.
+AI agents should handle routine contributions autonomously, **but must not get stuck in endless clarification loops**.  
+Follow this safety protocol whenever requirements are ambiguous:
 
-* **Stop** – If you cannot interpret a domain rule or architectural guideline with confidence, pause implementation.
-* **Ask** – Seek guidance from project maintainers via a comment or PR description when uncertain about next steps.
-* **Defer** – If a decision risks violating the codebase's principles, escalate to human review before proceeding.
+1. **First Clarification** – Ask a concise, targeted question in the PR or chat.  
+2. **Second Clarification** – If the reply is still unclear, rephrase once and reference the relevant spec or code line numbers.  
+3. **Escalate to Human Reviewer** –  
+   * If **after two clarification attempts** the task remains ambiguous **or** the answer conflicts with repository rules,  
+   * **Stop** further automation.  
+   * Tag the assigned human reviewer (e.g., `@maintainers`) and add the label `needs-human-input`.  
+   * Post a short summary of what is unclear and link any related files or ADRs.
 
-Err on the side of caution and avoid speculative changes. Explicit confirmation from maintainers resolves any ambiguity.
+> **Never** commit speculative changes when the requirement is still unresolved.  
+> The goal is to prevent silent failures and ensure architectural integrity while minimising wasted agent cycles.
 
 
 ## Example Repositories & Further Reading
