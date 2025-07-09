@@ -5,7 +5,10 @@ set -euo pipefail
  dotnet build --no-restore -warnaserror WebDownloadr.sln
 
 # Run tests
- dotnet test --no-build --no-restore WebDownloadr.sln
+dotnet test --no-build --no-restore WebDownloadr.sln
+
+# --- Verify architecture rules
+./scripts/archtest.sh
 
 # Verify formatting including analyzer rules
  dotnet format WebDownloadr.sln --verify-no-changes --no-restore

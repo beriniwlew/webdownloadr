@@ -518,10 +518,13 @@ Existing history need not be rewritten; simply adopt the new format from this po
 | Unit & integration tests | **100%** pass                                                                                   |
 | Line coverage            | **≥ 90%** (via [Coverlet](https://github.com/coverlet-coverage/coverlet)) (not implemented yet) |
 | Formatter drift          | **0** files (`dotnet format --verify-no-changes`)                                               |
+| Architecture tests | **pass** (`./scripts/archtest.sh`) |
 
-### Architecture Enforcement (CI)
-- The `Project.ArchitectureTests` project verifies layer rules using **NetArchTest.Rules**.
-- CI step `dotnet test ./tests/Project.ArchitectureTests` must pass.
+The wrapper executes WebDownloadr.ArchTests (ArchUnitNET) and fails CI if any forbidden dependency is detected.
+
+-### Architecture Enforcement (CI)
+- The `WebDownloadr.ArchTests` project verifies layer rules using **ArchUnitNET**.
+- CI step `./scripts/archtest.sh` must pass.
 - Rules:
   * Core **must not** depend on any other project.
   * UseCases **must not** depend on Infrastructure or Web.
