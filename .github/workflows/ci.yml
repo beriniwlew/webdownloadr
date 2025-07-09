@@ -30,7 +30,7 @@ jobs:
       # --- Verify analyzer & style rules (using-order, blank lines, etc.)
       - name: Verify analyzer rules
         run: |
-          dotnet format analyzers --folder . --verify-no-changes || {
+          dotnet format WebDownloadr.sln analyzers --verify-no-changes || {
             echo "::error title=Analyzer Formatting Issues::Run './scripts/bootstrap-format.sh' to fix.";
             exit 1;
           }
