@@ -710,6 +710,7 @@ When tasks are ambiguous, consider asking:
 - [ ] Run `./scripts/selfcheck.sh` (build, tests, formatting, Markdown lint and Prettier) and confirm all checks pass.
 - [ ] Verify no secrets or credentials were introduced.
 - [ ] Format code via `dotnet format --verify-no-changes`.
+- [ ] Lint docs with `npx markdownlint-cli2` and `npx prettier --check "**/*.md" "**/*.json"`.
 - [ ] Add or update tests for new behavior.
 - [ ] Commit using `<type>(<scope>): <summary>`.
 
@@ -725,13 +726,13 @@ When tasks are ambiguous, consider asking:
 
 ## Runtime Environment
 
-- **.NET SDK 9.0.301** must be on the `PATH` (see `global.json`).
+- **.NET SDK 9.x** must be on the `PATH` (see `global.json`).
 
 - The reference build environment is Ubuntu 22.04 (Docker image `mcr.microsoft.com/dotnet/sdk:9.0`).
 
-- Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. Sourcing this script sets `DOTNET_ROOT` and
-  updates the `PATH` for the current shell, persisting them in `~/.bashrc`. It invokes `setup-dotnet.sh` and `install-tools.sh` under the
-  hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
+- Run `./scripts/setup-codex.sh` to install the SDK via the `dotnet/backports` PPA and required global tools. Sourcing this script sets `DOTNET_ROOT`
+  and updates the `PATH` for the current shell, persisting them in `~/.bashrc`.
+
 
 ## Allowed Tools & APIs
 
@@ -746,6 +747,8 @@ When tasks are ambiguous, consider asking:
 | **adr-tools / dotnet-adr**                                      | Docs                           | Scaffold new `docs/architecture-decisions/00NN-*.md` files and update index.                                                               | Required when an ADR is part of the task.                                              |
 | **FastEndpoints CLI** (`fastendpoints`) – _optional_            | Web                            | Generate Endpoint skeletons:<br>`bash fastendpoints new Customer/GetById`                                                                  | Use only if adding new API endpoints; follow folder conventions.                       |
 | **GitHub CLI** (`gh`)                                           | Local automation               | Create PRs, manage secrets:<br>`bash gh pr create`                                                                                         | Optional convenience; repo access tokens must be in env vars or GitHub CLI keychain.   |
+| **markdownlint-cli2**                                           | Docs                           | Lint Markdown against `.markdownlint.json`:<br>`bash npx markdownlint-cli2`                                                                | Runs in `scripts/selfcheck.sh`.                                                        |
+| **Prettier**                                                    | Docs                           | Enforce Markdown formatting via `.prettierrc`:<br>`bash npx prettier --check "**/*.md"`                                                    | Runs in `scripts/selfcheck.sh`.                                                        |
 | **OpenAI / Azure OpenAI APIs**                                  | _Agents / Scripts_             | Allowed only within AI-assist tooling or spikes. **Do not** embed keys in repo—use secrets.                                                | New agent scripts invoking LLMs require an ADR + security review.                      |
 
 ### Rules of Engagement
@@ -875,7 +878,23 @@ will be auto-closed by CI.
      git commit -m "style: normalize line endings to match .editorconfig"
      ```
 
-   - Formatting violations will block PRs (treat warnings from analyzers as errors).
+  - Formatting violations will block PRs (treat warnings from analyzers as errors).
+
+3. **Docs** – Lint Markdown with `markdownlint-cli2` and format with Prettier.
+   - Run `npx markdownlint-cli2` to check all `.md` files.
+   - Run `npx prettier --check .` before committing to ensure consistent formatting.
+
+3. **Docs** – All Markdown and JSON documentation must pass lint and style checks:
+
+   ```bash
+   npx markdownlint-cli2
+   npx prettier --check "**/*.md" "**/*.json"
+   ```
+
+   The rules for both tools are defined in `.markdownlint.json` and `.prettierrc` at the repo root.
+
+3. **Documentation linting** – Run `npx markdownlint-cli2 "**/*.md"` and `npx prettier --check .` to keep Markdown and JSON files formatted
+   consistently. Rules are defined in `.markdownlint.json` and `.prettierrc`.
 
 ---
 
