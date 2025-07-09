@@ -566,19 +566,35 @@ If no answer after two attempts ⇒ **escalate to human reviewer**.
 
 - Run `./scripts/setup-codex.sh` to ensure the SDK and required global tools are installed. Sourcing this script sets `DOTNET_ROOT` and updates the `PATH` for the current shell, persisting them in `~/.bashrc`. It invokes `setup-dotnet.sh` and `install-tools.sh` under the hood. If new tools are added, update those scripts and document their use here or in `CONTRIBUTING.md`.
 
+
 ## Allowed Tools & APIs
 
-- **`scripts/setup-codex.sh`** – Run once when setting up a development environment. Installs the .NET SDK and required global tools, exporting `DOTNET_ROOT` and updating `PATH`.
-- **`scripts/selfcheck.sh`** – Mirrors the CI pipeline. Builds with warnings as errors, runs tests, and verifies formatting. Execute before pushing commits.
-- **`dotnet format`** – Ensures code complies with `.editorconfig` and analyzer rules. Used in CI and by `selfcheck.sh`; run manually via `scripts/format.sh` to check formatting only.
-- **`scripts/bootstrap-format.sh`** – Optional helper to normalize whitespace and analyzer fixes across the repository. Useful after cloning or when analyzer packages change.
-- **`dotnet-outdated`** – Global tool (installed through `install-tools.sh`) for auditing NuGet dependencies. Run periodically to spot upgrades.
-- **`ReportGenerator`** – Produces HTML code coverage reports from Coverlet output. Triggered in `selfcheck.sh` after tests complete.
-- **`NetArchTest`** – Optional library for testing Clean Architecture boundaries. Add to test projects if you want automated dependency assertions.
-- Before introducing any unlisted tool or API, confirm with the maintainers.
+| Tool / Package                                                  | Layer(s) Where Used            | Purpose & Typical Invocation                                                                                                               | Notes / Links                                                                          |
+| --------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| **dotnet CLI** (`dotnet build`, `dotnet test`, `dotnet format`) | All                            | Core build, test, and formatter commands (see `scripts/selfcheck.sh`).                                                                     | Version pinned by `global.json` (❱ **9.0.301**).                                       |
+| **dotnet-ef**                                                   | *Infrastructure*, *Migrations* | Add / apply Entity Framework Core migrations.<br>`bash dotnet ef migrations add Foo --project ...`                                         | Use only through `AppDbContext`; migrations live in `src/.../Data/Migrations/`.        |
+| **reportgenerator** (`dotnet-reportgenerator-globaltool`)       | CI & local                     | Convert Coverlet `.cobertura.xml` into HTML summary.                                                                                       | Installed via `install-tools.sh`; output written to `TestResults/coverage-report/`.    |
+| **ArchUnitNET CLI** (`archunitnet-cli`)                         | CI & local                     | Enforce layer dependency rules. Run in `Verify Architecture` step or locally:<br>`bash dotnet archunitnet-cli --solution WebDownloadr.sln` | Fails CI if Web → Core, Infrastructure ↔ UseCases, etc.                                |
+| **dotnet-outdated**                                             | Any                            | Detect NuGet packages with newer versions:<br>`bash dotnet outdated --include-transitive`                                                  | PRs may include a dependency-bump commit but **must not** auto-upgrade without review. |
+| **TestContainers for .NET** (`testcontainers-dotnet`)           | *IntegrationTests*             | Spin up throw-away Docker services for DB or message broker tests. Used via code—not CLI.                                                  | Agents **should not** call Docker directly; rely on testcontainers API in tests.       |
+| **adr-tools / dotnet-adr**                                      | Docs                           | Scaffold new `docs/architecture-decisions/00NN-*.md` files and update index.                                                               | Required when an ADR is part of the task.                                              |
+| **FastEndpoints CLI** (`fastendpoints`) – *optional*            | Web                            | Generate Endpoint skeletons:<br>`bash fastendpoints new Customer/GetById`                                                                  | Use only if adding new API endpoints; follow folder conventions.                       |
+| **GitHub CLI** (`gh`)                                           | Local automation               | Create PRs, manage secrets:<br>`bash gh pr create`                                                                                         | Optional convenience; repo access tokens must be in env vars or GitHub CLI keychain.   |
+| **OpenAI / Azure OpenAI APIs**                                  | *Agents / Scripts*             | Allowed only within AI-assist tooling or spikes. **Do not** embed keys in repo—use secrets.                                                | New agent scripts invoking LLMs require an ADR + security review.                      |
+
+### Rules of Engagement
+
+1. **Use only tools in this table**. Proposing a new CLI or service ⇒ open an ADR.
+2. Invoke CLIs via existing shell scripts (`./scripts/*.sh`) where possible.
+   AI agents: call the script instead of duplicating logic.
+3. Global tools are installed by `install-tools.sh` and cached in CI.
+   *Never* `sudo apt-get` a global package inside workflow YAML without discussion.
+4. External APIs **must** read credentials from environment variables or GitHub Actions Secrets.
+   Leaking keys is a hard-fail commit.
+
+> **AI reminder:** If your task needs a tool not listed here, pause and create an ADR proposing its adoption.
 
 ---
-
 ## Database & Migrations
 
 ### 1. Create / Update Migration
