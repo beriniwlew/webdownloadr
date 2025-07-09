@@ -282,6 +282,38 @@ They reside under `docs/architecture-decisions/` and mirror the
 
 ---
 
+## Output Schemas
+
+Agent generated responses may be consumed by other tools and therefore must
+adhere to strict JSON or YAML schemas. Every defined property is required and no
+additional fields are permitted.
+
+### Example
+
+```json
+{
+  "status": "success",
+  "tests": {
+    "total": 42,
+    "passed": 42,
+    "failed": 0
+  }
+}
+```
+
+The `status` value communicates success or failure while the `tests` object
+captures overall results. Use the same structure when emitting YAML:
+
+```yaml
+status: success
+tests:
+  total: 42
+  passed: 42
+  failed: 0
+```
+
+Responses **must match these schemas exactly**—omit any extraneous properties.
+
 ## Guidance for AI Agents
 
 * If unsure, prefer **not to change** a file unless a clear rule or test requires it.
