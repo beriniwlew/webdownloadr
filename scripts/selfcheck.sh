@@ -11,8 +11,12 @@ dotnet test --no-build --no-restore WebDownloadr.sln
 ./scripts/archtest.sh
 
 # Verify formatting including analyzer rules
- dotnet format WebDownloadr.sln --verify-no-changes --no-restore
- dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
+dotnet format WebDownloadr.sln --verify-no-changes --no-restore
+dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
+
+# Lint and format Markdown documentation
+npx --yes markdownlint-cli2 "**/*.md"
+npx --yes prettier --check "**/*.md"
 
 # Validate commit messages
 npm install --no-save @commitlint/config-conventional

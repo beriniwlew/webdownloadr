@@ -9,6 +9,10 @@
   "MD024": true,
   "MD001": false,
   "MD002": false,
+  "MD012": false,
+  "MD022": false,
+  "MD032": false,
+  "MD009": false,
   "MD003": {
     "style": "consistent"
   },

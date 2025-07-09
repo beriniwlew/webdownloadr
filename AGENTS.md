@@ -378,7 +378,8 @@ _Only add if UI requirements outgrow FastEndpoints._
    ./scripts/selfcheck.sh
    ```
 
-   The script **must exit 0**. Fix any errors or warnings before continuing.
+   The script runs `dotnet` build/test, architecture checks, formatting, `markdownlint-cli2`, `prettier --check`, and `commitlint`. The
+   script **must exit 0**; fix any errors before continuing.
 
 3. **Commit changes** Follow [Conventional Commits](#commit-message-format) with a layer prefix, e.g.
    `[UseCases] feat: add download queue processor`
@@ -653,8 +654,8 @@ Before returning any result, an AI agent **MUST** internally step through:
    _List sub-steps or functions you’ll touch; ensure no layer violation._
 5. **Generate minimal diff**  
    _Change only what the task requires._
-6. **Self-check** (`./scripts/selfcheck.sh`)  
-   _Green checks locally before proposing PR._
+6. **Self-check** (`./scripts/selfcheck.sh`) _Runs build, tests, formatting, Markdown lint, Prettier, and commitlint. All must pass locally
+   before proposing PR._
 7. **Explain** (in PR description)  
    _Summarise reasoning in ≤ 5 sentences; cite ADRs or rules followed._
 
@@ -706,7 +707,7 @@ When tasks are ambiguous, consider asking:
 
 ### Workflow Checklist
 
-- [ ] Run `./scripts/selfcheck.sh` and confirm all checks pass.
+- [ ] Run `./scripts/selfcheck.sh` (build, tests, formatting, Markdown lint and Prettier) and confirm all checks pass.
 - [ ] Verify no secrets or credentials were introduced.
 - [ ] Format code via `dotnet format --verify-no-changes`.
 - [ ] Lint docs with `npx markdownlint-cli2` and `npx prettier --check "**/*.md" "**/*.json"`.
@@ -825,6 +826,10 @@ dotnet test --no-build --no-restore WebDownloadr.sln --collect:"XPlat Code Cover
 ./scripts/archtest.sh
 
 dotnet format --verify-no-changes WebDownloadr.sln --no-restore
+
+npx --yes markdownlint-cli2 "**/*.md"
+npx --yes prettier --check "**/*.md"
+
 
 reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/coverage-report" -reporttypes:HtmlSummary
 ```
