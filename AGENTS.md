@@ -79,7 +79,7 @@ while following modern .NET 9 best practices.
 
 ## Nested **AGENTS.md** Inheritance & Layer-Specific Overrides
 
-> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested**
+> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested** >
 > `/<repo>/<folder>/AGENTS.md` A nested file automatically **inherits** every rule from its parent. If the nested file restates a rule,
 > **the nested version wins** for that folder and its descendants.
 
@@ -378,7 +378,8 @@ _Only add if UI requirements outgrow FastEndpoints._
    ./scripts/selfcheck.sh
    ```
 
-   The script **must exit 0**. Fix any errors or warnings before continuing.
+   The script runs `dotnet` build/test, architecture checks, formatting, `markdownlint-cli2`, `prettier --check`, and `commitlint`. The
+   script **must exit 0**; fix any errors before continuing.
 
 3. **Commit changes** Follow [Conventional Commits](#commit-message-format) with a layer prefix, e.g.
    `[UseCases] feat: add download queue processor`
@@ -653,8 +654,8 @@ Before returning any result, an AI agent **MUST** internally step through:
    _List sub-steps or functions you’ll touch; ensure no layer violation._
 5. **Generate minimal diff**  
    _Change only what the task requires._
-6. **Self-check** (`./scripts/selfcheck.sh`)  
-   _Green checks locally before proposing PR._
+6. **Self-check** (`./scripts/selfcheck.sh`) _Runs build, tests, formatting, Markdown lint, Prettier, and commitlint. All must pass locally
+   before proposing PR._
 7. **Explain** (in PR description)  
    _Summarise reasoning in ≤ 5 sentences; cite ADRs or rules followed._
 
@@ -706,7 +707,7 @@ When tasks are ambiguous, consider asking:
 
 ### Workflow Checklist
 
-- [ ] Run `./scripts/selfcheck.sh` and confirm all checks pass.
+- [ ] Run `./scripts/selfcheck.sh` (build, tests, formatting, Markdown lint and Prettier) and confirm all checks pass.
 - [ ] Verify no secrets or credentials were introduced.
 - [ ] Format code via `dotnet format --verify-no-changes`.
 - [ ] Add or update tests for new behavior.
@@ -792,6 +793,7 @@ dotnet ef database update -c AppDbContext \
 ## Validation & Invariants
 
 - **Input validation** occurs in two layers:
+
   1. **Web endpoints** – validate incoming requests via FluentValidation or FastEndpoints’ built‑in validators.
 
   2. **UseCases handlers** – re-validate commands/queries via pipeline behaviors (to guard against bypassing Web validation).
@@ -822,6 +824,10 @@ dotnet test --no-build --no-restore WebDownloadr.sln --collect:"XPlat Code Cover
 
 dotnet format --verify-no-changes WebDownloadr.sln --no-restore
 
+npx --yes markdownlint-cli2 "**/*.md"
+npx --yes prettier --check "**/*.md"
+
+
 reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/coverage-report" -reporttypes:HtmlSummary
 ```
 
@@ -844,6 +850,7 @@ will be auto-closed by CI.
 ## Code Formatting
 
 1. **`.editorconfig` is canonical** – the project enforces specific formatting settings:
+
    - `indent_style = space`
 
    - `*.{cs,csx,vb,vbx}` → **2-space indentation**
@@ -860,6 +867,7 @@ will be auto-closed by CI.
 
 2. **CI Enforcement** – Formatting is enforced via `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally
    before committing. Also set `git config --global core.autocrlf true` to avoid line-ending issues.
+
    - A one-time line-ending normalization may be required if inconsistencies exist:
 
      ```bash
@@ -1043,6 +1051,7 @@ public sealed class EfRepository<T> : IRepository<T>
   report (or a screenshot) in the PR description to demonstrate coverage.
 
 - **Analyzer relaxations for test code**
+
   - The test projects suppress **StyleCop rule CA1707** (identifiers should not contain underscores) so that test method names can use a
     descriptive pattern such as  
     `MethodUnderTest_ShouldReturnExpectedResult_WhenCondition`.
