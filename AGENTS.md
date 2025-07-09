@@ -17,7 +17,7 @@ ci_requirements:
   tests_pass: "100%"
   coverage_min: "≥ 90%"
   formatting_drift: 0
-commit_convention: "Conventional Commits ([Layer] <type>: <summary>)"
+commit_convention: "Conventional Commits (<type>(<scope>): <summary>)"
 branch_prefixes:
   - feature/
   - fix/
@@ -363,7 +363,6 @@ _Only add if UI requirements outgrow FastEndpoints._
 >     
 > - Create an ADR for any non-trivial architectural change.
 >     
-## Agent Responsibilities
 
 ### Agent Workflow Checklist
 
@@ -377,7 +376,7 @@ _Only add if UI requirements outgrow FastEndpoints._
    The script **must exit 0**. Fix any errors or warnings before continuing.
 
 3. **Commit changes**
-   Follow Conventional Commits with a layer prefix, e.g.
+   Follow [Conventional Commits](#commit-message-format) with a layer prefix, e.g.
    `[UseCases] feat: add download queue processor`
 
 4. **Push and open a Pull Request**
@@ -388,6 +387,93 @@ _Only add if UI requirements outgrow FastEndpoints._
 
 > **AI agents:** Tick off each step internally. If any stage fails twice in a row, stop and escalate to a human reviewer.
 
+
+### Commit & Branch-Naming Conventions
+
+#### 📄 Commit Message Format
+
+```
+<type>(<scope>): <summary>
+
+# Optional body — why, not what.
+# Optional footer — “Closes #123”, “BREAKING CHANGE: …”
+```
+
+| Field          | Rules |
+| -------------- | ----- |
+| **<type>**    | One of: **feat**, **fix**, **docs**, **style**, **refactor**, **perf**, **test**, **build**, **ci**, **chore**, **revert** |
+| **<scope>**   | Lower-case layer or project: **core**, **usecases**, **infrastructure**, **web**, **tests**, **scripts**, **docs**.<br>Use additional scopes only if the folder has its own `AGENTS.md`. |
+| **<summary>** | Imperative, ≤ 72 chars, no trailing period. |
+| **Body**       | *Explain why*, link context, keep ≤ 100 chars/line. |
+| **Footer**     | Issue links (`Closes #42`), `BREAKING CHANGE:` notes, Co-authored-by, etc. |
+
+**Examples**
+
+```
+feat(core): add DomainEvent base class
+fix(infrastructure): handle transient DB failures with Polly retry
+docs(adr): add 0008-use-event-sourcing.md
+ci: enable ArchUnitNET check in GitHub Actions
+revert: feat(web): migrate to FastEndpoints
+```
+
+#### 🪴 Branch Naming
+
+| Purpose         | Pattern          | Example                           |
+| --------------- | ---------------- | --------------------------------- |
+| Feature / epic  | `feature/<slug>` | `feature/batch-download-queue`    |
+| Bug fix         | `fix/<slug>`     | `fix/null-ref-on-empty-url`       |
+| Docs            | `docs/<slug>`    | `docs/update-agents-layout`       |
+| Chore / tooling | `chore/<slug>`   | `chore/upgrade-dotnet-9-preview7` |
+
+> **Tip for AI agents:** Derive `<slug>` from the Jira/GitHub issue title in kebab-case; keep it < 40 chars.
+
+#### 🔒 Commitlint Configuration
+
+Add **`.commitlintrc.json`** (or `commitlint.config.js`) to enforce the convention automatically:
+
+```jsonc
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "type-enum": [
+      2,
+      "always",
+      ["feat","fix","docs","style","refactor","perf","test","build","ci","chore","revert"]
+    ],
+    "scope-enum": [
+      2,
+      "always",
+      ["core","usecases","infrastructure","web","tests","scripts","docs","adr"]
+    ],
+    "scope-case": [2, "always", "lower-case"],
+    "subject-max-length": [2, "always", 72],
+    "subject-case": [2, "never", ["sentence-case","start-case","pascal-case","upper-case"]]
+  }
+}
+```
+
+Add a pre-commit hook (Husky or lefthook) or a GitHub Action step:
+
+```yaml
+- name: Validate commit messages
+  run: npx commitlint --from ${{ github.event.before }} --to ${{ github.sha }}
+```
+
+#### 🔑 Why Adopt the Standard Scope Syntax?
+
+| Benefit                                                  | Classic “feat(core):” | Old “\[Core] feat:”                    |
+| -------------------------------------------------------- | --------------------- | -------------------------------------- |
+| Works with ✨ **semantic-release** & changelog generators | ✔                     | ✖ (needs custom parser)                |
+| IDE / Git client templates                               | ✔                     | ✖                                      |
+| Less noisy — scope is inline                             | ✔                     | Bracket prefix consumes summary length |
+| Supported by default commitlint config                   | ✔                     | ✖                                      |
+
+---
+
+**Migration Note**
+
+Existing history need not be rewritten; simply adopt the new format from this point forward. If you want semantic-releases to ignore older brackets, set `"parserPreset"` in commitlint to `@commitlint/parse` with a custom prefix regex—but that is optional.
 ### Typical Task Locations
 
 | Scenario                                 | Destination folder / pattern                                                                                      |
@@ -1135,7 +1221,7 @@ When tasks are ambiguous, consider asking:
 - [ ] Verify no secrets or credentials were introduced.
 - [ ] Format code via `dotnet format --verify-no-changes`.
 - [ ] Add or update tests for new behavior.
-- [ ] Commit using `[Layer] <type>: <summary>`.
+- [ ] Commit using `<type>(<scope>): <summary>`.
 
 ## State and Context Awareness
 

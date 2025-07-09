@@ -10,3 +10,7 @@ set -euo pipefail
 # Verify formatting including analyzer rules
  dotnet format WebDownloadr.sln --verify-no-changes --no-restore
  dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
+
+# Validate commit messages
+npm install --no-save @commitlint/config-conventional
+npx --yes commitlint --from HEAD~1
