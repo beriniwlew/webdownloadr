@@ -50,6 +50,7 @@ date_modified: 2025-07-09T10:05:25+02:00
 - [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
 - [Additional Resources](#additional-resources)
 - [Guidance for AI Agents](#guidance-for-ai-agents)
+- [Prompt Engineering for Agents](#prompt-engineering-for-agents)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
 
 ---
@@ -400,6 +401,32 @@ All ADR files reside under `docs/architecture-decisions/` and follow the [ardali
 - If multiple valid approaches exist, choose the **simplest and most idiomatic** .NET solution.
 
 - Always output **minimal diffs**. Avoid broad formatting or style changes that are outside the scope of your PR.
+
+---
+
+## Prompt Engineering for Agents
+
+Use a structured process when generating changes.
+
+### Step-by-Step Reasoning
+1. Read the request and identify the target layer or file.
+2. Outline the minimal steps needed to implement the change.
+3. Execute each step, validating results along the way.
+4. Ensure updates respect Clean Architecture boundaries.
+5. Summarize the outcome in the PR description.
+
+### Clarifying Questions
+When tasks are ambiguous, consider asking:
+- "Which project or layer should this affect?"
+- "What scenario or user story drives the change?"
+- "Are existing tests available to guide the update?"
+
+### Workflow Checklist
+- [ ] Run `./scripts/selfcheck.sh` and confirm all checks pass.
+- [ ] Verify no secrets or credentials were introduced.
+- [ ] Format code via `dotnet format --verify-no-changes`.
+- [ ] Add or update tests for new behavior.
+- [ ] Commit using `[Layer] <type>: <summary>`.
 
 ---
 
