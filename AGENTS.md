@@ -783,3 +783,52 @@ Agents must halt and request clarification whenever a repository rule or instruc
 
 Err on the side of caution and avoid speculative changes. Explicit confirmation from maintainers resolves any ambiguity.
 
+
+## Example Repositories & Further Reading
+
+> This section provides curated links to AGENTS.md examples, agent frameworks, and tools that align with best practices for AI-assisted software development. Resources are grouped by relevance to .NET / Clean Architecture, broader agent ecosystems, and experimental prototypes. Each entry is marked as **Production-Ready** or **Experimental**.
+
+---
+
+### Production-Ready
+
+- **[agentsmd.net](https://agentsmd.net)** – Community-curated templates for AGENTS.md across stacks. Includes a **.NET Blazor** app and **Clean Architecture–inspired Go** service.
+    
+- **[gakeez/agents_md_collection](https://github.com/gakeez/agents_md_collection)** – GitHub repo with 14+ structured AGENTS.md examples, each with YAML headers for tooling. Great for bootstrapping your own.
+    
+- **[OpenAI Codex CLI](https://github.com/openai/openai-codex-cli)** – Terminal-first Codex agent that reads AGENTS.md to guide coding, formatting, and test generation in real-world repos.
+    
+- **[LangChain](https://www.langchain.com/)** – Agent orchestration framework (Python & JS). Offers modular tools for memory, multi-step planning, tool use, and schema enforcement.
+    
+- **[Microsoft Semantic Kernel](https://github.com/microsoft/semantic-kernel)** – C#/.NET LLM orchestration framework with plugins, semantic plans, and memory—ideal for building AI agents in enterprise apps.
+    
+- **[Qodo PR-Agent](https://github.com/cirolini/qodome-oss)** – GitHub Action for AI-powered pull request reviews, designed with extensibility and structured outputs in mind.
+    
+---
+
+### Experimental & Exploratory
+
+- **[Auto-GPT](https://github.com/Torantulino/Auto-GPT)** – Fully autonomous task agent that self-plans and executes projects via a loop. Impressive, but still unstable.
+    
+- **[BabyAGI](https://github.com/yoheinakajima/babyagi)** – Minimalist Python agent that loops task creation, prioritization, and execution. Inspired dozens of clones.
+    
+- **[GPT-Engineer](https://github.com/AntonOsika/gpt-engineer)** – Given a plain-text spec, this agent generates an entire codebase, tests, and docs. Useful for bootstrapping ideas.
+    
+- **[Clean Architecture PR Reviewer (Community Demo)](https://www.reddit.com/r/dotnet/comments/1e1bdrq/ai_pr_agent_for_clean_architecture/)** – A proof-of-concept .NET PR review agent with layered design, built to respect Clean Architecture boundaries.
+    
+---
+
+### Further Reading
+
+- **[Introducing Codex – OpenAI Blog](https://openai.com/index/introducing-codex/)** – Explains Codex agent architecture, and how AGENTS.md boosts performance and alignment.
+    
+- **[Martin Fowler: Autonomous Agents in Codebases](https://martinfowler.com/articles/exploring-gen-ai/autonomous-agents-codex-example.html)** – Case study of a Codex agent navigating a repo using AGENTS.md and README as anchors.
+    
+- **[LangChain Documentation](https://docs.langchain.com/)** – Deep dive into memory, tool usage, schema-constrained output, and multi-agent planning for LLM systems.
+    
+- **[Awesome AI Agents (GitHub)](https://github.com/ai-collection/awesome-ai-agents)** – A living list of multi-agent systems, toolkits, demos, and research papers in the agent space.
+    
+---
+
+> **Want to contribute?** If you find a new AGENTS.md pattern or agent system worth sharing, submit a PR to extend this section. Future contributors and AI agents will thank you.
+
