@@ -79,7 +79,7 @@ while following modern .NET 9 best practices.
 
 ## Nested **AGENTS.md** Inheritance & Layer-Specific Overrides
 
-> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested**
+> **Precedence** (lowest → highest): **Global** `~/.codex/AGENTS.md` → **Repo root** `/<repo>/AGENTS.md` → **Nested** >
 > `/<repo>/<folder>/AGENTS.md` A nested file automatically **inherits** every rule from its parent. If the nested file restates a rule,
 > **the nested version wins** for that folder and its descendants.
 
@@ -709,6 +709,7 @@ When tasks are ambiguous, consider asking:
 - [ ] Run `./scripts/selfcheck.sh` and confirm all checks pass.
 - [ ] Verify no secrets or credentials were introduced.
 - [ ] Format code via `dotnet format --verify-no-changes`.
+- [ ] Lint docs with `npx markdownlint-cli2` and `npx prettier --check "**/*.md" "**/*.json"`.
 - [ ] Add or update tests for new behavior.
 - [ ] Commit using `<type>(<scope>): <summary>`.
 
@@ -792,6 +793,7 @@ dotnet ef database update -c AppDbContext \
 ## Validation & Invariants
 
 - **Input validation** occurs in two layers:
+
   1. **Web endpoints** – validate incoming requests via FluentValidation or FastEndpoints’ built‑in validators.
 
   2. **UseCases handlers** – re-validate commands/queries via pipeline behaviors (to guard against bypassing Web validation).
@@ -844,6 +846,7 @@ will be auto-closed by CI.
 ## Code Formatting
 
 1. **`.editorconfig` is canonical** – the project enforces specific formatting settings:
+
    - `indent_style = space`
 
    - `*.{cs,csx,vb,vbx}` → **2-space indentation**
@@ -860,6 +863,7 @@ will be auto-closed by CI.
 
 2. **CI Enforcement** – Formatting is enforced via `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally
    before committing. Also set `git config --global core.autocrlf true` to avoid line-ending issues.
+
    - A one-time line-ending normalization may be required if inconsistencies exist:
 
      ```bash
@@ -868,6 +872,15 @@ will be auto-closed by CI.
      ```
 
    - Formatting violations will block PRs (treat warnings from analyzers as errors).
+
+3. **Docs** – All Markdown and JSON documentation must pass lint and style checks:
+
+   ```bash
+   npx markdownlint-cli2
+   npx prettier --check "**/*.md" "**/*.json"
+   ```
+
+   The rules for both tools are defined in `.markdownlint.json` and `.prettierrc` at the repo root.
 
 ---
 
@@ -1043,6 +1056,7 @@ public sealed class EfRepository<T> : IRepository<T>
   report (or a screenshot) in the PR description to demonstrate coverage.
 
 - **Analyzer relaxations for test code**
+
   - The test projects suppress **StyleCop rule CA1707** (identifiers should not contain underscores) so that test method names can use a
     descriptive pattern such as  
     `MethodUnderTest_ShouldReturnExpectedResult_WhenCondition`.
