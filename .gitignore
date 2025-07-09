@@ -763,3 +763,7 @@ coverage*[.json, .xml, .info]
 
 /src/WebDownloadr.Web/database.sqlite
 /src/WebDownloadr.Web/log*.txt
+
+# Markdownlint and Prettier logs
+*.log
+.prettiercache
