@@ -3,7 +3,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-./scripts/setup-dotnet.sh
+# Source setup-dotnet so PATH updates propagate
+source ./scripts/setup-dotnet.sh
 ./scripts/install-tools.sh
 
 echo "✅ Codex environment ready."
