@@ -1,0 +1,4 @@
+# Enforce CRLF for text files; keep shell scripts LF
+* text eol=crlf
+*.sh text eol=lf
+*.png binary

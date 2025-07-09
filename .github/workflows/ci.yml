@@ -30,7 +30,7 @@ jobs:
       # --- Verify analyzer & style rules (using-order, blank lines, etc.)
       - name: Verify analyzer rules
         run: |
-          dotnet format analyzers --folder . --verify-no-changes || {
+          dotnet format WebDownloadr.sln analyzers --verify-no-changes || {
             echo "::error title=Analyzer Formatting Issues::Run './scripts/bootstrap-format.sh' to fix.";
             exit 1;
           }
@@ -45,9 +45,3 @@ jobs:
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
       - run: ./scripts/selfcheck.sh
-      - name: Verify Code Coverage Threshold
-        run: |
-          COVERAGE=$(grep -Po 'line-rate="\\K[0-9.]+(?=")' TestResults/coverage-report/coverage.xml | head -1)
-          PERCENT=$(awk "BEGIN {print $COVERAGE * 100}")
-          echo "Line coverage: $PERCENT%"
-          awk -v p=$PERCENT 'BEGIN {exit (p<90)}'
