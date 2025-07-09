@@ -746,3 +746,14 @@ Even with the above guidelines, there are opportunities to further improve or ex
 - **Escalate when uncertain.** When limits are exceeded or instructions remain ambiguous, pause work and request human guidance before proceeding.
 
 ---
+
+## Fallbacks and Escalation
+
+Agents must halt and request clarification whenever a repository rule or instruction is unclear or appears conflicting.
+
+* **Stop** – If you cannot interpret a domain rule or architectural guideline with confidence, pause implementation.
+* **Ask** – Seek guidance from project maintainers via a comment or PR description when uncertain about next steps.
+* **Defer** – If a decision risks violating the codebase's principles, escalate to human review before proceeding.
+
+Err on the side of caution and avoid speculative changes. Explicit confirmation from maintainers resolves any ambiguity.
+
