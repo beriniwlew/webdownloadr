@@ -86,6 +86,246 @@ Codifies the operational rules for this repository so that **AI-powered agents (
 
 ---
 
+# Clean Architecture Pattern Examples
+## Pattern Reference & Advanced Examples
+> **Purpose —** Provide reusable, proven code patterns that align with the **Ardalis Clean Architecture (.NET 9)** template.  
+> **Scope —** AI agents & human contributors should model new code after these snippets unless a task explicitly requires a different approach.  
+> **Layers —** All examples respect dependency flow (Web → UseCases → Core). Add or update tests and ADRs for any new pattern you introduce.
+
+### 1. Validation Pipeline Behavior <small>(UseCases layer)</small>
+
+```csharp
+namespace WebDownloadr.UseCases.Shared.Behaviors;
+
+using FluentValidation;
+using MediatR;
+
+public sealed class ValidationBehavior<TRequest, TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
+{
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) =>
+        _validators = validators;
+
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken                 ct)
+    {
+        var failures = _validators
+            .Select(v => v.Validate(request))
+            .SelectMany(r => r.Errors)
+            .Where(f => f is not null)
+            .ToList();
+
+        if (failures.Any())
+            throw new ValidationException(failures);
+
+        return await next();
+    }
+}
+````
+
+> **DI registration**  
+> `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));`
+
+### 2. Guard-Clause Invariants (Core layer)
+
+```csharp
+namespace WebDownloadr.Core.ProjectAggregate;
+
+using Ardalis.GuardClauses;
+
+public sealed class Project
+{
+    public Project(string name, DateOnly startDate)
+    {
+        Name      = Guard.Against.NullOrEmpty(name);
+        StartDate = Guard.Against.OutOfSQLDateRange(startDate);
+    }
+
+    public string  Name      { get; private set; }
+    public DateOnly StartDate { get; private set; }
+}
+```
+
+**Custom extension example**
+
+```csharp
+namespace WebDownloadr.Core.Guards;
+
+using Ardalis.GuardClauses;
+
+public static class GuardExtensions
+{
+    public static void Negative(this IGuardClause guard, int value, string paramName) =>
+        Guard.Against.NegativeOrZero(value, paramName, "Value must be positive.");
+}
+```
+
+### 3. Raising a Domain Event (Core → UseCases)
+
+```csharp
+namespace WebDownloadr.Core.ProjectAggregate.Events;
+
+public sealed class ProjectCompletedEvent(Project project) : DomainEventBase
+{
+    public Project Project { get; init; } = project;
+}
+```
+
+```csharp
+namespace WebDownloadr.Core.ProjectAggregate;
+
+public sealed partial class Project
+{
+    public void MarkComplete()
+    {
+        if (!IsDone)
+        {
+            IsDone = true;
+            RegisterDomainEvent(new ProjectCompletedEvent(this));
+        }
+    }
+}
+```
+
+> **Handling (UseCases layer)** – create a `ProjectCompletedHandler` implementing `INotificationHandler<ProjectCompletedEvent>` to publish emails, update search indexes, etc.
+
+### 4. REPR DTO Pattern (Web layer)
+
+```csharp
+// Request  – validated via FluentValidation
+public sealed record CreateProjectRequest(string Name, DateOnly StartDate);
+
+// Response – thin & serializable
+public sealed record CreateProjectResponse(int ProjectId);
+```
+
+_Guidelines_:
+
+- Name with `<Verb><Entity>Request|Response>`.
+    
+- Keep DTOs **flat, immutable, validation-ready**.
+    
+- Never expose domain entities directly.
+    
+
+### 5. Query Without Repository (UseCases layer)
+
+```csharp
+public sealed class GetProjectsQuery : IRequest<IEnumerable<ProjectDto>>;
+
+public sealed class GetProjectsHandler
+    : IRequestHandler<GetProjectsQuery, IEnumerable<ProjectDto>>
+{
+    private readonly IDbConnection _db;
+    public GetProjectsHandler(IDbConnection db) => _db = db;
+
+    public async Task<IEnumerable<ProjectDto>> Handle(GetProjectsQuery q, CancellationToken ct) =>
+        await _db.QueryAsync<ProjectDto>(
+            "SELECT Id, Name FROM Projects ORDER BY Name");
+}
+```
+
+_Read operations may bypass EF repositories for performance._
+
+### 6. Consistent Result Pattern (UseCases layer)
+
+```csharp
+using Ardalis.Result;
+
+public async Task<Result<int>> Handle(CreateProjectCommand cmd, CancellationToken ct)
+{
+    if (await _repo.ExistsAsync(cmd.Name))
+        return Result.Invalid(new ValidationError("name", "Duplicate"));
+
+    var id = await _repo.AddAsync(new Project(cmd.Name, cmd.StartDate));
+    return Result.Success(id);
+}
+```
+
+### 7. Structured Logging Behavior (UseCases layer)
+
+```csharp
+public sealed class LoggingBehavior<TRequest, TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
+{
+    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
+    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger) =>
+        _logger = logger;
+
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken                 ct)
+    {
+        _logger.LogInformation("Handling {Request}", typeof(TRequest).Name);
+        var response = await next();
+        _logger.LogInformation("Handled  {Request}", typeof(TRequest).Name);
+        return response;
+    }
+}
+```
+
+_Register like `ValidationBehavior`; use **named placeholders** (`{Request}`) for structured logs._
+
+### 8. Domain Service Example (Core layer)
+
+```csharp
+public interface IInvoiceNumberGenerator
+{
+    InvoiceNumber Next();
+}
+
+public sealed class InvoiceNumberService : IInvoiceNumberGenerator
+{
+    private int _current;
+    public InvoiceNumber Next() => new(++_current);
+}
+```
+
+_Centralize business logic spanning aggregates._
+
+### 9. Sequence Diagram Reference
+
+![Domain Event Sequence](https://user-images.githubusercontent.com/782127/75702680-216ce300-5c73-11ea-9187-ec656192ad3b.png)
+
+### 10. Template Quick-Start
+
+```bash
+# Install template
+dotnet new install Ardalis.CleanArchitecture.Template
+
+# Create solution with Aspire support (.NET 9 preview)
+dotnet new clean-arch -n WebDownloadr -as true
+```
+
+### 11. Local HTTPS Troubleshooting
+
+```bash
+dotnet dev-certs https --trust
+```
+
+_or import the dev cert from `~/.dotnet/corefx/cryptography/x509stores/my/`._
+
+### 12. Opt-In MVC / Razor
+
+```csharp
+builder.Services.AddControllers();
+app.MapControllers();
+```
+
+_Only add if UI requirements outgrow FastEndpoints._
+
+> **Reminder for Contributors & AI Agents**
+> 
+> - Respect dependency flow (`Web → UseCases → Core`).
+>     
+> - Add or update tests for every new pattern.
+>     
+> - Create an ADR for any non-trivial architectural change.
+>     
 ## Agent Responsibilities
 
 1. **Commit** on the provided branch unless project maintainers instruct otherwise. If asked to create a new branch, use `feature/<slug>`, `fix/<slug>`, `chore/<slug>`, or `docs/<slug>` as appropriate.
