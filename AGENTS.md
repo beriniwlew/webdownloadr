@@ -60,7 +60,6 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
 - [Example Repositories & Further Reading](#example-repositories--further-reading)
 - [Guidance for AI Agents](#guidance-for-ai-agents)
-- [Prompt Engineering for Agents](#prompt-engineering-for-agents)
 - [State and Context Awareness](#state-and-context-awareness)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
 - [Performance & Safety Controls](#performance--safety-controls)
@@ -516,13 +515,13 @@ Existing history need not be rewritten; simply adopt the new format from this po
 |--------------------------|-------------------------------------------------------------------------------------------------|
 | Build warnings           | **0** (none)                                                                                    |
 | Unit & integration tests | **100%** pass                                                                                   |
-| Line coverage            | **≥ 90%** (via [Coverlet](https://github.com/coverlet-coverage/coverlet)) (not implemented yet) |
+| Line coverage            | **≥ 90%** (via [Coverlet](https://github.com/coverlet-coverage/coverlet)) |
 | Formatter drift          | **0** files (`dotnet format --verify-no-changes`)                                               |
 | Architecture tests | **pass** (`./scripts/archtest.sh`) |
 
 The wrapper executes WebDownloadr.ArchTests (ArchUnitNET) and fails CI if any forbidden dependency is detected.
 
--### Architecture Enforcement (CI)
+### Architecture Enforcement (CI)
 - The `WebDownloadr.ArchTests` project verifies layer rules using **ArchUnitNET**.
 - CI step `./scripts/archtest.sh` must pass.
 - Rules:
@@ -684,6 +683,27 @@ If no answer after two attempts ⇒ **escalate to human reviewer**.
 
 > Agents deviating from this guidance will have their PR auto-closed by CI.
 
+Use a structured process when generating changes.
+
+### Step-by-Step Reasoning
+1. Read the request and identify the target layer or file.
+2. Outline the minimal steps needed to implement the change.
+3. Execute each step, validating results along the way.
+4. Ensure updates respect Clean Architecture boundaries.
+5. Summarize the outcome in the PR description.
+
+### Clarifying Questions
+When tasks are ambiguous, consider asking:
+- "Which project or layer should this affect?"
+- "What scenario or user story drives the change?"
+- "Are existing tests available to guide the update?"
+
+### Workflow Checklist
+- [ ] Run `./scripts/selfcheck.sh` and confirm all checks pass.
+- [ ] Verify no secrets or credentials were introduced.
+- [ ] Format code via `dotnet format --verify-no-changes`.
+- [ ] Add or update tests for new behavior.
+- [ ] Commit using `<type>(<scope>): <summary>`.
 ---
 
 ## Runtime Environment
@@ -778,6 +798,7 @@ dotnet restore WebDownloadr.sln
 dotnet build --no-restore -warnaserror
 
 dotnet test --no-build --no-restore WebDownloadr.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
+./scripts/archtest.sh
 
 dotnet format --verify-no-changes WebDownloadr.sln --no-restore
 
@@ -848,12 +869,13 @@ Run this script locally **before pushing a branch or opening a PR**. Any non-zer
 
 - Ensure all public methods in Core have corresponding unit tests if they contain business logic.
 
+
 ## Code Patterns (Ready-to-Copy Examples)
 
 > These snippets illustrate **idiomatic Clean Architecture** techniques for each layer.
 > AI agents should mimic these styles when generating new code.
 
----
+----
 
 ### 1  Core – Domain Event + Guard Clause
 
@@ -889,17 +911,17 @@ public sealed class DownloadRequest : EntityBase, IAggregateRoot
 * Entity raises events, it **does not** call infrastructure services directly.
 * Domain events are registered, not dispatched; the dispatcher lives in Infrastructure/Web.
 
----
+----
 
 ### 2  UseCases – CQRS Handler with Validation & Structured Log
 
 ```csharp
 namespace WebDownloadr.UseCases.Downloads;
 
-public sealed record StartDownloadCommand(string Url) 
+public sealed record StartDownloadCommand(string Url)
     : IRequest<Result<Guid>>;
 
-public sealed class StartDownloadHandler 
+public sealed class StartDownloadHandler
     : IRequestHandler<StartDownloadCommand, Result<Guid>>
 {
     private readonly IRepository<DownloadRequest> _repo;
@@ -936,7 +958,7 @@ public sealed class StartDownloadHandler
 * Calls domain via repository abstraction – never talks to DbContext directly.
 * Logs with **named placeholders** so Serilog / Seq etc. capture key-value pairs.
 
----
+----
 
 ### 3  Infrastructure – Repository Implementation + Structured Log
 
@@ -975,14 +997,14 @@ public sealed class EfRepository<T> : IRepository<T>
 * Structured log at `Debug` level—safe for high-volume operations.
 * No business rules here—only persistence logic.
 
----
+----
 
 **How to use these examples**
 
 * AI agents: **clone** patterns (guard clauses, event registration, structured `ILogger` calls) instead of inventing new styles.
 * Human reviewers: compare PR code against these snippets; discrepancies may signal architectural drift.
 
----
+----
 
 ## Testing Guidelines
 
@@ -1160,50 +1182,6 @@ _Only update an ADR’s **Status** or add a supersession notice—**do not** rew
 ---
 
 ### 8. AI-Specific Reminders
-
-- Use the template verbatim; fill in every section.
-    
-- Ensure file name and status are correct.
-    
-- Scan `docs/architecture-decisions/` to pick the next ID—avoid collisions.
-    
-- Add the new ADR file to the same PR as the code change that depends on it.
-
-
-
-## Guidance for AI Agents
-
-- If unsure about a part of the codebase, prefer **not to change** a file unless a clear rule or failing test specifically requires it.
-
-- If multiple valid approaches exist, choose the **simplest and most idiomatic** .NET solution.
-
-- Always output **minimal diffs** so commits stay focused and avoid unrelated changes. Widen your changes only to fix formatting errors or analyzer warnings, or if the instructions explicitly request a broader update.
-
-### State & Context Awareness
-
-AI agents often complete **multi-step tasks** (e.g., draft an ADR → implement code → update tests). To avoid drifting context or leaking data, follow these rules:
-
-1. **Carry identifiers forward.**
-   If your first step creates a *UseCase* named `DownloadPageCommand`, reference that exact name (or ADR ID, issue number, etc.) in all subsequent steps and commit messages.
-
-2. **Short-lived in-memory context only.**
-   Persist information **only** in the branch you’re working on (code, ADRs, tests). Do **not** write to external stores, long-term caches, or hidden files.
-
-3. **No secret retention.**
-   Environment variables, API keys, or user-secrets may be read during the run but **must never** be logged, committed, or stored in agent memory between runs.
-
-4. **Re-load on each invocation.**
-   Assume the agent starts “fresh” every time. Re-read modified files (e.g., the ADR you just wrote) before generating follow-up changes rather than relying on previous prompt history.
-
-5. **Ask if context is unclear.**
-   If the required identifier (ADR ID, entity name, etc.) is missing or ambiguous, **pause and request clarification** instead of guessing.
-
-These guidelines keep multi-step contributions consistent, reproducible, and free of accidental data leaks.
-
----
-
-## Prompt Engineering for Agents
-
 Use a structured process when generating changes.
 
 ### Step-by-Step Reasoning
@@ -1250,12 +1228,6 @@ This file is a *living contract*.
 - **Substantive changes** (new rules, lifted constraints) → open a new ADR + PR; require full team review.
 
 The owner is responsible for scheduling reviews, merging routine fixes, and flagging stale guidance.
-
-## Performance & Safety Controls
-
-- **Default to safe limits.** When mocking external services is unavailable, restrict outbound API calls to the bare minimum, ideally none.
-- **Monitor resource usage.** If tasks require excessive CPU, memory, or I/O, reduce workload or halt execution.
-- **Escalate when uncertain.** When limits are exceeded or instructions remain ambiguous, pause work and request human guidance before proceeding.
 
 ---
 
