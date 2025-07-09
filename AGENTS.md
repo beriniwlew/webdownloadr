@@ -888,6 +888,9 @@ will be auto-closed by CI.
 
    The rules for both tools are defined in `.markdownlint.json` and `.prettierrc` at the repo root.
 
+3. **Documentation linting** – Run `npx markdownlint-cli2 "**/*.md"` and `npx prettier --check .` to keep Markdown and JSON files formatted
+   consistently. Rules are defined in `.markdownlint.json` and `.prettierrc`.
+
 ---
 
 ## Coding Standards
