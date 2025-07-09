@@ -888,6 +888,27 @@ _Only update an ADR’s **Status** or add a supersession notice—**do not** rew
 
 - Always output **minimal diffs** so commits stay focused and avoid unrelated changes. Widen your changes only to fix formatting errors or analyzer warnings, or if the instructions explicitly request a broader update.
 
+### State & Context Awareness
+
+AI agents often complete **multi-step tasks** (e.g., draft an ADR → implement code → update tests). To avoid drifting context or leaking data, follow these rules:
+
+1. **Carry identifiers forward.**
+   If your first step creates a *UseCase* named `DownloadPageCommand`, reference that exact name (or ADR ID, issue number, etc.) in all subsequent steps and commit messages.
+
+2. **Short-lived in-memory context only.**
+   Persist information **only** in the branch you’re working on (code, ADRs, tests). Do **not** write to external stores, long-term caches, or hidden files.
+
+3. **No secret retention.**
+   Environment variables, API keys, or user-secrets may be read during the run but **must never** be logged, committed, or stored in agent memory between runs.
+
+4. **Re-load on each invocation.**
+   Assume the agent starts “fresh” every time. Re-read modified files (e.g., the ADR you just wrote) before generating follow-up changes rather than relying on previous prompt history.
+
+5. **Ask if context is unclear.**
+   If the required identifier (ADR ID, entity name, etc.) is missing or ambiguous, **pause and request clarification** instead of guessing.
+
+These guidelines keep multi-step contributions consistent, reproducible, and free of accidental data leaks.
+
 ---
 
 ## Prompt Engineering for Agents
