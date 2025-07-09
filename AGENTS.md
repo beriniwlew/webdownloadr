@@ -40,7 +40,6 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Purpose](#purpose)
 - [Nested AGENTS.md Inheritance & Layer-Specific Overrides](#nested-agentsmd-inheritance--layer-specific-overrides)
 - [Solution & Project Layout](#solution--project-layout)
-- [Agent Responsibilities](#agent-responsibilities)
 - [DO NOT](#do-not)
 - [Quality Gates](#quality-gates)
 - [Output Schemas](#output-schemas)
@@ -54,12 +53,10 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Coding Standards](#coding-standards)
 - [Code Patterns (Ready-to-Copy Examples)](#code-patterns-ready-to-copy-examples)
 - [Testing Guidelines](#testing-guidelines)
-- [Pull‑Request Guidelines](#pull-request-guidelines)
 - [Environment & Secrets](#environment--secrets)
 - [Architectural Notes](#architectural-notes)
 - [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
 - [Example Repositories & Further Reading](#example-repositories--further-reading)
-- [Guidance for AI Agents](#guidance-for-ai-agents)
 - [State and Context Awareness](#state-and-context-awareness)
 - [Follow-Up: Further Enhancements](#follow-up-further-enhancements)
 - [Performance & Safety Controls](#performance--safety-controls)
@@ -101,15 +98,15 @@ Use these layer-specific nested files sparingly—only when a folder truly needs
 
 ## Solution & Project Layout
 
-| Layer               | Folder                             | Brief description                                                                                                                                                                                                                          |
-|---------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification). |
-| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                       |
-| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder.                                                                            |
+| Layer               | Folder                             | Brief description                                                                                                                                                                                                                                                                                                        |
+|---------------------|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Core**            | `src/WebDownloadr.Core`            | Domain entities, value objects, domain events, and interfaces—**no external dependencies** except [`Ardalis.GuardClauses`](https://github.com/ardalis/GuardClauses) & [`Ardalis.Specification`](https://github.com/ardalis/Specification).                                                                               |
+| **UseCases**        | `src/WebDownloadr.UseCases`        | CQRS command/query handlers, request/response DTOs, validators, and pipeline behaviors. Has a project reference only to **Core** and may use external packages but must not depend on **Infrastructure** or **Web**.                                                                                                     |
+| **Infrastructure**  | `src/WebDownloadr.Infrastructure`  | Contains EF Core `DbContext`, external service adapters, and persistence implementations. These align with Core interfaces and reside under the `Data/` folder.                                                                                                                                                          |
 | **Web**             | `src/WebDownloadr.Web`             | HTTP API using [FastEndpoints 6](https://fast-endpoints.com/docs/introduction); hosts application services. Depends on **UseCases**, **Infrastructure**, and **ServiceDefaults**. Except for dependency-injection wiring in `Program.cs`, Web code must call Infrastructure **only via interfaces or UseCase handlers**. |
-| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                  |
-| **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire (optional preview in .NET 9).                                                                                                                                                                  |
-| **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                     |
+| **ServiceDefaults** | `src/WebDownloadr.ServiceDefaults` | Shared startup & telemetry helpers for [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/) and cloud hosting.                                                                                                                                                                                                |
+| **AspireHost**      | `src/WebDownloadr.AspireHost`      | Runs the Web project when using .NET Aspire (optional preview in .NET 9).                                                                                                                                                                                                                                                |
+| **Tests**           | `tests/*`                          | `Unit`, `Integration`, `Functional`, and `Aspire` test projects mirroring the structure above. For every new or modified feature in `src/`, a corresponding test must be added or updated in `tests/`.                                                                                                                   |
 
 > **Dependency rule:** References must flow **inward**. For example, `Web` may reference **UseCases** and **Infrastructure**; both **UseCases** and **Infrastructure** may reference **Core** only. **UseCases** and **Infrastructure** must not reference each other. Dependency rules are reviewed manually. If architectural drift becomes an issue, consider enforcing it with tools like NetArchTest or ArchUnitNET.
 
@@ -389,7 +386,7 @@ _Only add if UI requirements outgrow FastEndpoints._
 
 ### Commit & Branch-Naming Conventions
 
-#### 📄 Commit Message Format
+#### Commit Message Format
 
 ```
 <type>(<scope>): <summary>
@@ -398,13 +395,13 @@ _Only add if UI requirements outgrow FastEndpoints._
 # Optional footer — “Closes #123”, “BREAKING CHANGE: …”
 ```
 
-| Field          | Rules |
-| -------------- | ----- |
-| **<type>**    | One of: **feat**, **fix**, **docs**, **style**, **refactor**, **perf**, **test**, **build**, **ci**, **chore**, **revert** |
+| Field         | Rules                                                                                                                                                                                    |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **<type>**    | One of: **feat**, **fix**, **docs**, **style**, **refactor**, **perf**, **test**, **build**, **ci**, **chore**, **revert**                                                               |
 | **<scope>**   | Lower-case layer or project: **core**, **usecases**, **infrastructure**, **web**, **tests**, **scripts**, **docs**.<br>Use additional scopes only if the folder has its own `AGENTS.md`. |
-| **<summary>** | Imperative, ≤ 72 chars, no trailing period. |
-| **Body**       | *Explain why*, link context, keep ≤ 100 chars/line. |
-| **Footer**     | Issue links (`Closes #42`), `BREAKING CHANGE:` notes, Co-authored-by, etc. |
+| **<summary>** | Imperative, ≤ 72 chars, no trailing period.                                                                                                                                              |
+| **Body**      | *Explain why*, link context, keep ≤ 100 chars/line.                                                                                                                                      |
+| **Footer**    | Issue links (`Closes #42`), `BREAKING CHANGE:` notes, Co-authored-by, etc.                                                                                                               |
 
 **Examples**
 
@@ -416,10 +413,10 @@ ci: enable ArchUnitNET check in GitHub Actions
 revert: feat(web): migrate to FastEndpoints
 ```
 
-#### 🪴 Branch Naming
+#### Branch Naming
 
 | Purpose         | Pattern          | Example                           |
-| --------------- | ---------------- | --------------------------------- |
+|-----------------|------------------|-----------------------------------|
 | Feature / epic  | `feature/<slug>` | `feature/batch-download-queue`    |
 | Bug fix         | `fix/<slug>`     | `fix/null-ref-on-empty-url`       |
 | Docs            | `docs/<slug>`    | `docs/update-agents-layout`       |
@@ -427,7 +424,7 @@ revert: feat(web): migrate to FastEndpoints
 
 > **Tip for AI agents:** Derive `<slug>` from the Jira/GitHub issue title in kebab-case; keep it < 40 chars.
 
-#### 🔒 Commitlint Configuration
+#### Commitlint Configuration
 
 Add **`.commitlintrc.json`** (or `commitlint.config.js`) to enforce the convention automatically:
 
@@ -459,10 +456,10 @@ Add a pre-commit hook (Husky or lefthook) or a GitHub Action step:
   run: npx commitlint --from ${{ github.event.before }} --to ${{ github.sha }}
 ```
 
-#### 🔑 Why Adopt the Standard Scope Syntax?
+#### Why Adopt the Standard Scope Syntax?
 
 | Benefit                                                  | Classic “feat(core):” | Old “\[Core] feat:”                    |
-| -------------------------------------------------------- | --------------------- | -------------------------------------- |
+|----------------------------------------------------------|-----------------------|----------------------------------------|
 | Works with ✨ **semantic-release** & changelog generators | ✔                     | ✖ (needs custom parser)                |
 | IDE / Git client templates                               | ✔                     | ✖                                      |
 | Less noisy — scope is inline                             | ✔                     | Bracket prefix consumes summary length |
@@ -511,13 +508,13 @@ Existing history need not be rewritten; simply adopt the new format from this po
 
 ## Quality Gates
 
-| Check                    | Requirement                                                                                     |
-|--------------------------|-------------------------------------------------------------------------------------------------|
-| Build warnings           | **0** (none)                                                                                    |
-| Unit & integration tests | **100%** pass                                                                                   |
+| Check                    | Requirement                                                               |
+|--------------------------|---------------------------------------------------------------------------|
+| Build warnings           | **0** (none)                                                              |
+| Unit & integration tests | **100%** pass                                                             |
 | Line coverage            | **≥ 90%** (via [Coverlet](https://github.com/coverlet-coverage/coverlet)) |
-| Formatter drift          | **0** files (`dotnet format --verify-no-changes`)                                               |
-| Architecture tests | **pass** (`./scripts/archtest.sh`) |
+| Formatter drift          | **0** files (`dotnet format --verify-no-changes`)                         |
+| Architecture tests       | **pass** (`./scripts/archtest.sh`)                                        |
 
 The wrapper executes WebDownloadr.ArchTests (ArchUnitNET) and fails CI if any forbidden dependency is detected.
 
@@ -541,7 +538,7 @@ The pull‑request will be blocked if any gate fails. Continuous Integration run
 The guidelines below protect CI budgets, API quotas, and human reviewers from runaway tasks. **All contributors—human *and* AI—must honour these limits.**
 
 | Area                        | Hard Limit                                  | Agent Rule                                                                                    |
-| --------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------- |
+|-----------------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------|
 | **External HTTP/CLI calls** | **Max 3** per workflow run                  | Batch fetches when possible. If a 4th call is required, **stop and request human approval**.  |
 | **Call timeout**            | **30 s** per request                        | Abort and escalate if an endpoint exceeds the timeout twice.                                  |
 | **Download size**           | **10 MB** per individual fetch              | Skip large assets; log a TODO for manual retrieval.                                           |
@@ -660,21 +657,21 @@ Before returning any result, an AI agent **MUST** internally step through:
 ### 2. Clarifying-Question Guide  
 Ask **exactly one** concise question when:
 
-| Situation | Example Question |
-|-----------|------------------|
+| Situation             | Example Question                                                             |
+|-----------------------|------------------------------------------------------------------------------|
 | Ambiguous requirement | “Which HTTP status codes should this endpoint return on validation failure?” |
-| Missing domain rule | “Is negative quantity ever valid in `OrderLine`?” |
-| Conflicting source | “Core forbids EF types, yet `Product` entity has `[Key]`; should I remove?” |
+| Missing domain rule   | “Is negative quantity ever valid in `OrderLine`?”                            |
+| Conflicting source    | “Core forbids EF types, yet `Product` entity has `[Key]`; should I remove?”  |
 
 If no answer after two attempts ⇒ **escalate to human reviewer**.
 
 ### 3. Example Prompts  
 
-| Scenario | Prompt |
-|----------|--------|
-| **Bug fix, known layer** | *“Fix the null-ref in `ContributorListQueryHandler.cs` (UseCases layer) without adding new deps. Ensure unit tests pass.”* |
-| **Add ADR** | *“Draft an ADR proposing PostgreSQL instead of SQLite. Follow ADR template; Status: Proposed.”* |
-| **Refactor with diff** | *“Refactor `src/WebDownloadr.Core/Project.cs` to raise `ProjectCompletedEvent` when all tasks done. Show minimal diff only.”* |
+| Scenario                 | Prompt                                                                                                                        |
+|--------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| **Bug fix, known layer** | *“Fix the null-ref in `ContributorListQueryHandler.cs` (UseCases layer) without adding new deps. Ensure unit tests pass.”*    |
+| **Add ADR**              | *“Draft an ADR proposing PostgreSQL instead of SQLite. Follow ADR template; Status: Proposed.”*                               |
+| **Refactor with diff**   | *“Refactor `src/WebDownloadr.Core/Project.cs` to raise `ProjectCompletedEvent` when all tasks done. Show minimal diff only.”* |
 
 ### 4. Forbidden Prompt Styles  
 * ❌ Open-ended “rewrite everything” requests  
@@ -718,7 +715,7 @@ When tasks are ambiguous, consider asking:
 ## Allowed Tools & APIs
 
 | Tool / Package                                                  | Layer(s) Where Used            | Purpose & Typical Invocation                                                                                                               | Notes / Links                                                                          |
-| --------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+|-----------------------------------------------------------------|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 | **dotnet CLI** (`dotnet build`, `dotnet test`, `dotnet format`) | All                            | Core build, test, and formatter commands (see `scripts/selfcheck.sh`).                                                                     | Version pinned by `global.json` (❱ **9.0.301**).                                       |
 | **dotnet-ef**                                                   | *Infrastructure*, *Migrations* | Add / apply Entity Framework Core migrations.<br>`bash dotnet ef migrations add Foo --project ...`                                         | Use only through `AppDbContext`; migrations live in `src/.../Data/Migrations/`.        |
 | **reportgenerator** (`dotnet-reportgenerator-globaltool`)       | CI & local                     | Convert Coverlet `.cobertura.xml` into HTML summary.                                                                                       | Installed via `install-tools.sh`; output written to `TestResults/coverage-report/`.    |
@@ -1250,23 +1247,23 @@ Follow this safety protocol whenever requirements are ambiguous:
 
 ## Quick Reference for Agents
 
-| Principle | Why It Matters (1-liner) |
-|-----------|--------------------------|
-| **Nested‐file precedence** | Rules closest to the file win ─ prevents accidental override of Core purity. |
-| **Layer boundaries** | Web → UseCases / Infra → Core only; keeps Clean Architecture intact. |
-| **Minimal diffs** | Easier code reviews & fewer merge conflicts; unrelated reformatting is CI-blocked. |
-| **90 %+ coverage** | High confidence that business logic remains correct; enforced in CI. |
-| **ADR for every big decision** | Preserves architectural history; no “Why did we choose X?” mysteries. |
-| **No secrets in repo** | Security first; use User Secrets or CI vaults. |
-| **Commit style: `[Layer] type: summary`** | Lets humans & CI trace changes by layer and intent. |
-| **Run `./scripts/selfcheck.sh` before PR** | Guarantees local build = CI build; saves back-and-forth fixes. |
-| **Generated code exceptions** | EF migrations & snapshots bypass analyzers; avoids pointless linter noise. |
-| **Ask clarifying questions** | AI (and humans) should pause if requirements are ambiguous—better than guessing. |
-| **Escalate after 2 failed attempts** | Prevents infinite AI loops; hand off to human reviewer when stuck. |
-| **Use provided tool catalog** | Standardized CLI/tools (dotnet-adr, archtest) keep workflow predictable. |
-| **Structured logging** | Template-based logs enable searchable key–value pairs in APM dashboards. |
-| **Guard clauses in Core** | Fail fast, keep domain objects always-valid; fewer null checks elsewhere. |
-| **One test project per src project** | Mirrors folder layout; newcomers locate tests instantly. |
+| Principle                                  | Why It Matters (1-liner)                                                           |
+|--------------------------------------------|------------------------------------------------------------------------------------|
+| **Nested‐file precedence**                 | Rules closest to the file win ─ prevents accidental override of Core purity.       |
+| **Layer boundaries**                       | Web → UseCases / Infra → Core only; keeps Clean Architecture intact.               |
+| **Minimal diffs**                          | Easier code reviews & fewer merge conflicts; unrelated reformatting is CI-blocked. |
+| **90 %+ coverage**                         | High confidence that business logic remains correct; enforced in CI.               |
+| **ADR for every big decision**             | Preserves architectural history; no “Why did we choose X?” mysteries.              |
+| **No secrets in repo**                     | Security first; use User Secrets or CI vaults.                                     |
+| **Commit style: `[Layer] type: summary`**  | Lets humans & CI trace changes by layer and intent.                                |
+| **Run `./scripts/selfcheck.sh` before PR** | Guarantees local build = CI build; saves back-and-forth fixes.                     |
+| **Generated code exceptions**              | EF migrations & snapshots bypass analyzers; avoids pointless linter noise.         |
+| **Ask clarifying questions**               | AI (and humans) should pause if requirements are ambiguous—better than guessing.   |
+| **Escalate after 2 failed attempts**       | Prevents infinite AI loops; hand off to human reviewer when stuck.                 |
+| **Use provided tool catalog**              | Standardized CLI/tools (dotnet-adr, archtest) keep workflow predictable.           |
+| **Structured logging**                     | Template-based logs enable searchable key–value pairs in APM dashboards.           |
+| **Guard clauses in Core**                  | Fail fast, keep domain objects always-valid; fewer null checks elsewhere.          |
+| **One test project per src project**       | Mirrors folder layout; newcomers locate tests instantly.                           |
 
 ## Example Repositories & Further Reading
 
