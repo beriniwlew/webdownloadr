@@ -18,9 +18,14 @@ ci_requirements:
   coverage_min: "≥ 90%"
   formatting_drift: 0
 commit_convention: "Conventional Commits ([Layer] <type>: <summary>)"
+branch_prefixes:
+  - feature/
+  - fix/
+  - chore/
+  - docs/
 agents_md_inheritance: "Global (~/.codex) → Repo root → Nested (deeper overrides parent)"
 date_created: 2025-07-09T09:41:12+02:00
-date_modified: 2025-07-09T11:17:25+02:00
+date_modified: 2025-07-09T13:50:00+02:00
 ---
 
 # AGENTS.md
@@ -354,15 +359,20 @@ _Only add if UI requirements outgrow FastEndpoints._
 >     
 ## Agent Responsibilities
 
-1. **Commit** on the provided branch unless project maintainers instruct otherwise. When creating a new branch, prefix it with one of:
+1. **Commit** on the provided branch unless project maintainers instruct otherwise. New branches must start with one of these prefixes:
    - `feature/` – new functionality
    - `fix/` – bug fixes
    - `chore/` – maintenance or tooling
    - `docs/` – documentation updates
    Example: `feature/add-download-endpoint`
 2. **Run** `./scripts/selfcheck.sh` locally. It **must** exit with `0` (fix any issues until it does).
-3. **Commit** messages use `[Layer] <type>: <summary>` where `<type>` is one of `feat`, `fix`, `chore`, or `docs`.
-   Examples:
+3. **Commit** messages must follow the format `[Layer] <type>: <summary>`.
+   Allowed `<type>` values:
+   - `feat`  – new features
+   - `fix`   – bug fixes
+   - `chore` – maintenance
+   - `docs`  – documentation
+   Example commits:
    - `[UseCases] feat: add download queue processor`
    - `[Web] fix: return correct status codes`
    - `[Infrastructure] chore: update EF Core version`
