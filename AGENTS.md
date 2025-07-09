@@ -873,7 +873,11 @@ will be auto-closed by CI.
      git commit -m "style: normalize line endings to match .editorconfig"
      ```
 
-   - Formatting violations will block PRs (treat warnings from analyzers as errors).
+  - Formatting violations will block PRs (treat warnings from analyzers as errors).
+
+3. **Docs** – Lint Markdown with `markdownlint-cli2` and format with Prettier.
+   - Run `npx markdownlint-cli2` to check all `.md` files.
+   - Run `npx prettier --check .` before committing to ensure consistent formatting.
 
 3. **Docs** – All Markdown and JSON documentation must pass lint and style checks:
 
