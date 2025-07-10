@@ -44,4 +44,8 @@ jobs:
         with: { cache: npm }
       - run: npm ci --omit=optional
       - name: Validate commit messages
-        run: npm run commitlint
+        run: |
+          # find the common ancestor of main and HEAD
+          base=$(git merge-base origin/main HEAD)
+          echo "Linting commits from $base..HEAD"
+          npx --yes @commitlint/cli --from "$base" --to HEAD
