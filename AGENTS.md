@@ -55,7 +55,7 @@ date_modified: 2025-07-09T13:50:00+02:00
 - [Build, Test & Format](#build-test--format)
 - [Code Formatting](#code-formatting)
 - [Coding Standards](#coding-standards)
-  - [Layer-Specific Patterns](#layer-specific-patterns)
+- [Layer-Specific Patterns](#layer-specific-patterns)
 - [Testing Guidelines](#testing-guidelines)
 - [Environment & Secrets](#environment--secrets)
 - [Architectural Notes](#architectural-notes)
