@@ -35,10 +35,10 @@ Additional documentation lives in the `docs` folder and within each project. Sta
 
 ## Formatting
 
-Formatting is enforced in CI. Configure Git to honor `.editorconfig` line endings:
+Formatting is enforced in CI. All text files use LF endings. Configure Git to convert CRLF on commit:
 
 ```bash
-git config --global core.autocrlf true
+git config --global core.autocrlf input
 ```
 
 For the initial bootstrap, maintainers should normalize all files and format the solution:
@@ -48,6 +48,8 @@ git add --renormalize .
 git commit -m "style: normalize line endings to match .editorconfig"
 ./scripts/bootstrap-format.sh --commit
 ```
+
+The repository's `.gitattributes` enforces LF for text files and marks common binaries.
 
 After this commit, `./scripts/format.sh` (or `dotnet format`) runs in CI and must report no changes.
 
