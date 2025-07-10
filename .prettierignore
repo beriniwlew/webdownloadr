@@ -1,9 +1,5 @@
 # .prettierignore
-
-# Ignore everything under node_modules
-node_modules/**
-
-# (Optionally) ignore other build- or tool-generated files:
-dist/**
-obj/**
-.vs/**
+node_modules/
+dist/
+obj/
+.vs/

@@ -35,7 +35,7 @@ jobs:
         run: npx --yes markdownlint-cli2 --ignore "node_modules/**" "**/*.md"
 
       - name: Prettier check
-        run: npx --yes prettier --list-different "**/*.md" "**/*.json"
+        run: npx --yes prettier --check --ignore-path .prettierignore "**/*.{md,json}"
 
   build-and-test:
     name: Build, Test & Validate

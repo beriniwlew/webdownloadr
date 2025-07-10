@@ -1,7 +1,6 @@
 # WebPage Use Cases
 
-Handlers under this folder operate on the `WebPage` aggregate. They cover basic
-CRUD operations in addition to download workflows.
+Handlers under this folder operate on the `WebPage` aggregate. They cover basic CRUD operations in addition to download workflows.
 
 - **Create** – adds a new web page to track.
 - **Get** – retrieves a single page by identifier.

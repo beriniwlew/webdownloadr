@@ -1,7 +1,6 @@
 # WebDownloadr.Web
 
-The Web project exposes API endpoints using FastEndpoints.
-It wires up the application and infrastructure layers.
+The Web project exposes API endpoints using FastEndpoints. It wires up the application and infrastructure layers.
 
 ### Download Endpoints
 
