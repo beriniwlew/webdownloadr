@@ -22,6 +22,7 @@ The Web project hosts the API using FastEndpoints and composes all other layers.
 ## Patterns
 
 ### REPR DTO Pattern
+
 ```csharp
 // Request  – validated via FluentValidation
 public sealed record CreateProjectRequest(string Name, DateOnly StartDate);
@@ -35,6 +36,7 @@ public sealed record CreateProjectResponse(int ProjectId);
 - Use JWT bearer authentication. Configure policies in the `Configurations/` folder.
 
 ### FastEndpoints Example
+
 ```csharp
 public sealed class CreateProjectEndpoint : Endpoint<CreateProjectRequest, CreateProjectResponse>
 {

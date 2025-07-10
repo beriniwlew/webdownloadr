@@ -19,6 +19,7 @@ The Core layer contains the domain model and must remain free of infrastructure 
 ## Patterns
 
 ### Guard-Clause Invariants
+
 ```csharp
 namespace WebDownloadr.Core.ProjectAggregate;
 
@@ -38,6 +39,7 @@ public sealed class Project
 ```
 
 #### Guard-Clause Extension
+
 ```csharp
 namespace WebDownloadr.Core.Guards;
 
@@ -51,6 +53,7 @@ public static class GuardExtensions
 ```
 
 ### Raising a Domain Event
+
 ```csharp
 namespace WebDownloadr.Core.ProjectAggregate.Events;
 
@@ -59,6 +62,7 @@ public sealed class ProjectCompletedEvent(Project project) : DomainEventBase
     public Project Project { get; init; } = project;
 }
 ```
+
 ```csharp
 namespace WebDownloadr.Core.ProjectAggregate;
 
@@ -76,6 +80,7 @@ public sealed partial class Project
 ```
 
 ### Domain Service Example
+
 ```csharp
 public interface IInvoiceNumberGenerator
 {
@@ -90,6 +95,7 @@ public sealed class InvoiceNumberService : IInvoiceNumberGenerator
 ```
 
 ### Value Object Example
+
 ```csharp
 public sealed record EmailAddress(string Value)
 {

@@ -21,6 +21,7 @@ This layer implements external dependencies and data access. It may reference Co
 ## Patterns
 
 ### EF Repository Implementation
+
 ```csharp
 namespace WebDownloadr.Infrastructure.Data;
 
@@ -51,6 +52,7 @@ public sealed class EfRepository<T> : IRepository<T>
 ```
 
 ### AppDbContext Configuration
+
 ```csharp
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     : DbContext(options)

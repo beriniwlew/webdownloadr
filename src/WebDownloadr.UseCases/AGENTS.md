@@ -21,6 +21,7 @@ Handlers in this layer orchestrate the domain model through commands and queries
 ## Patterns
 
 ### Validation Pipeline Behavior
+
 ```csharp
 namespace WebDownloadr.UseCases.Shared.Behaviors;
 
@@ -54,6 +55,7 @@ public sealed class ValidationBehavior<TRequest, TResponse>
 ```
 
 ### CQRS Handler Example
+
 ```csharp
 namespace WebDownloadr.UseCases.Downloads;
 
@@ -91,6 +93,7 @@ public sealed class StartDownloadHandler
 ```
 
 ### Query Without Repository
+
 ```csharp
 public sealed class GetProjectsQuery : IRequest<IEnumerable<ProjectDto>>;
 
@@ -107,6 +110,7 @@ public sealed class GetProjectsHandler
 ```
 
 ### Consistent Result Pattern
+
 ```csharp
 public async Task<Result<int>> Handle(CreateProjectCommand cmd, CancellationToken ct)
 {
@@ -119,6 +123,7 @@ public async Task<Result<int>> Handle(CreateProjectCommand cmd, CancellationToke
 ```
 
 ### Structured Logging Behavior
+
 ```csharp
 public sealed class LoggingBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
@@ -141,6 +146,7 @@ public sealed class LoggingBehavior<TRequest, TResponse>
 ```
 
 ### AutoMapper Profile Example
+
 ```csharp
 public sealed class ProjectMappingProfile : Profile
 {
