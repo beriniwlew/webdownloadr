@@ -51,6 +51,7 @@ npx prettier --check --ignore-path .prettierignore "**/*.{md,json}"
 
 # One-stop check
 ./scripts/selfcheck.sh
+# Skip individual steps with flags like `--skip-test` or `--skip-format` if needed
 ```
 
 ## Development Workflow

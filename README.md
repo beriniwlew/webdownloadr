@@ -66,7 +66,8 @@ pre-commit install
 
 Running `pre-commit` will execute the hooks defined in `.pre-commit-config.yaml`.
 
-Before pushing changes, run `./scripts/selfcheck.sh` to ensure build, tests, and formatting pass locally.
+Before pushing changes, run `./scripts/selfcheck.sh` to ensure build, tests, and formatting pass locally. The script accepts flags such as
+`--skip-test` or `--skip-format` when you need to bypass a particular phase.
 
 ## License
 
