@@ -11,9 +11,7 @@ An Architecture Decision Record (ADR) documents significant architecture decisio
 ## Best Practices for Writing ADRs
 1. **Be Specific**: Each ADR should address a single architectural decision. Avoid conflating multiple decisions into one record.
 2. **Document Context**: Clearly explain the project’s context and relevant considerations that influenced the decision. Include team dynamics and priorities.
-3. **Rationale and Consequences**: Describe the reasons for the decision, including pros and cons, and outline the implications of the decision for the project and 
-
-future architecture.
+3. **Rationale and Consequences**: Describe the reasons for the decision, including pros and cons, and outline the implications of the decision for the project and future architecture.
 4. **Immutable Records**: Once an ADR is created, avoid altering it. Instead, create a new ADR to reflect any changes or updates.
 5. **Timestamp Entries**: Include timestamps to track when each decision was made, especially for aspects that may evolve over time (e.g., costs, schedules).
 6. **Use Templates**: Utilize established templates for consistency and completeness in documenting ADRs.

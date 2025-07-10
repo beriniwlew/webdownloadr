@@ -730,9 +730,8 @@ When tasks are ambiguous, consider asking:
 
 - The reference build environment is Ubuntu 22.04 (Docker image `mcr.microsoft.com/dotnet/sdk:9.0`).
 
-- Run `./scripts/setup-codex.sh` to install the SDK via the `dotnet/backports` PPA and required global tools. Sourcing this script sets `DOTNET_ROOT`
-  and updates the `PATH` for the current shell, persisting them in `~/.bashrc`.
-
+- Run `./scripts/setup-codex.sh` to install the SDK via the `dotnet/backports` PPA and required global tools. Sourcing this script sets
+  `DOTNET_ROOT` and updates the `PATH` for the current shell, persisting them in `~/.bashrc`.
 
 ## Allowed Tools & APIs
 
@@ -878,13 +877,14 @@ will be auto-closed by CI.
      git commit -m "style: normalize line endings to match .editorconfig"
      ```
 
-  - Formatting violations will block PRs (treat warnings from analyzers as errors).
+   - Formatting violations will block PRs (treat warnings from analyzers as errors).
 
 3. **Docs** – Lint Markdown with `markdownlint-cli2` and format with Prettier.
+
    - Run `npx markdownlint-cli2` to check all `.md` files.
    - Run `npx prettier --check .` before committing to ensure consistent formatting.
 
-3. **Docs** – All Markdown and JSON documentation must pass lint and style checks:
+4. **Docs** – All Markdown and JSON documentation must pass lint and style checks:
 
    ```bash
    npx markdownlint-cli2
@@ -893,7 +893,7 @@ will be auto-closed by CI.
 
    The rules for both tools are defined in `.markdownlint.json` and `.prettierrc` at the repo root.
 
-3. **Documentation linting** – Run `npx markdownlint-cli2 "**/*.md"` and `npx prettier --check .` to keep Markdown and JSON files formatted
+5. **Documentation linting** – Run `npx markdownlint-cli2 "**/*.md"` and `npx prettier --check .` to keep Markdown and JSON files formatted
    consistently. Rules are defined in `.markdownlint.json` and `.prettierrc`.
 
 ---
