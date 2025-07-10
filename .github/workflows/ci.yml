@@ -32,7 +32,7 @@ jobs:
         run: dotnet format WebDownloadr.sln --verify-no-changes --verbosity diagnostic
 
       - name: MarkdownLint docs
-        run: npx --yes markdownlint-cli2 "**/*.md"
+        run: npx --yes markdownlint-cli2 --ignore "node_modules/**" "**/*.md"
 
       - name: Prettier check
         run: npx --yes prettier --list-different "**/*.md" "**/*.json"
