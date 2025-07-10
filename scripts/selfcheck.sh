@@ -15,7 +15,7 @@ dotnet format WebDownloadr.sln --verify-no-changes --no-restore
 dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
 
 # Lint and format Markdown documentation
-npx --yes markdownlint-cli2 "**/*.md" "#node_modules"
+npx --yes markdownlint-cli2 "**/*.md" "#node_modules"   # ignore via '#' glob
 npx --yes prettier --check --ignore-path .prettierignore "**/*.{md,json}"
 
 # Validate commit messages
