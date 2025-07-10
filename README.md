@@ -66,6 +66,8 @@ pre-commit install
 
 Running `pre-commit` will execute the hooks defined in `.pre-commit-config.yaml`.
 
+Before pushing changes, run `./scripts/selfcheck.sh` to ensure build, tests, and formatting pass locally.
+
 ## License
 
 This project is licensed under the [MIT](LICENSE) license.
