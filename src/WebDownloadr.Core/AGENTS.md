@@ -8,11 +8,13 @@ layer: Core
 The Core layer contains the domain model and must remain free of infrastructure concerns.
 
 ## Allowed Dependencies
+
 - .NET Standard Library only
 - [Ardalis.GuardClauses](https://github.com/ardalis/GuardClauses)
 - [Ardalis.Specification](https://github.com/ardalis/Specification)
 
 ## Prohibited
+
 - References to UseCases, Infrastructure, or Web projects
 - Framework-specific types (EF Core attributes, ASP.NET types)
 
@@ -110,6 +112,7 @@ public sealed record EmailAddress(string Value)
 ```
 
 ## Guidelines
+
 - Define domain entities under `/src/WebDownloadr.Core/<Aggregate>/`.
 - Keep aggregates persistence-ignorant and raise domain events for side effects.
 - Repository interfaces belong in `Interfaces/` and should be thin abstractions.
@@ -117,20 +120,25 @@ public sealed record EmailAddress(string Value)
 - Aim for **≥95%** line coverage in this layer.
 
 ## Anti‑Patterns
+
 - Throwing UI-specific exceptions
 - Injecting infrastructure services directly
 
 ## Troubleshooting
+
 - **Failing invariants** – Ensure guard clauses cover all constructor parameters.
 - **Missing domain events** – Verify entities call `RegisterDomainEvent` when state changes.
 
 ## Performance Considerations
+
 - Keep aggregates small and immutable where possible.
 - Avoid expensive calculations in property getters; prefer explicit methods.
 
 ## Security Guidelines
+
 - Validate all inputs via guard clauses.
 - Do not log sensitive data from domain entities.
 
 ## Monitoring & Logging
+
 - Domain layer should not log directly; raise events consumed by outer layers.

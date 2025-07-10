@@ -8,6 +8,7 @@ layer: UseCases
 Handlers in this layer orchestrate the domain model through commands and queries. Only the Core layer may be referenced.
 
 ## Allowed Dependencies
+
 - WebDownloadr.Core
 - MediatR
 - FluentValidation
@@ -15,6 +16,7 @@ Handlers in this layer orchestrate the domain model through commands and queries
 - AutoMapper (profiles defined here)
 
 ## Prohibited
+
 - Direct references to Infrastructure or Web projects
 - Accessing DbContext or external services directly
 
@@ -158,6 +160,7 @@ public sealed class ProjectMappingProfile : Profile
 ```
 
 ## Guidelines
+
 - Commands and queries live under `Commands/` and `Queries/` folders.
 - DTOs follow the REPR naming convention and are immutable.
 - Register pipeline behaviors in DI: `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));` etc.
@@ -165,21 +168,26 @@ public sealed class ProjectMappingProfile : Profile
 - Provide unit tests for each handler using xUnit and Shouldly.
 
 ## Anti‑Patterns
+
 - Injecting DbContext directly
 - Mixing validation and business logic in controllers
 
 ## Troubleshooting
+
 - **Validation exceptions** – Ensure validators are registered in DI and pipeline behaviors are configured.
 - **Handler not invoked** – Check that MediatR is registered and the request type matches the handler.
 
 ## Performance Considerations
+
 - Prefer asynchronous repository methods and avoid synchronous blocking calls.
 - Keep DTOs lightweight; project queries to DTOs instead of loading full entities when possible.
 
 ## Security Guidelines
+
 - Never trust client input; validate again in handlers.
 - Avoid exposing domain exceptions directly to callers; wrap them in `Result` types.
 
 ## Monitoring & Logging
+
 - Use the provided `LoggingBehavior` to capture request/response information.
 - Include correlation identifiers in logs to trace individual operations.

@@ -8,6 +8,7 @@ layer: Infrastructure
 This layer implements external dependencies and data access. It may reference Core and UseCases, but never the Web layer.
 
 ## Allowed Dependencies
+
 - WebDownloadr.Core
 - WebDownloadr.UseCases
 - Entity Framework Core
@@ -15,6 +16,7 @@ This layer implements external dependencies and data access. It may reference Co
 - Serilog or Microsoft.Extensions.Logging
 
 ## Prohibited
+
 - Direct references to Web project code
 - Placing business rules in repository classes
 
@@ -67,6 +69,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 ```
 
 ## Guidelines
+
 - DbContext lives in `Data/` and is registered in `InfrastructureServiceExtensions`.
 - Use Fluent API configurations instead of data annotations.
 - Keep repository methods thin and focused on persistence.
@@ -74,21 +77,26 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 - Integration tests may spin up database containers via TestContainers.
 
 ## Anti‑Patterns
+
 - Referencing Web project types
 - Catching and swallowing all exceptions
 
 ## Troubleshooting
+
 - **Connection failures** – Verify connection strings and that the database server is reachable.
 - **Migration conflicts** – Regenerate migrations instead of hand-editing when schemas diverge.
 
 ## Performance Considerations
+
 - Prefer `AsNoTracking()` for read-only queries.
 - Use bulk operations or batching when inserting large datasets.
 
 ## Security Guidelines
+
 - Use parameterised queries or EF Core to avoid injection attacks.
 - Store credentials outside source control and load via `IConfiguration`.
 
 ## Monitoring & Logging
+
 - Log SQL commands at `Debug` level only when troubleshooting.
 - Surface repository metrics (e.g., query duration) via `ILogger` or APM tools.

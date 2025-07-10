@@ -127,6 +127,7 @@ removing friction for contributors and AI agents.
 | Core           | —                                         |
 
 ---
+
 ## Layer-Specific Patterns
 
 Detailed code examples for each layer now live in their respective `AGENTS.md` files:
@@ -136,8 +137,8 @@ Detailed code examples for each layer now live in their respective `AGENTS.md` f
 - `src/WebDownloadr.Infrastructure/AGENTS.md`
 - `src/WebDownloadr.Web/AGENTS.md`
 
-Each nested file describes domain, application, infrastructure, or web patterns in depth. Follow them when modifying files within that layer.
-
+Each nested file describes domain, application, infrastructure, or web patterns in depth. Follow them when modifying files within that
+layer.
 
 ### Agent Workflow Checklist
 
@@ -566,6 +567,7 @@ dotnet ef database update -c AppDbContext \
 ## Validation & Invariants
 
 - **Input validation** occurs in two layers:
+
   1. **Web endpoints** – validate incoming requests via FluentValidation or FastEndpoints’ built‑in validators.
 
   2. **UseCases handlers** – re-validate commands/queries via pipeline behaviors (to guard against bypassing Web validation).
@@ -622,6 +624,7 @@ will be auto-closed by CI.
 ## Code Formatting
 
 1. **`.editorconfig` is canonical** – the project enforces specific formatting settings:
+
    - `indent_style = space`
 
    - `*.{cs,csx,vb,vbx}` → **2-space indentation**
@@ -638,6 +641,7 @@ will be auto-closed by CI.
 
 2. **CI Enforcement** – Formatting is enforced via `dotnet format --verify-no-changes`. Run `./scripts/format.sh` or `dotnet format` locally
    before committing. Also set `git config --global core.autocrlf true` to avoid line-ending issues.
+
    - A one-time line-ending normalization may be required if inconsistencies exist:
 
      ```bash
@@ -648,6 +652,7 @@ will be auto-closed by CI.
    - Formatting violations will block PRs (treat warnings from analyzers as errors).
 
 3. **Docs** – Lint Markdown with `markdownlint-cli2` and format with Prettier.
+
    - Run `npx markdownlint-cli2` to check all `.md` files.
    - Run `npx prettier --check .` before committing to ensure consistent formatting.
 
@@ -686,7 +691,6 @@ will be auto-closed by CI.
 
 - Ensure all public methods in Core have corresponding unit tests if they contain business logic.
 
-
 ## Testing Guidelines
 
 - **Test Framework** – All test projects **must** use [xUnit](https://xunit.net/), [Shouldly](https://shouldly.readthedocs.io/en/latest/),
@@ -702,6 +706,7 @@ will be auto-closed by CI.
   report (or a screenshot) in the PR description to demonstrate coverage.
 
 - **Analyzer relaxations for test code**
+
   - The test projects suppress **StyleCop rule CA1707** (identifiers should not contain underscores) so that test method names can use a
     descriptive pattern such as  
     `MethodUnderTest_ShouldReturnExpectedResult_WhenCondition`.
