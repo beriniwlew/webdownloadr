@@ -2,5 +2,8 @@
   "devDependencies": {
     "markdownlint-cli2": "^0.18.1",
     "prettier": "^3.6.2"
+  },
+  "scripts": {
+    "commitlint": "commitlint --from $GITHUB_SHA~100 --to $GITHUB_SHA"
   }
 }
