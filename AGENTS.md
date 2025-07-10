@@ -381,8 +381,7 @@ _Only add if UI requirements outgrow FastEndpoints._
    The script runs `dotnet` build/test, architecture checks, formatting, `markdownlint-cli2`, `prettier --check`, and `commitlint`. The
    script **must exit 0**; fix any errors before continuing.
 
-3. **Commit changes** Follow [Conventional Commits](#commit-message-format) with a layer prefix, e.g.
-   `[UseCases] feat: add download queue processor`
+3. **Commit changes** Follow [Conventional Commits](#commit-message-format), for example `feat(usecases): add download queue processor`
 
 4. **Push and open a Pull Request** Title the PR `[Layer] <summary>` and complete the PR template (link issues, add screenshots/tests as
    needed).
@@ -1284,7 +1283,7 @@ Follow this safety protocol whenever requirements are ambiguous:
 | **90 %+ coverage**                         | High confidence that business logic remains correct; enforced in CI.               |
 | **ADR for every big decision**             | Preserves architectural history; no “Why did we choose X?” mysteries.              |
 | **No secrets in repo**                     | Security first; use User Secrets or CI vaults.                                     |
-| **Commit style: `[Layer] type: summary`**  | Lets humans & CI trace changes by layer and intent.                                |
+| **Commit style: `type(scope): summary`**   | Lets humans & CI trace changes by layer and intent.                                |
 | **Run `./scripts/selfcheck.sh` before PR** | Guarantees local build = CI build; saves back-and-forth fixes.                     |
 | **Generated code exceptions**              | EF migrations & snapshots bypass analyzers; avoids pointless linter noise.         |
 | **Ask clarifying questions**               | AI (and humans) should pause if requirements are ambiguous—better than guessing.   |

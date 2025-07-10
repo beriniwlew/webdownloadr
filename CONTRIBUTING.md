@@ -6,7 +6,7 @@ Thank you for helping improve **WebDownloadr**. This repository follows the work
 
 1. Run `./scripts/setup-codex.sh` to install the .NET SDK and required global tools.
 2. Execute `./scripts/selfcheck.sh` (build, tests, formatting, `markdownlint-cli2`, and `prettier --check`) and make sure it exits with `0`.
-3. Commit using the format `[Layer] <type>: <summary>` following [Conventional Commits](https://www.conventionalcommits.org/).
+3. Commit using the format `type(scope): <summary>` following [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## Pull Requests
 
