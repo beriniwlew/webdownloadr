@@ -95,11 +95,21 @@ Optional helpers:
 
 ## Code Quality & Formatting
 
-- Analyzer warnings are treated as errors.
-- `dotnet format` and `dotnet format analyzers` must report no changes.
-- `markdownlint-cli2` and `prettier --check` enforce documentation style.
-- Follow `.editorconfig` settings such as file-scoped namespaces and LF endings.
-- Architecture rules are checked via `scripts/archtest.sh`.
+- All Roslyn analyzers and StyleCop rules run at severity **error**; the build must compile clean.
+- Source files use file-scoped namespaces and `#nullable enable`.
+- Types and methods follow PascalCase while locals and parameters use camelCase.
+- Prefer explicit access modifiers; `var` is allowed when the type is obvious.
+- Architecture boundaries are verified by running `./scripts/archtest.sh`.
+- Run the formatters and linters before committing:
+
+  ```bash
+  dotnet format --verify-no-changes
+  npx markdownlint-cli2 "**/*.md" "#node_modules"
+  npx prettier --check .
+  ```
+
+- Commit messages are validated with `commitlint`.
+- CI fails if global line coverage < 90 % — do not suppress tests.
 
 ## Testing Guidelines
 
