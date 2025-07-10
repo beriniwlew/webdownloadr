@@ -63,7 +63,7 @@ jobs:
         run: dotnet build WebDownloadr.sln --no-restore --configuration Release
 
       - name: Run all tests
-        run: dotnet test WebDownloadr.sln --no-build --verbosity normal
+        run: dotnet test WebDownloadr.sln --configuration Release --verbosity normal
 
       - name: Validate commit messages
         run: npx commitlint --from ${{ github.event.before }} --to ${{ github.sha }}
