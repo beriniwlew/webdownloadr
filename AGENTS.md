@@ -23,8 +23,13 @@ ci_requirements:
 
 ## Project Overview
 
-WebDownloadr is a clean-architecture .NET 9 application that downloads and persists web pages. It uses C# 12, FastEndpoints, MediatR, EF
-Core and xUnit. The solution is organized into Core, UseCases, Infrastructure and Web layers with tests mirroring this structure.
+WebDownloadr is a .NET 9 sample application demonstrating a Clean Architecture approach for downloading pages. It exposes
+FastEndpoints-based APIs to enqueue jobs and fetch pages asynchronously, managing a persistent download queue. The solution strictly
+separates concerns into layers (Core, UseCases, Infrastructure, Web), enforcing entity boundaries and inward dependency flow. At a high
+level, the Core project holds the domain model (WebPage entities) and UseCases contain CQRS handlers. Infrastructure implements persistence
+and HTTP services, while the Web project hosts the API.
+
+---
 
 ## Essential Commands
 
