@@ -1,2 +1,4 @@
 # .markdownlintignore
 node_modules/**
+agents-restructure-task-1.md
+docs/agents/agents-common-structures-and-templates.md

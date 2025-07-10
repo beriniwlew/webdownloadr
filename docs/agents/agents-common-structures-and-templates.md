@@ -1,82 +1,174 @@
 # Common AGENTS.md Structure and Templates
 
-OpenAI’s Codex CLI uses `AGENTS.md` files as *project-specific guidance*. By convention, Codex **merges** up to three layers of guidance: a global `~/.codex/AGENTS.md`, a repo-root `AGENTS.md`, and any `AGENTS.md` in the current subdirectory[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs). As OpenAI explains, these Markdown files (akin to READMEs) let you “inform Codex how to navigate your codebase, which commands to run for testing, and how best to adhere to your project’s standard practices”[openai.com](https://openai.com/index/introducing-codex/#:~:text=Codex%20can%20be%20guided%20by,testing%20setups%2C%20and%20clear%20documentation). In practice, developers use AGENTS.md to teach Codex about build/test commands, coding conventions, and project-specific rules. For example, the Codex README notes:
+OpenAI’s Codex CLI uses `AGENTS.md` files as _project-specific guidance_. By convention, Codex **merges** up to three layers of guidance: a
+global `~/.codex/AGENTS.md`, a repo-root `AGENTS.md`, and any `AGENTS.md` in the current
+subdirectory[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs). As OpenAI explains, these Markdown files
+(akin to READMEs) let you “inform Codex how to navigate your codebase, which commands to run for testing, and how best to adhere to your
+project’s standard
+practices”[openai.com](https://openai.com/index/introducing-codex/#:~:text=Codex%20can%20be%20guided%20by,testing%20setups%2C%20and%20clear%20documentation).
+In practice, developers use AGENTS.md to teach Codex about build/test commands, coding conventions, and project-specific rules. For example,
+the Codex README notes:
 
-- **Search Order:** Codex “looks for `AGENTS.md` files in the following places, and merges them top-down: 1) `~/.codex/AGENTS.md` (personal/global), 2) `AGENTS.md` at repo root (project-wide), 3) `AGENTS.md` in current directory (subfolder-specific)”[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs).
-- **Usage:** These files provide *additional instructions and guidance* (“Memory & project docs”) to the agent[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs). For instance, you might tell Codex to install dependencies (`npm install`), run tests (`npm test` or `dotnet test`), or enforce style (“prefer arrow functions” etc.).
-- **Non-interactive/CI Mode:** Codex supports headless execution for CI. In a GitHub Action, you can `npm install -g @openai/codex` and run `codex exec --full-auto "update CHANGELOG..."` to perform tasks in CI[github.com](https://github.com/openai/codex#:~:text=,update%20CHANGELOG%20for%20next%20release).
-- **Model Context Protocol:** Recent updates let Codex act as an MCP (Model Context Protocol) server to integrate external tools, although that’s still experimental[github.com](https://github.com/openai/codex#:~:text=The%20Codex%20CLI%20can%20be,g).
+- **Search Order:** Codex “looks for `AGENTS.md` files in the following places, and merges them top-down: 1) `~/.codex/AGENTS.md`
+  (personal/global), 2) `AGENTS.md` at repo root (project-wide), 3) `AGENTS.md` in current directory
+  (subfolder-specific)”[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs).
+- **Usage:** These files provide _additional instructions and guidance_ (“Memory & project docs”) to the
+  agent[github.com](https://github.com/openai/codex#:~:text=Memory%20%26%20project%20docs). For instance, you might tell Codex to install
+  dependencies (`npm install`), run tests (`npm test` or `dotnet test`), or enforce style (“prefer arrow functions” etc.).
+- **Non-interactive/CI Mode:** Codex supports headless execution for CI. In a GitHub Action, you can `npm install -g @openai/codex` and run
+  `codex exec --full-auto "update CHANGELOG..."` to perform tasks in
+  CI[github.com](https://github.com/openai/codex#:~:text=,update%20CHANGELOG%20for%20next%20release).
+- **Model Context Protocol:** Recent updates let Codex act as an MCP (Model Context Protocol) server to integrate external tools, although
+  that’s still experimental[github.com](https://github.com/openai/codex#:~:text=The%20Codex%20CLI%20can%20be,g).
 
-In short, Codex’s official docs stress using AGENTS.md as a configurable prompt template. By writing clear instructions and examples in these files, you guide Codex’s *planning and behavior*. For example, OpenAI’s blog notes that Codex “can be guided by AGENTS.md files placed within your repository…where you can inform Codex how to navigate your codebase, which commands to run… and how best to adhere to your project’s standard practices.”[openai.com](https://openai.com/index/introducing-codex/#:~:text=Codex%20can%20be%20guided%20by,testing%20setups%2C%20and%20clear%20documentation). Tools like Trunk explicitly recommend adding sections in AGENTS.md (e.g. “## Formatting and Linting”) so that Codex can automatically run formatters or linters after edits[docs.trunk.io](https://docs.trunk.io/code-quality/setup-and-installation/openai-codex-support#:~:text=Teaching%20Codex%20how%20to%20use,Trunk).
+In short, Codex’s official docs stress using AGENTS.md as a configurable prompt template. By writing clear instructions and examples in
+these files, you guide Codex’s _planning and behavior_. For example, OpenAI’s blog notes that Codex “can be guided by AGENTS.md files placed
+within your repository…where you can inform Codex how to navigate your codebase, which commands to run… and how best to adhere to your
+project’s standard
+practices.”[openai.com](https://openai.com/index/introducing-codex/#:~:text=Codex%20can%20be%20guided%20by,testing%20setups%2C%20and%20clear%20documentation).
+Tools like Trunk explicitly recommend adding sections in AGENTS.md (e.g. “## Formatting and Linting”) so that Codex can automatically run
+formatters or linters after
+edits[docs.trunk.io](https://docs.trunk.io/code-quality/setup-and-installation/openai-codex-support#:~:text=Teaching%20Codex%20how%20to%20use,Trunk).
 
-## Common AGENTS.md Structure and Templates
+## Overview
 
-While there is no single “official schema” beyond Markdown, many projects follow similar patterns. Typical sections include **Project Overview** (basic description of the repo), **Essential Commands** (build/test/deploy), and **Development Guidelines** (coding style, PR etiquette, etc.). For example, the Prefect AI library’s AGENTS.md starts with a project summary and a checklist, then lists critical commands for setup and testing[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L5-L13)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25). A condensed template might look like:
+While there is no single “official schema” beyond Markdown, many projects follow similar patterns. Typical sections include **Project
+Overview** (basic description of the repo), **Essential Commands** (build/test/deploy), and **Development Guidelines** (coding style, PR
+etiquette, etc.). For example, the Prefect AI library’s AGENTS.md starts with a project summary and a checklist, then lists critical
+commands for setup and
+testing[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L5-L13)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25).
+A condensed template might look like:
 
-- **Project Overview:** A short description of the codebase (e.g. “Prefect is a workflow orchestration platform for Python”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L5-L13)).
+- **Project Overview:** A short description of the codebase (e.g. “Prefect is a workflow orchestration platform for
+  Python”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L5-L13)).
 - **Tech Stack:** Key frameworks/languages used.
-- **Essential Commands:** Code blocks for installing dependencies and running tests (e.g. `pip install -r requirements.txt`, `pytest tests/`)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25). Many AGENTS.md use fenced code blocks to illustrate commands, as in the Prefect example[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25) or a Node/TypeScript monorepo example[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47).
+- **Essential Commands:** Code blocks for installing dependencies and running tests (e.g. `pip install -r requirements.txt`,
+  `pytest tests/`)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25). Many
+  AGENTS.md use fenced code blocks to illustrate commands, as in the Prefect
+  example[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25) or a Node/TypeScript
+  monorepo example[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47).
 - **Development Workflow:** Steps or bullet points for iterative development (commit conventions, branch naming, etc.).
 - **Code Quality/Formatting:** Commands for linters/formatters (e.g. `eslint`, `black`) and any style rules.
 - **Testing Guidelines:** How to run and write tests (pytest, xUnit, etc.).
-- **Pull Request Conventions:** How to format commit messages or PR descriptions (issue references, summary style, etc.). For instance, the Prefect AGENTS.md instructs agents to “Always include a clear title, description, and use imperative mood”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L60-L65).
+- **Pull Request Conventions:** How to format commit messages or PR descriptions (issue references, summary style, etc.). For instance, the
+  Prefect AGENTS.md instructs agents to “Always include a clear title, description, and use imperative
+  mood”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L60-L65).
 
-These sections are often written in bullet or numbered lists for clarity. The Prefect example AGENTS.md explicitly states it “provides guidance to AI assistants”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L3-L5) and then enumerates project details and instructions. Similarly, the Torus TypeScript monorepo’s instructions (in its CLAUDE.md/AGENTS.md) list “Development Workflow” commands and “Code Quality” commands in markdown code blocks[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47). In practice, content is tailored to the stack: Python projects mention `pip`, `pytest`, venv activation; Node projects cite `npm`, `pnpm`, `Justfile` or `make`; .NET projects note `dotnet restore`, `dotnet test`, solution files, etc.
+These sections are often written in bullet or numbered lists for clarity. The Prefect example AGENTS.md explicitly states it “provides
+guidance to AI assistants”[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L3-L5) and
+then enumerates project details and instructions. Similarly, the Torus TypeScript monorepo’s instructions (in its CLAUDE.md/AGENTS.md) list
+“Development Workflow” commands and “Code Quality” commands in markdown code
+blocks[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47). In practice,
+content is tailored to the stack: Python projects mention `pip`, `pytest`, venv activation; Node projects cite `npm`, `pnpm`, `Justfile` or
+`make`; .NET projects note `dotnet restore`, `dotnet test`, solution files, etc.
 
-A useful template (inspired by Tembo docs[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Common%20Commands%20and%20Scripts)) is:
+A useful template (inspired by Tembo
+docs[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Common%20Commands%20and%20Scripts)) is:
 
-```
+```markdown
 # AGENTS.md
+
 ## Project Overview
+
 - Brief description of the project and its purpose.
 
 ## Essential Commands
+
 - Build: \`npm run build\` or \`dotnet build\`.
 - Test: \`npm test\` or \`dotnet test\`.
 - Lint/Format: \`npm run lint\` or \`dotnet format\`.
 
 ## Development Guidelines
+
 - Language/version: e.g. Python 3.10, .NET 6.
 - Frameworks: e.g. React, ASP.NET Core.
 - Patterns: e.g. Clean Architecture layers, DDD.
 - CI/CD: e.g. \`dotnet publish\`, \`docker build\`.
 
 ## PR & Commit Conventions
+
 - Use imperative commit messages.
 - Reference GitHub issues by number (e.g. “Fixes #123”).
 - Run tests and linters before merging.
 
-*Example: In Prefect’s AGENTS.md, they instruct Codex to run \`uv sync\` to install deps and \`uv run pytest tests/\` for tests:contentReference[oaicite:18]{index=18}.*
+_Example: In Prefect’s AGENTS.md, they instruct Codex to run \`uv sync\` to install deps and \`uv run pytest tests/\` for
+tests:contentReference[oaicite:18]{index=18}._
 ```
 
 ## AGENTS.md in AI-Orchestration Frameworks
 
-Most agent frameworks (Semantic Kernel, LangChain, etc.) do not *natively* read an AGENTS.md. Instead they use code “skills”, tools, and prompt templates. However, some modern tooling supports similar context files. For example, Microsoft’s Tembo (an AI assistant for code reviews) explicitly recognizes `AGENTS.md` (and variants) as a rule file name[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used). Tembo’s docs list `AGENTS.md` among supported “project-level instruction” files: it will load the first matching file (e.g. `tembo.md`, `CLAUDE.md`, or `AGENTS.md`) to provide context[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used). These context files feed persistent guidelines into the agent’s prompt.
+Most agent frameworks (Semantic Kernel, LangChain, etc.) do not _natively_ read an AGENTS.md. Instead they use code “skills”, tools, and
+prompt templates. However, some modern tooling supports similar context files. For example, Microsoft’s Tembo (an AI assistant for code
+reviews) explicitly recognizes `AGENTS.md` (and variants) as a rule file
+name[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used).
+Tembo’s docs list `AGENTS.md` among supported “project-level instruction” files: it will load the first matching file (e.g. `tembo.md`,
+`CLAUDE.md`, or `AGENTS.md`) to provide
+context[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used).
+These context files feed persistent guidelines into the agent’s prompt.
 
-In contrast, **LangChain** and **Semantic Kernel** rely on programmatic agent definitions: they use prompt templates, memory modules, and tool specs to guide the agent’s behavior. For example, a LangChain agent might have a system prompt encoding project rules, or Semantic Kernel might load context into memory, but neither has a built-in “AGENTS.md parser.” In practice, one could manually load an AGENTS.md and insert it into a system message or knowledge base, but this is a custom integration. That said, community examples (e.g. LangChain tutorials) show agents using memory to store project docs, which is conceptually similar to the hierarchical context of AGENTS.md.
+In contrast, **LangChain** and **Semantic Kernel** rely on programmatic agent definitions: they use prompt templates, memory modules, and
+tool specs to guide the agent’s behavior. For example, a LangChain agent might have a system prompt encoding project rules, or Semantic
+Kernel might load context into memory, but neither has a built-in “AGENTS.md parser.” In practice, one could manually load an AGENTS.md and
+insert it into a system message or knowledge base, but this is a custom integration. That said, community examples (e.g. LangChain
+tutorials) show agents using memory to store project docs, which is conceptually similar to the hierarchical context of AGENTS.md.
 
-**Key point:** AGENTS.md is primarily a convention from tooling like Codex, Gemini CLI, Cursor, etc. It *could* be used with Semantic Kernel or LangChain by reading the file and injecting its contents as a system prompt or memory, but no standard library currently automates that. The Tembo example[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used) shows that more specialized agent frameworks do support this pattern.
+**Key point:** AGENTS.md is primarily a convention from tooling like Codex, Gemini CLI, Cursor, etc. It _could_ be used with Semantic Kernel
+or LangChain by reading the file and injecting its contents as a system prompt or memory, but no standard library currently automates that.
+The Tembo
+example[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used)
+shows that more specialized agent frameworks do support this pattern.
 
 ## CI/CD and GitHub Actions Integration
 
-Organizations treat AGENTS.md as part of the codebase, so they include it in CI checks. A common approach is to run an agent in CI to apply auto-fixes or verify compliance. For example, the Codex CLI supports a headless mode: in a GitHub Action you can install Codex and run `codex exec --full-auto "<task>"` to have Codex update files automatically[github.com](https://github.com/openai/codex#:~:text=,update%20CHANGELOG%20for%20next%20release). This can be used to update docs, refactor code, or regenerate tests as part of a pipeline.
+Organizations treat AGENTS.md as part of the codebase, so they include it in CI checks. A common approach is to run an agent in CI to apply
+auto-fixes or verify compliance. For example, the Codex CLI supports a headless mode: in a GitHub Action you can install Codex and run
+`codex exec --full-auto "<task>"` to have Codex update files
+automatically[github.com](https://github.com/openai/codex#:~:text=,update%20CHANGELOG%20for%20next%20release). This can be used to update
+docs, refactor code, or regenerate tests as part of a pipeline.
 
-More often, teams use tools like **Ruler** (open-source) to manage AGENTS.md and other agent instructions. Ruler lets you define rules in a folder (e.g. `.ruler/instructions.md`) and then *apply* them to all agent config files (Codex, Copilot, Claude, etc.) at once. In CI, you can run something like `ruler apply --no-gitignore` to sync AGENTS.md and friends, and then fail the build if any changes appear[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above). Its documentation includes a GitHub Actions example that checks out the repo, installs Ruler, and runs `ruler apply`, then errors if files were modified[github.com](https://github.com/intellectronica/ruler#:~:text=Integration%20with%20GitHub%20Actions). Ruler’s FAQ explicitly notes: “**Q:** Can I run Ruler in CI/CD pipelines? **A:** Yes! Use `ruler apply --no-gitignore` in CI…See the GitHub Actions example above.”[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above). This ensures the committed `AGENTS.md` is always up-to-date with the intended guidelines.
+More often, teams use tools like **Ruler** (open-source) to manage AGENTS.md and other agent instructions. Ruler lets you define rules in a
+folder (e.g. `.ruler/instructions.md`) and then _apply_ them to all agent config files (Codex, Copilot, Claude, etc.) at once. In CI, you
+can run something like `ruler apply --no-gitignore` to sync AGENTS.md and friends, and then fail the build if any changes
+appear[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above).
+Its documentation includes a GitHub Actions example that checks out the repo, installs Ruler, and runs `ruler apply`, then errors if files
+were modified[github.com](https://github.com/intellectronica/ruler#:~:text=Integration%20with%20GitHub%20Actions). Ruler’s FAQ explicitly
+notes: “**Q:** Can I run Ruler in CI/CD pipelines? **A:** Yes! Use `ruler apply --no-gitignore` in CI…See the GitHub Actions example
+above.”[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above).
+This ensures the committed `AGENTS.md` is always up-to-date with the intended guidelines.
 
-Other practices: some projects incorporate AGENTS.md into deployment checks. For instance, the Trunk docs advise adding a “## Formatting and Linting” section in AGENTS.md so that Codex can automatically invoke `trunk check` or `trunk fmt` after edits[docs.trunk.io](https://docs.trunk.io/code-quality/setup-and-installation/openai-codex-support#:~:text=Teaching%20Codex%20how%20to%20use,Trunk). Similarly, some teams trigger Codex or Binder runs in a PR pipeline to verify that agent-produced code still builds and passes tests. In summary, while AGENTS.md is a developer-centric convention, it has begun appearing in automated workflows via Codex CLI and tools like Ruler.
+Other practices: some projects incorporate AGENTS.md into deployment checks. For instance, the Trunk docs advise adding a “## Formatting and
+Linting” section in AGENTS.md so that Codex can automatically invoke `trunk check` or `trunk fmt` after
+edits[docs.trunk.io](https://docs.trunk.io/code-quality/setup-and-installation/openai-codex-support#:~:text=Teaching%20Codex%20how%20to%20use,Trunk).
+Similarly, some teams trigger Codex or Binder runs in a PR pipeline to verify that agent-produced code still builds and passes tests. In
+summary, while AGENTS.md is a developer-centric convention, it has begun appearing in automated workflows via Codex CLI and tools like
+Ruler.
 
 ## Language/Ecosystem Variations
 
 AGENTS.md contents naturally reflect the tech stack. A comparison of common patterns:
 
-| Aspect | .NET / C# (Clean Arch) | Node.js / TypeScript | Python (General) |
-| --- | --- | --- | --- |
-| **Tooling** | `dotnet` CLI, MSBuild, NuGet, EF Core migrations, Docker for .NET | `npm`/`pnpm`, `node`, `docker`, package managers (Turborepo, Yarn) | `pip`/`poetry`, `pytest`, `flask`/`django`/`fastapi`, venv/conda |
-| **Build & Test** | `dotnet restore && dotnet test` (solution-level); may reference `.sln` and multiple projects | `npm install` and `npm test`; e.g. Torus uses a `Justfile` or `Makefile` to run `build`, `dev`, `lint`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47) | `pip install -r requirements.txt` (or `uv`/`poetry`); `pytest tests/`; examples often show `uv sync`, `pytest`[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25) |
-| **Coding Style** | C# style: use of editorsconfig, Roslyn analyzers. AGENTS.md might mention `dotnet format`, code analyzers, architecture tests (e.g. NetArchTest) | JS/TS style: `eslint`, `prettier`, maybe mention monorepo tasks. Torus example lists `just lint`, `just format`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L62-L70). | Python style: `black`, `flake8`. AGENTS.md often mention running formatters (`uv run black`) and test coverage. |
-| **Project Layout** | Clean Architecture layers (Domain, Application, Infrastructure, WebAPI). AGENTS.md may note solution name (`Equinox.sln` present[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=)) and that e.g. architecture rules exist. | Often a single-package or monorepo (`src/`, `packages/`). The AGENTS.md can detail workspace structure (see Torus example[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L134-L141)). | Typically `src/`, `tests/`, sometimes `app.py` or Django style. AGENTS.md might note where `app.py` lives or how to run the server. |
-| **Example** | *EquinoxProject* (ASP.NET Clean Arch) includes an `AGENTS.md` at repo root[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=). Content would cover `dotnet` commands (e.g. `dotnet ef migrations`, `dotnet test`) and architectural guidelines. | *Torus (Ren Labs)* uses AGENTS/CLAUDE.md extensively. It lists Justfile commands like `just install`, `just build`, `just dev`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47), plus lint/test. | *Prefect*’s AGENTS.md (Python) lists `uv sync` to install and `pytest tests/` to test[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25), and notes Python version and formatting tools. |
+| Aspect             | .NET / C# (Clean Arch)                                                                                                                                                                                                                                            | Node.js / TypeScript                                                                                                                                                                                                                                             | Python (General)                                                                                                                                                                                                                                    |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tooling**        | `dotnet` CLI, MSBuild, NuGet, EF Core migrations, Docker for .NET                                                                                                                                                                                                 | `npm`/`pnpm`, `node`, `docker`, package managers (Turborepo, Yarn)                                                                                                                                                                                               | `pip`/`poetry`, `pytest`, `flask`/`django`/`fastapi`, venv/conda                                                                                                                                                                                    |
+| **Build & Test**   | `dotnet restore && dotnet test` (solution-level); may reference `.sln` and multiple projects                                                                                                                                                                      | `npm install` and `npm test`; e.g. Torus uses a `Justfile` or `Makefile` to run `build`, `dev`, `lint`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47)                                          | `pip install -r requirements.txt` (or `uv`/`poetry`); `pytest tests/`; examples often show `uv sync`, `pytest`[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25)                        |
+| **Coding Style**   | C# style: use of editorsconfig, Roslyn analyzers. AGENTS.md might mention `dotnet format`, code analyzers, architecture tests (e.g. NetArchTest)                                                                                                                  | JS/TS style: `eslint`, `prettier`, maybe mention monorepo tasks. Torus example lists `just lint`, `just format`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L62-L70).                                | Python style: `black`, `flake8`. AGENTS.md often mention running formatters (`uv run black`) and test coverage.                                                                                                                                     |
+| **Project Layout** | Clean Architecture layers (Domain, Application, Infrastructure, WebAPI). AGENTS.md may note solution name (`Equinox.sln` present[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=)) and that e.g. architecture rules exist.                    | Often a single-package or monorepo (`src/`, `packages/`). The AGENTS.md can detail workspace structure (see Torus example[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L134-L141)).                   | Typically `src/`, `tests/`, sometimes `app.py` or Django style. AGENTS.md might note where `app.py` lives or how to run the server.                                                                                                                 |
+| **Example**        | _EquinoxProject_ (ASP.NET Clean Arch) includes an `AGENTS.md` at repo root[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=). Content would cover `dotnet` commands (e.g. `dotnet ef migrations`, `dotnet test`) and architectural guidelines. | _Torus (Ren Labs)_ uses AGENTS/CLAUDE.md extensively. It lists Justfile commands like `just install`, `just build`, `just dev`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47), plus lint/test. | _Prefect_’s AGENTS.md (Python) lists `uv sync` to install and `pytest tests/` to test[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25), and notes Python version and formatting tools. |
 
-Each ecosystem tailors AGENTS.md to its common tools. For example, in a .NET Clean Architecture repo one would instruct the agent to run solution builds (`dotnet build MyApp.sln`), execute Entity Framework migrations (`dotnet ef database update`), and run architecture/unit tests. By contrast, a Node project’s AGENTS.md (like Torus’s) shows commands via `just` or `npm`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47), and a Python project’s AGENTS.md (like Prefect’s) uses `pip/uv sync` and `pytest`[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25). The presence of files like `Equinox.sln` and `AGENTS.md` side-by-side[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=) underscores that in .NET projects the solution file is a key part of context. In summary, the *format* of AGENTS.md is consistent (Markdown sections and lists), but *content* is ecosystem-specific, reflecting each stack’s build/test workflows and architectural conventions.
+Each ecosystem tailors AGENTS.md to its common tools. For example, in a .NET Clean Architecture repo one would instruct the agent to run
+solution builds (`dotnet build MyApp.sln`), execute Entity Framework migrations (`dotnet ef database update`), and run architecture/unit
+tests. By contrast, a Node project’s AGENTS.md (like Torus’s) shows commands via `just` or
+`npm`[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47), and a Python
+project’s AGENTS.md (like Prefect’s) uses `pip/uv sync` and
+`pytest`[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25). The presence of
+files like `Equinox.sln` and `AGENTS.md` side-by-side[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=) underscores that
+in .NET projects the solution file is a key part of context. In summary, the _format_ of AGENTS.md is consistent (Markdown sections and
+lists), but _content_ is ecosystem-specific, reflecting each stack’s build/test workflows and architectural conventions.
 
-**Authoritative Examples:** For concrete references, see Prefect’s AGENTS.md[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L3-L13)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25) and Torus/CLAUDE.md[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47) for Python and TypeScript patterns, and EquinoxProject’s repo showing AGENTS.md alongside `.sln`[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=). Tools like Tembo and Ruler provide templates and CLI support for managing these files in multi-agent environments[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used)[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above).
+**Authoritative Examples:** For concrete references, see Prefect’s
+AGENTS.md[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L3-L13)[GitHub](https://github.com/PrefectHQ/prefect/blob/2c899c808f109606602f506b60fc78be95f5ecf9/AGENTS.md#L19-L25)
+and Torus/CLAUDE.md[GitHub](https://github.com/renlabs-dev/torus-ts/blob/20f76747c77adb75255ff26edc3dcfa6812e738a/CLAUDE.md#L40-L47) for
+Python and TypeScript patterns, and EquinoxProject’s repo showing AGENTS.md alongside
+`.sln`[github.com](https://github.com/EduardoPires/EquinoxProject#:~:text=). Tools like Tembo and Ruler provide templates and CLI support
+for managing these files in multi-agent
+environments[docs.tembo.io](https://docs.tembo.io/features/rule-files#:~:text=Tembo%20supports%20configuration%20files%20at,this%20list%20will%20be%20used)[github.com](https://github.com/intellectronica/ruler#:~:text=Q%3A%20Can%20I%20run%20Ruler,the%20GitHub%20Actions%20example%20above).
