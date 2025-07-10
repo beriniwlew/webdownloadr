@@ -16,7 +16,7 @@ dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
 
 # Lint and format Markdown documentation
 npx --yes markdownlint-cli2 "**/*.md"
-npx --yes prettier --check "**/*.md"
+npx --yes prettier --check "**/*.md" "**/*.json"
 
 # Validate commit messages
 npm install --no-save @commitlint/config-conventional
