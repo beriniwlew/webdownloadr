@@ -1,5 +1,10 @@
 # .prettierignore
+
+# Package manager & generated output
 node_modules/
 dist/
-obj/
+
+# .NET build artefacts
+**/bin/**
+**/obj/**
 .vs/
