@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  setup-and-format:
-    name: Check Formatting
+  check-formatting:
+    name: Check Formatting & Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,27 +25,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Restore solution
+      - name: Restore dependencies
         run: dotnet restore WebDownloadr.sln
 
-      - name: Verify whitespace & EOL
-        run: |
-          dotnet format whitespace --folder . --verify-no-changes || {
-            echo "::error title=EOL/Whitespace Issues::Run './scripts/bootstrap-format.sh' to fix.";
-            exit 1;
-          }
+      - name: Check .NET formatting
+        run: dotnet format WebDownloadr.sln --verify-no-changes --verbosity diagnostic
 
-      - name: Verify analyzer rules
+      - name: MarkdownLint docs
         run: |
-          dotnet format WebDownloadr.sln analyzers --verify-no-changes || {
-            echo "::error title=Analyzer Formatting Issues::Run './scripts/bootstrap-format.sh' to fix.";
-            exit 1;
-          }
+          npx --yes markdownlint-cli2 "**/*.md"
+
+      - name: Prettier check
+        run: |
+          npx --yes prettier --list-different "**/*.md" "**/*.json"
 
   build:
     name: Build and Selfcheck
     runs-on: ubuntu-latest
-    needs: setup-and-format
+    needs: check-formatting
     steps:
       - uses: actions/checkout@v4
 
