@@ -1,9 +1,11 @@
 {
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "markdownlint-cli2": "^0.18.1",
     "prettier": "^3.6.2"
   },
   "scripts": {
-    "commitlint": "commitlint --from $GITHUB_SHA~100 --to $GITHUB_SHA"
+    "commitlint": "commitlint --from HEAD~100 --to HEAD"
   }
 }
