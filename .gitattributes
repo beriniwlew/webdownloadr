@@ -1,4 +1,18 @@
-# Enforce CRLF for text files; keep shell scripts LF
-* text eol=crlf
-*.sh text eol=lf
+# Enforce LF line endings for text files
+* text=auto eol=lf
+
+# Shell and PowerShell scripts always LF
+*.sh eol=lf
+*.ps1 eol=lf
+
+# Windows batch files keep CRLF
+*.bat eol=crlf
+*.cmd eol=crlf
+
+# Binary files
 *.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
