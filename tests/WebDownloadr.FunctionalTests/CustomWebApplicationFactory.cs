@@ -1,4 +1,6 @@
-﻿using WebDownloadr.Infrastructure.Data;
+﻿using WebDownloadr.Core.Interfaces;
+using WebDownloadr.Infrastructure.Data;
+using WebDownloadr.Infrastructure.Email;
 
 namespace WebDownloadr.FunctionalTests;
 
@@ -60,26 +62,13 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
     builder
         .ConfigureServices(services =>
         {
-          // Configure test dependencies here
-
-          //// Remove the app's ApplicationDbContext registration.
-          //var descriptor = services.SingleOrDefault(
-          //d => d.ServiceType ==
-          //    typeof(DbContextOptions<AppDbContext>));
-
-          //if (descriptor != null)
-          //{
-          //  services.Remove(descriptor);
-          //}
-
-          //// This should be set for each individual test run
-          //string inMemoryCollectionName = Guid.NewGuid().ToString();
-
-          //// Add ApplicationDbContext using an in-memory database for testing.
-          //services.AddDbContext<AppDbContext>(options =>
-          //{
-          //  options.UseInMemoryDatabase(inMemoryCollectionName);
-          //});
+          // Replace email sender with fake implementation
+          var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IEmailSender));
+          if (descriptor != null)
+          {
+            services.Remove(descriptor);
+          }
+          services.AddScoped<IEmailSender, FakeEmailSender>();
         });
   }
 }
