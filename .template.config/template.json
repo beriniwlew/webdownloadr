@@ -1,11 +1,7 @@
 {
   "$schema": "http://json.schemastore.org/template",
   "author": "Steve Smith @ardalis, Erik Dahl",
-  "classifications": [
-    "Web",
-    "ASP.NET",
-    "Clean Architecture"
-  ],
+  "classifications": ["Web", "ASP.NET", "Clean Architecture"],
   "tags": {
     "language": "C#",
     "type": "project"
@@ -25,30 +21,15 @@
   },
   "sources": [
     {
-      "exclude": [ 
-        ".vs/**",
-        ".vscode/**",
-        ".git/**",
-        ".github/**",
-        ".template.config",
-        "sample/**"
-      ],
+      "exclude": [".vs/**", ".vscode/**", ".git/**", ".github/**", ".template.config", "sample/**"],
       "modifiers": [
         {
           "condition": "(!aspire)",
-          "exclude": [
-            "src/WebDownloadr.AspireHost/**",
-            "src/WebDownloadr.ServiceDefaults/**",
-            "tests/WebDownloadr.AspireTests/**"
-          ]
+          "exclude": ["src/WebDownloadr.AspireHost/**", "src/WebDownloadr.ServiceDefaults/**", "tests/WebDownloadr.AspireTests/**"]
         },
         {
           "condition": "(aspire)",
-          "include": [
-            "src/WebDownloadr.AspireHost/**",
-            "src/WebDownloadr.ServiceDefaults/**",
-            "tests/WebDownloadr.AspireTests/**"
-          ]
+          "include": ["src/WebDownloadr.AspireHost/**", "src/WebDownloadr.ServiceDefaults/**", "tests/WebDownloadr.AspireTests/**"]
         }
       ]
     }
