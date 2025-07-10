@@ -31,45 +31,44 @@ and HTTP services, while the Web project hosts the API.
 
 ## Tech Stack
 
-- **Language / Runtime**  C# 12 on **.NET 9.0 Preview** (pinned via `global.json`)
-- **API Layer**  [FastEndpoints v6.2] – ultra-thin minimal-API wrapper
-- **CQRS / Mediator**  MediatR 13 (+ FastEndpoints integration)
-- **Persistence**  Entity Framework Core 9.0.6 (SQL Server provider)
-- **Domain Validation**  Ardalis.GuardClauses, FluentValidation
-- **Logging / Telemetry**  Serilog (+ OpenTelemetry exporters)
-- **Testing**  xUnit 2.9.3, NSubstitute 5.3, Shouldly 4.3, Microsoft.AspNetCore.Mvc.Testing 9.0.6
-- **Code Quality**  Roslyn analyzers (Microsoft + StyleCop), `dotnet-format`, markdownlint-cli2, Prettier
-- **Coverage**  coverlet.collector + ReportGenerator (≥ 90 % gate)
-- **Scripting / Tooling**  Bash scripts in `scripts/`, Docker Compose for optional local SQL Server
+- **Language / Runtime** C# 12 on **.NET 9.0 Preview** (pinned via `global.json`)
+- **API Layer** [FastEndpoints v6.2] – ultra-thin minimal-API wrapper
+- **CQRS / Mediator** MediatR 13 (+ FastEndpoints integration)
+- **Persistence** Entity Framework Core 9.0.6 (SQL Server provider)
+- **Domain Validation** Ardalis.GuardClauses, FluentValidation
+- **Logging / Telemetry** Serilog (+ OpenTelemetry exporters)
+- **Testing** xUnit 2.9.3, NSubstitute 5.3, Shouldly 4.3, Microsoft.AspNetCore.Mvc.Testing 9.0.6
+- **Code Quality** Roslyn analyzers (Microsoft + StyleCop), `dotnet-format`, markdownlint-cli2, Prettier
+- **Coverage** coverlet.collector + ReportGenerator (≥ 90 % gate)
+- **Scripting / Tooling** Bash scripts in `scripts/`, Docker Compose for optional local SQL Server
 
 ---
 
 ## Essential Commands
 
+Below are the commands Codex (and humans) should run in typical workflows.
+
 ```bash
-# Install SDK and tools
-./scripts/setup-codex.sh
-
-# Restore dependencies
+# 🔧 Restore packages & build solution (Release configuration)
 dotnet restore WebDownloadr.sln
+dotnet build   WebDownloadr.sln --configuration Release
 
-# Build with warnings as errors
-dotnet build --no-restore WebDownloadr.sln -warnaserror
+# ⚙️  Format & lint all code and docs
+./scripts/format.sh       # dotnet-format + markdownlint + prettier
 
-# Run tests with coverage
-dotnet test --no-build --no-restore WebDownloadr.sln
+# ✅ Run all unit / integration tests with coverage
+dotnet test WebDownloadr.sln \
+  --collect:"XPlat Code Coverage" \
+  --configuration Release
 
-# Verify formatting and analyzers
-dotnet format WebDownloadr.sln --verify-no-changes --no-restore
-dotnet format WebDownloadr.sln analyzers --verify-no-changes --no-restore
+# 📊 Generate coverage report (HTML)
+reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage
 
-# Lint markdown and JSON docs
-npx markdownlint-cli2 "**/*.md" "#node_modules"
-npx prettier --check --ignore-path .prettierignore "**/*.{md,json}"
+# 🚀 Run the API locally (hot-reload disabled for deterministic output)
+dotnet run --project src/WebDownloadr.Web/WebDownloadr.Web.csproj
 
-# One-stop check
+# 🩺 One-shot self-check (build → test → format → coverage ≥ 90 %)
 ./scripts/selfcheck.sh
-# Skip individual steps with flags like `--skip-test` or `--skip-format` if needed
 ```
 
 ## Development Workflow
