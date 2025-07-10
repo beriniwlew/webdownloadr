@@ -37,6 +37,15 @@ public sealed record CreateProjectResponse(int ProjectId);
 - Configure global exception handling and Serilog request logging.
 - Register Infrastructure and UseCases via `InfrastructureServiceExtensions` and `UseCaseServiceExtensions`.
 
+### Opt-In MVC / Razor
+
+```csharp
+builder.Services.AddControllers();
+app.MapControllers();
+```
+
+_Only add controllers if FastEndpoints becomes insufficient._
+
 ## Authentication & Authorization
 
 - Configure authentication schemes in this project.
