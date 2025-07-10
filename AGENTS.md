@@ -29,6 +29,19 @@ separates concerns into layers (Core, UseCases, Infrastructure, Web), enforcing 
 level, the Core project holds the domain model (WebPage entities) and UseCases contain CQRS handlers. Infrastructure implements persistence
 and HTTP services, while the Web project hosts the API.
 
+## Tech Stack
+
+- **Language / Runtime**  C# 12 on **.NET 9.0 Preview** (pinned via `global.json`)
+- **API Layer**  [FastEndpoints v6.2] – ultra-thin minimal-API wrapper
+- **CQRS / Mediator**  MediatR 13 (+ FastEndpoints integration)
+- **Persistence**  Entity Framework Core 9.0.6 (SQL Server provider)
+- **Domain Validation**  Ardalis.GuardClauses, FluentValidation
+- **Logging / Telemetry**  Serilog (+ OpenTelemetry exporters)
+- **Testing**  xUnit 2.9.3, NSubstitute 5.3, Shouldly 4.3, Microsoft.AspNetCore.Mvc.Testing 9.0.6
+- **Code Quality**  Roslyn analyzers (Microsoft + StyleCop), `dotnet-format`, markdownlint-cli2, Prettier
+- **Coverage**  coverlet.collector + ReportGenerator (≥ 90 % gate)
+- **Scripting / Tooling**  Bash scripts in `scripts/`, Docker Compose for optional local SQL Server
+
 ---
 
 ## Essential Commands
