@@ -73,11 +73,25 @@ dotnet run --project src/WebDownloadr.Web/WebDownloadr.Web.csproj
 
 ## Development Workflow
 
-1. Create a branch using one of the prefixes above.
-2. Implement your change respecting Clean Architecture boundaries.
-3. Run `./scripts/selfcheck.sh` locally; fix any issues.
-4. Commit with `type(scope): summary` and push.
-5. Open a pull request with an imperative title and descriptive body referencing issues (e.g. `Fixes #42`).
+1. **Create a feature branch** – name it `feat/<layer>/<short-desc>` or `fix/<layer>/<short-desc>`.
+2. **Implement the change** following Clean-Architecture layer rules.
+3. **Run local quality gate**:
+
+   ```bash
+   ./scripts/selfcheck.sh  # restore → build → test → format → coverage ≥90 %
+   ```
+
+   – If any step fails, fix before committing.
+
+4. **Commit** using Conventional Commits (`type(scope): summary`).
+5. **Push & open PR** – title `[Layer] <summary>` and fill in the PR template checklist.
+6. **Ensure CI passes** (same self-check); address feedback before merge.
+
+Optional helpers:
+
+- `./scripts/archtest.sh` – run architecture tests
+- `dotnet ef migrations add <Name>` – create EF Core migration when persistence changes
+- `scripts/format.sh` – auto-apply `dotnet format`, Prettier, markdownlint
 
 ## Code Quality & Formatting
 
