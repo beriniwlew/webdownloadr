@@ -32,15 +32,13 @@ jobs:
         run: dotnet format WebDownloadr.sln --verify-no-changes --verbosity diagnostic
 
       - name: MarkdownLint docs
-        run: |
-          npx --yes markdownlint-cli2 "**/*.md"
+        run: npx --yes markdownlint-cli2 "**/*.md"
 
       - name: Prettier check
-        run: |
-          npx --yes prettier --list-different "**/*.md" "**/*.json"
+        run: npx --yes prettier --list-different "**/*.md" "**/*.json"
 
-  build:
-    name: Build and Selfcheck
+  build-and-test:
+    name: Build, Test & Validate
     runs-on: ubuntu-latest
     needs: check-formatting
     steps:
@@ -61,8 +59,11 @@ jobs:
       - name: Restore solution
         run: dotnet restore WebDownloadr.sln
 
-      - name: Selfcheck script
-        run: ./scripts/selfcheck.sh
+      - name: Build solution
+        run: dotnet build WebDownloadr.sln --no-restore --configuration Release
+
+      - name: Run all tests
+        run: dotnet test WebDownloadr.sln --no-build --verbosity normal
+
       - name: Validate commit messages
         run: npx commitlint --from ${{ github.event.before }} --to ${{ github.sha }}
-
