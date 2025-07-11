@@ -47,10 +47,12 @@ fi
 if ! $SKIP_FORMAT; then
   dotnet format "$PROJECT" --verify-no-changes --no-restore
   dotnet format "$PROJECT" analyzers --verify-no-changes --no-restore
+  shfmt -i 2 -d $(git ls-files '*.sh')
+  shellcheck $(git ls-files '*.sh')
 fi
 
 if ! $SKIP_DOCS; then
-  npx --yes markdownlint-cli2 "**/*.md" "#node_modules"   # ignore via '#' glob
+  npx --yes markdownlint-cli2 "**/*.md" "#node_modules" "#AGENTS.md"   # ignore via '#' glob
   npx --yes prettier --check --ignore-path .prettierignore "**/*.{md,json}"
 fi
 

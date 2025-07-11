@@ -53,11 +53,12 @@ The repository's `.gitattributes` enforces LF for text files and marks common bi
 
 After this commit, `./scripts/format.sh` (or `dotnet format`) runs in CI and must report no changes.
 
-Run `npx prettier --check .` and `npx markdownlint-cli2` to verify documentation formatting. See `AGENTS.md` for configuration details.
+Prettier and `markdownlint-cli2` enforce documentation style. They run automatically via pre-commit but you can verify manually with
+`npx prettier --check .` and `npx markdownlint-cli2`.
 
 ## Pre-commit
 
-Install [pre-commit](https://pre-commit.com/) and set up the git hook:
+Node.js **v20** or later is required for the documentation hooks. Install [pre-commit](https://pre-commit.com/) and set up the git hook:
 
 ```bash
 pip install pre-commit
