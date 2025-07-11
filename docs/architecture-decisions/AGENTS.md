@@ -27,48 +27,48 @@
 ## 2. ADR Structure & Conventions
 
 - **Format:**
-    - All ADRs must follow [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-by-michael-nygard) (status, context, decision, consequences, etc).
-    - Use Markdown files, named sequentially: `0001-title.md`, `0002-another-decision.md`, etc.
+  - All ADRs must follow [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-by-michael-nygard) (status, context, decision, consequences, etc).
+  - Use Markdown files, named sequentially: `0001-title.md`, `0002-another-decision.md`, etc.
 - **File Naming:**
-    - Use all lowercase, words separated by hyphens.
-    - Prefix with a 4-digit ADR number (e.g., `0003-use-fastendpoints.md`).
+  - Use all lowercase, words separated by hyphens.
+  - Prefix with a 4-digit ADR number (e.g., `0003-use-fastendpoints.md`).
 - **Status:**
-    - Each ADR must have a `Status:` field (`Proposed`, `Accepted`, `Superseded`, `Deprecated`, `Rejected`).
+  - Each ADR must have a `Status:` field (`Proposed`, `Accepted`, `Superseded`, `Deprecated`, `Rejected`).
 
 ---
 
 ## 3. Contribution & Review Workflow
 
 - **Proposing an ADR:**
-    - Add a new Markdown file as described above.
-    - Reference related issues or discussions in the ADR.
-    - Submit as a Pull Request (PR) targeting the main branch.
+  - Add a new Markdown file as described above.
+  - Reference related issues or discussions in the ADR.
+  - Submit as a Pull Request (PR) targeting the main branch.
 - **Review & Acceptance:**
-    - All ADRs must be reviewed by at least one core maintainer before acceptance.
-    - Status should be updated to `Accepted` or `Rejected` as appropriate during review.
+  - All ADRs must be reviewed by at least one core maintainer before acceptance.
+  - Status should be updated to `Accepted` or `Rejected` as appropriate during review.
 - **Superseding or Updating ADRs:**
-    - When an ADR is replaced, clearly mark it as `Superseded` and reference the new ADR number.
+  - When an ADR is replaced, clearly mark it as `Superseded` and reference the new ADR number.
 
 ---
 
 ## 4. AI Agent Rules 🤖
 
 - **Consistency:**
-    - Use the same ADR template and file naming conventions as humans.
+  - Use the same ADR template and file naming conventions as humans.
 - **Traceability:**
-    - Reference the context or discussions that justify the decision.
+  - Reference the context or discussions that justify the decision.
 - **Self-Validation:**
-    - AI agents must check that all required ADR sections are present and complete.
+  - AI agents must check that all required ADR sections are present and complete.
 - **Escalation:**
-    - If requirements are unclear or context is missing, propose an ADR draft and tag a maintainer for review.
+  - If requirements are unclear or context is missing, propose an ADR draft and tag a maintainer for review.
 - **Improvement Recommendations:**
-    - AI agents should recommend updates to this AGENTS.md if better practices or automation can be identified (see [Section 6](#6-maintenance--improvement)).
+  - AI agents should recommend updates to this AGENTS.md if better practices or automation can be identified (see [Section 6](#6-maintenance--improvement)).
 - **Output Format:**
-    - All ADRs and communications must be in valid Markdown, ready for review and commit.
+  - All ADRs and communications must be in valid Markdown, ready for review and commit.
 - **Common Mistakes to Avoid:**
-    - ❌ Omitting status or context in ADRs
-    - ❌ Using ambiguous or generic titles
-    - ❌ Failing to link related issues, discussions, or superseded ADRs
+  - ❌ Omitting status or context in ADRs
+  - ❌ Using ambiguous or generic titles
+  - ❌ Failing to link related issues, discussions, or superseded ADRs
 
 ---
 
@@ -78,6 +78,7 @@
 `0004-adopt-aspire-for-service-orchestration.md`
 
 **Header Example:**
+
 ```markdown
 # 0004: Adopt .NET Aspire for Service Orchestration
 
