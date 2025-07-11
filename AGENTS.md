@@ -68,6 +68,7 @@ This repository uses a layered architecture for maintainability, clear separatio
     - Max 60s execution per task
 - **Inheritance:** Respect local AGENTS.md overrides (see [Section 4](#4-layer-inheritance--overrides)).
 - **Security:** Never leak secrets or PII in output.
+- **Improving Instructions:** AI agents should recommend updates to these instructions if it would improve the contribution, review, or automation process. Such recommendations should be submitted as a draft issue or pull request for human review.
 - **Common Mistakes to Avoid:**
     - ❌ Proposing code that directly accesses the database from UseCases
     - ❌ Omitting test or documentation updates when logic changes
