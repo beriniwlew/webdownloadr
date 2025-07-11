@@ -50,6 +50,9 @@ This repository uses a layered architecture for maintainability, clear separatio
 - Use feature branches named as `feature/<brief-description>`, fixes as `fix/<brief-description>`, etc.
 - Follow **Conventional Commits** for all messages (see [Section 7.3](#73-commit--pr-standards)).
 - Run all tests and linters before opening a PR.
+- Execute `./scripts/selfcheck.sh` to run restore, build, tests, architecture
+  checks, formatting, documentation linting, and commit linting. Use `-h` for a
+  list of `--skip-*` options.
 - Reference issues and use clear, descriptive PR titles.
 - Add/update documentation and examples as needed (see [Section 7.4](#74-coding--documentation-standards)).
 
@@ -114,13 +117,16 @@ graph TD
         - `setup-dotnet.sh`: .NET 9 dependency setup.
         - `install-tools.sh`: Additional .NET 9 tool installation.
         - `archtest.sh`: Verify that architectural boundaries are enforced.
+        - `selfcheck.sh`: Runs restore, build, tests, architecture checks,
+          formatting, documentation linting, and commit linting. Pass `-h` to
+          see options like `--skip-test`.
 - **Tests:** All code must pass unit/integration tests (run via script or `dotnet test`).
 - **Coverage:** PRs must not decrease overall coverage (see [`/ci/coverage.yml`](./ci/coverage.yml)).
 - **Format:** Run `dotnet format` and `shfmt` for C# and Shell scripts, respectively.
 - **Lint:** Use `commitlint` for commit messages and `eslint` for JavaScript.
 - **CI/CD:** For full pre-commit and CI/CD configuration, see [`/ci/`](./ci/) and referenced scripts.
 - **Automated Checks:**
-    - All rules are enforced by pre-commit hooks, CI scripts, and architectural test scripts as described above.
+    - All rules are enforced by pre-commit hooks, CI scripts, and architectural test scripts as described above. `selfcheck.sh` bundles these checks for local runs.
 
 ---
 
