@@ -106,48 +106,39 @@ AGENTS.md may exist in any subdirectory, including code, test, or documentation 
 
 ## 5. Quality Gates, Formatting, Linting
 
--*Scripts & Setup:**
-The `/scripts` folder contains tooling for environment setup and enforcement of repository standards:
+- **Scripts & Setup:**
+    The `/scripts` folder contains tooling for environment setup and enforcement of repository standards:
+  - `setup-codex.sh`: Sets up the Codex agent environment.
+    - `setup-dotnet.sh`: Installs .NET 9 dependencies.
+    - `install-tools.sh`: Installs additional .NET 9 tools.
+    - `archtest.sh`: Enforces architectural boundaries via ArchUnitNET or NetArchTest.
+    - `selfcheck.sh`: Bundled script to run all quality gates (restore, build, test, format, lint, etc).
+      Run `./scripts/selfcheck.sh -h` for options (e.g., `--skip-test`, `--only-format`).
 
-- `setup-codex.sh`: Sets up the Codex agent environment.
-- `setup-dotnet.sh`: Installs .NET 9 dependencies.
-- `install-tools.sh`: Installs additional .NET 9 tools.
-- `archtest.sh`: Enforces architectural boundaries via ArchUnitNET or NetArchTest.
-- `selfcheck.sh`: Bundled script to run all quality gates (restore, build, test, format, lint, etc).
-  Run `./scripts/selfcheck.sh -h` for options (e.g., `--skip-test`, `--only-format`).
+- **Formatting (Run Before Checking):**
+  - Run `dotnet format` to auto-format C# code.
+  - Run `shfmt -w` to format shell scripts.
+  - Run `prettier --write .` for Markdown, JSON, and web assets (if applicable).
 
--*Formatting (Run Before Checking):**
+- **Linting:**
+  - `commitlint`: Enforces commit message conventions.
+  - `eslint`: Used for JavaScript/TypeScript files (if applicable).
 
-- Run `dotnet format` to auto-format C# code.
-- Run `shfmt -w` to format shell scripts.
-- Run `prettier --write .` for Markdown, JSON, and web assets (if applicable).
+- **Tests:**
+  - All code must pass unit and integration tests via `dotnet test` or `selfcheck.sh`.
 
--*Linting:**
+- **Coverage:**
+    - Pull requests must not reduce test coverage (enforced via `/ci/coverage.yml`).
 
-- `commitlint`: Enforces commit message conventions.
-- `eslint`: Used for JavaScript/TypeScript files (if applicable).
-- `markdownlint-cli2`: Validates Markdown documentation style.
+- **CI/CD:**
+    - Pre-commit and CI pipelines enforce all formatting, linting, and architectural rules.
+    - See `/ci/` for full configuration details.
 
--*Tests:**
-
-- All code must pass unit and integration tests via `dotnet test` or `selfcheck.sh`.
-
--*Coverage:**
-
-- Pull requests must not reduce test coverage (enforced via `/ci/coverage.yml`).
-
--*CI/CD:**
-
-- Pre-commit and CI pipelines enforce all formatting, linting, and architectural rules.
-- See `/ci/` for full configuration details.
-
--*Automation:**
-
-- All quality gates are enforced by:
-
-  - Git pre-commit hooks (optional but recommended),
-  - GitHub Actions or equivalent CI,
-  - `selfcheck.sh` for local validation before PR.
+- **Automation:**
+  - All quality gates are enforced by:
+    - Git pre-commit hooks (optional but recommended),
+    - GitHub Actions or equivalent CI,
+    - `selfcheck.sh` for local validation before PR.
 
 ---
 
