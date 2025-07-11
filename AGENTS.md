@@ -265,7 +265,7 @@ This repository follows [Ardalis Clean Architecture](https://github.com/ardalis/
 
 ## 9. Appendices
 
-### Appendix A: Forbidden Prompt Styles 🤖
+### Appendix A: Forbidden Prompt Styles
 
 - No open-ended “do anything” prompts.
 - No request for code execution outside the prescribed CI/CD context.
