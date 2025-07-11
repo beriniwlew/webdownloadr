@@ -5,6 +5,19 @@
 
 ---
 
+## Table of Contents
+
+1. [Scope](#1-scope)
+2. [ADR Structure & Conventions](#2-adr-structure--conventions)
+3. [Contribution & Review Workflow](#3-contribution--review-workflow)
+4. [AI Agent Rules 🤖](#4-ai-agent-rules-)
+5. [Examples](#5-examples)
+6. [Maintenance & Improvement](#6-maintenance--improvement)
+7. [Common Pitfalls & Best Practices](#7-common-pitfalls--best-practices)
+8. [Glossary](#8-glossary)
+
+---
+
 ## 1. Scope
 
 - This AGENTS.md applies **only** to the `docs/architecture-decisions` directory, which contains all ADRs for this repository.
@@ -14,7 +27,7 @@
 ## 2. ADR Structure & Conventions
 
 - **Format:**
-    - All ADRs must follow [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture_decision_record/blob/main/adr_template.md) (status, context, decision, consequences, etc).
+    - All ADRs must follow [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-by-michael-nygard) (status, context, decision, consequences, etc).
     - Use Markdown files, named sequentially: `0001-title.md`, `0002-another-decision.md`, etc.
 - **File Naming:**
     - Use all lowercase, words separated by hyphens.
@@ -50,6 +63,8 @@
     - If requirements are unclear or context is missing, propose an ADR draft and tag a maintainer for review.
 - **Improvement Recommendations:**
     - AI agents should recommend updates to this AGENTS.md if better practices or automation can be identified (see [Section 6](#6-maintenance--improvement)).
+- **Output Format:**
+    - All ADRs and communications must be in valid Markdown, ready for review and commit.
 - **Common Mistakes to Avoid:**
     - ❌ Omitting status or context in ADRs
     - ❌ Using ambiguous or generic titles
@@ -87,6 +102,31 @@ Superseded-by: N/A
 
 - Update this AGENTS.md whenever ADR standards or workflows change.
 - AI agents are encouraged to suggest improvements to this file as the project evolves. Propose such changes as PRs or draft issues for human review.
+
+---
+
+## 7. Common Pitfalls & Best Practices
+
+**Pitfalls:**
+- Incomplete ADR sections (missing status, context, or consequences)
+- Inconsistent file naming or numbering
+- Lack of references to relevant issues or ADRs
+- Vague or non-actionable decisions
+
+**Best Practices:**
+- Use precise, descriptive titles
+- Keep one decision per ADR
+- Clearly state trade-offs and alternatives
+- Regularly review and supersede outdated ADRs
+
+---
+
+## 8. Glossary
+
+- **ADR:** Architecture Decision Record
+- **Status:** The current state of an ADR (e.g., Proposed, Accepted)
+- **Supersedes/Superseded-by:** Links between ADRs when one replaces another
+- **Escalation:** The process by which an AI agent requests human intervention or review
 
 ---
 
