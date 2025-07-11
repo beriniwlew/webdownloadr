@@ -15,6 +15,7 @@
 2. [Contribution Workflow 🧑](#2-contribution-workflow-)
 3. [AI Agent Rules 🤖](#3-ai-agent-rules-)
 4. [Layer Inheritance & Overrides](#4-layer-inheritance--overrides)
+   - [Known AGENTS.md Overrides](#known-agentsmd-overrides)
 5. [Quality Gates, Formatting, Linting](#5-quality-gates-formatting-linting)
 6. [Examples & Patterns](#6-examples--patterns)
 7. [Repository Rules Reference](#7-repository-rules-reference)
@@ -84,28 +85,22 @@ This repository uses a layered architecture for maintainability, clear separatio
 
 ## 4. Layer Inheritance & Overrides
 
-AGENTS.md may exist in any project/layer folder. The most specific (deepest) file overrides higher-level settings for that path. If a folder does not contain its own AGENTS.md, rules from the parent directory (or repo root) apply.
+AGENTS.md may exist in any subdirectory, including code, test, or documentation directories such as `docs/architecture-decisions`. The most specific (deepest) file overrides higher-level settings for that path. For example, all ADRs in `docs/architecture-decisions` must follow the rules in `docs/architecture-decisions/AGENTS.md`, not the root AGENTS.md.
 
-```mermaid
-graph TD
-    Root(Repo Root AGENTS.md)
-    Core(src/WebDownloadr.Core/AGENTS.md)
-    UseCases(src/WebDownloadr.UseCases/AGENTS.md)
-    Infra(src/WebDownloadr.Infrastructure/AGENTS.md)
-    Web(src/WebDownloadr.Web/AGENTS.md)
-    ServiceDefaults(src/WebDownloadr.ServiceDefaults/AGENTS.md)
-    AspireHost(src/WebDownloadr.AspireHost/AGENTS.md)
-    Tests(tests/AGENTS.md)
-    Root --> Core
-    Root --> UseCases
-    Root --> Infra
-    Root --> Web
-    Root --> ServiceDefaults
-    Root --> AspireHost
-    Root --> Tests
-```
+### Known AGENTS.md Overrides
 
-> For a list of current AGENTS.md override locations, see the folders above.
+| Directory                          | Scope                                | Notes                          |
+|-------------------------------------|--------------------------------------|--------------------------------|
+| `/`                                | Entire repository (default)          | Root, fallback                 |
+| `src/WebDownloadr.Core/`           | Core domain logic                    |                                |
+| `src/WebDownloadr.UseCases/`       | Application business logic           |                                |
+| `src/WebDownloadr.Infrastructure/` | Infrastructure & data adapters       |                                |
+| `src/WebDownloadr.Web/`            | Web/API layer                        |                                |
+| `tests/`                           | All test projects                    |                                |
+| `docs/architecture-decisions/`     | All ADRs (architecture decisions)    | See local AGENTS.md for ADRs   |
+
+
+> Before generating or reviewing files, always check for a local AGENTS.md in the file’s directory or any parent directory. Always apply the most specific AGENTS.md.
 
 ---
 
