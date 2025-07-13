@@ -1,6 +1,9 @@
-# 0002 – Optimize AGENTS Usage Across Folders
+# 0002: Optimize AGENTS Usage Across Folders
 
-**Status**: Proposed
+Status: Accepted  
+Date: 2024-01-10  
+Supersedes: N/A  
+Superseded-by: N/A
 
 ## Context
 
@@ -14,16 +17,27 @@ Adopt a standardized approach to `AGENTS.md` inheritance. Every major folder mus
 
 ## Consequences
 
+**Positive outcomes:**
 - **Improved Guidance**: Clearer rules in each folder help new contributors and automation follow repository standards.
 - **Easier Maintenance**: Standard inheritance reduces duplication and simplifies updates across the project.
 - **Consistent Agent Behavior**: AI tools can reliably determine applicable rules, minimizing errors due to mismatched instructions.
 
+**Negative outcomes:**
+- Initial effort required to create AGENTS.md files in all major folders
+- Need to maintain consistency across multiple AGENTS.md files
+
+**Follow-up tasks:**
+- Create AGENTS.md files in all major project folders
+- Update documentation to reflect the inheritance hierarchy
+- Train team members on the new structure
+
 ## Alternatives Considered
 
-- Continue using only the root `AGENTS.md` and a few overrides, risking inconsistent guidance.
-- Centralize everything in one file, which would be harder to maintain and less flexible.
+- **Continue using only the root `AGENTS.md` and a few overrides** – Would risk inconsistent guidance
+- **Centralize everything in one file** – Would be harder to maintain and less flexible
 
 ## References
 
-- Root `AGENTS.md` lines 86–103 show the current inheritance guidance.
+- Root `AGENTS.md` lines 86–103 show the current inheritance guidance
+- [AGENTS.md best practices](https://github.com/ardalis/CleanArchitecture/blob/main/AGENTS.md)
 

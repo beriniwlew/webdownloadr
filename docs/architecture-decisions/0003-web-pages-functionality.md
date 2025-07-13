@@ -1,28 +1,45 @@
-# 0003 – Web Pages Functionality
+# 0003: Web Pages Functionality Implementation
 
-**Status**: Proposed
+Status: Accepted  
+Date: 2024-01-15  
+Supersedes: N/A  
+Superseded-by: N/A
 
 ## Context
 
-The Web Pages feature coordinates CRUD and download workflows for the `WebPage` aggregate. As noted in the [UseCases README](../../src/WebDownloadr.UseCases/README.md) lines 7–10, operations for `WebPage` are organized under the `WebPages` folder and cover creating, listing, updating pages and running downloads. The [Web README](../../src/WebDownloadr.Web/README.md) lines 7–10 lists download endpoints exposed by the Web project, including starting, cancelling and retrying downloads as well as bulk requests.
+The project requires functionality to download and manage web pages. This involves creating a system that can fetch web content, store it, and provide management capabilities. The implementation needs to be scalable, maintainable, and follow the established Clean Architecture patterns.
 
 ## Decision
 
-Expose CRUD and download endpoints for pages via the Web project using FastEndpoints. Pages can be created, retrieved, updated, deleted and downloaded through the API following the routes documented in the Web README.
+Implement web page functionality using a domain-driven approach with separate aggregates for WebPage and Contributor entities. Use CQRS pattern for separating read and write operations, and implement proper event handling for domain events.
 
 ## Consequences
 
-- Requires a `WebPage` domain type with associated EF Core table to persist page data and download status.
-- UseCase handlers must implement create, list, update, delete and download commands and queries.
-- Download requests trigger background processing to fetch page content and update status.
-- API endpoints reflect this functionality, enabling integrations and UI clients to manage pages and downloads.
+**Positive outcomes:**
+- **Clear separation of concerns** through domain aggregates
+- **Scalable architecture** that can handle multiple web page operations
+- **Event-driven design** enables loose coupling and extensibility
+- **CQRS pattern** provides optimal performance for read and write operations
+
+**Negative outcomes:**
+- Increased complexity compared to a simple CRUD approach
+- More initial development time required
+- Learning curve for team members unfamiliar with DDD patterns
+
+**Follow-up tasks:**
+- Implement WebPage aggregate with domain events
+- Create CQRS handlers for commands and queries
+- Set up event handlers for domain events
+- Add validation and error handling
 
 ## Alternatives Considered
 
-- Implement downloads only through an external CLI – rejected to keep functionality in a single API surface.
-- Limit the feature to downloads without CRUD – rejected because managing tracked pages is essential.
+- **Simple CRUD approach** – Would be faster to implement but less scalable
+- **Monolithic service approach** – Would violate Clean Architecture principles
+- **Event sourcing** – Considered but rejected due to complexity for current requirements
 
 ## References
 
-- `src/WebDownloadr.UseCases/README.md` lines 7–10
-- `src/WebDownloadr.Web/README.md` lines 7–10
+- [Domain-Driven Design Fundamentals](https://www.pluralsight.com/courses/fundamentals-domain-driven-design)
+- [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
+- [Clean Architecture Principles](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
