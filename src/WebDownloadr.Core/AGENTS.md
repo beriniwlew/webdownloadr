@@ -1,111 +1,235 @@
+# AGENTS.md — Core Layer Guidelines (Validated against NimblePros.SampleToDo.Core)
+
+> **Scope**: `/src/<SolutionName>.Core` and sub‑folders.\
+> **Inheritance**: Extends repo‑root **AGENTS.md**; rules here add to / override the global ones.\
+> **Reference sample**: *NimblePros.SampleToDo.Core* (local copy of the Clean Architecture sample).
+
 ---
-inherits: ../../AGENTS.md
-layer: Core
-scope: Domain entities, value objects, domain services, repository interfaces
+
+## 1  Layer Purpose & Boundaries
+
+- **Core** is the **Domain layer**. It owns *pure* business rules: **aggregates, entities, value objects, domain events, enums, specifications**, and **abstractions** (interfaces).
+- **Zero outward dependencies** – Core must not reference UseCases, Web, Infrastructure, EF Core, MediatR, FastEndpoints, etc. Allowed NuGets: *Ardalis.GuardClauses*, *Ardalis.Specification*, *Vogen*, *NetEscapades.EnumGenerators*.
+- Public APIs expose **behaviour**; state mutation stays private or protected.
+
 ---
 
-# WebDownloadr Core Layer Rules
+## 2  Folder & File Layout (mirrors sample)
 
-## Summary
+```
+/Core/
+  ├─ <Aggregate>NameAggregate/           # one folder per aggregate root
+  │     • <Aggregate>.cs                 # aggregate root entity
+  │     • <SubEntity>.cs                 # supporting entities
+  │     • ValueObjects/                  # optional VO sub‑folder
+  │     • Events/                        # domain events
+  │     • Specifications/                # aggregate‑specific specs
+  ├─ SharedKernel/                       # cross‑aggregate base types
+  │     • EntityBase.cs
+  │     • EntityBase<TId>.cs             # generic variant
+  │     • DomainEventBase.cs
+  └─ Interfaces/                         # cross‑aggregate interfaces (optional)
+```
 
-Defines the **domain model** and related abstractions. The Core project contains entities, value objects, domain events, and repository
-interfaces. It must remain infrastructure-agnostic and thoroughly tested.
+*File names match type names; one top‑level type per file.*
 
-This file supplements the repository root [AGENTS.md](../../AGENTS.md) for code under `src/WebDownloadr.Core`.
+---
 
-## Layer Dependencies
+## 3  Coding Conventions
 
-- **Can reference** only .NET primitives and the packages `Ardalis.GuardClauses` and `Ardalis.Specification`. These provide guard clause
-  helpers and the specification pattern without pulling in infrastructure dependencies.
-- **Cannot reference** UseCases, Infrastructure, or Web projects so that the domain model remains portable and free from UI or data-access
-  concerns.
+| Topic               | Rule                                                                                         |
+| ------------------- | -------------------------------------------------------------------------------------------- |
+| **Language / TFM**  | C# 12 on `net9.0`; nullable enabled.                                                         |
+| **Base types**      | Derive entities/aggregates from `EntityBase` or `EntityBase<TId>` found in **SharedKernel**. |
+| **Behaviour first** | Expose verbs (`AddItem`, `MarkComplete`) publicly; keep setters private.                     |
+| **Constructors**    | Always enforce invariants with *Ardalis.GuardClauses*.                                       |
+| **Domain events**   | Raise events inside behaviour and call `RegisterDomainEvent(...)`.                           |
 
-## Domain Patterns
+---
 
-### Domain-Driven Design Notes
+## 4  Entities & Aggregates
 
-- Treat each **aggregate** as a transactional boundary to ensure invariants hold whenever a unit is persisted.
-- Use **value objects** to model concepts with rules so that invalid states are unrepresentable.
-- Expose **behavior** on entities rather than manipulating their state externally; this keeps invariants centralized.
+### 4.1  Key Rules
 
-### Entities and Value Objects
+1. **Strong identity** – Prefer strongly‑typed IDs (Vogen or value‑object) when feasible.
+2. **Encapsulated collections** – Expose `IEnumerable<T>` or `IReadOnlyList<T>`; mutate via methods.
+3. **Status via behaviour** – Derived properties (e.g., `Status`) should compute from child state.
+4. **Equality** – Entities compare by identity; value objects compare by value.
 
-- Place domain types under an `*Aggregate` folder (e.g., `WebPageAggregate`). This keeps related entities and value objects grouped
-  together.
-- Constructors validate all inputs using guard clauses so invalid objects are never created.
-- Keep persistent constructor overloads `private` or `protected` for EF Core to allow materialization without exposing them publicly.
-- Use value objects for compound types and implement `IEquatable<T>` to ensure equality is based on value semantics.
-- Prefer immutable properties; modify state via methods that enforce invariants and trigger domain events.
+
+### 4.2  Core Layer Sample Snippets
+
+The following self‑contained examples compile inside a blank **Core** project that already contains `EntityBase`, `DomainEventBase`, and the Ardalis helper packages.
+
+---
+
+## 1. Value Object with Vogen — `Email.cs`
 
 ```csharp
-public sealed class Project
+using Vogen;
+using Ardalis.GuardClauses;
+
+[ValueObject(typeof(string))]
+public partial class Email
 {
-    public Project(string name, DateOnly startDate)
+    private static Validation Validate => static (value) =>
     {
-        Name      = Guard.Against.NullOrEmpty(name);
-        StartDate = Guard.Against.OutOfSQLDateRange(startDate);
+        Guard.Against.NullOrWhiteSpace(value, nameof(value));
+        Guard.Against.InvalidInput(value, nameof(value), v => v.Contains('@'));
+    };
+}
+```
+
+---
+
+## 2. Domain Event — `ProjectArchivedEvent.cs`
+
+```csharp
+public sealed record ProjectArchivedEvent(int ProjectId) : DomainEventBase;
+```
+
+**Raising inside an aggregate**
+
+```csharp
+public Project Archive()
+{
+    if (Status == ProjectStatus.Archived) return this;
+
+    Status = ProjectStatus.Archived;
+    RegisterDomainEvent(new ProjectArchivedEvent(Id));
+    return this;
+}
+```
+
+---
+
+## 3. Specification — `ProjectsByOwnerSpec.cs`
+
+```csharp
+using Ardalis.Specification;
+
+public sealed class ProjectsByOwnerSpec : Specification<Project>
+{
+    public ProjectsByOwnerSpec(int ownerUserId)
+    {
+        Query.Where(p => p.OwnerId == ownerUserId)
+             .Include(p => p.Items)
+             .OrderByDescending(p => p.CreatedOn);
     }
-
-    public string  Name { get; private set; }
-    public DateOnly StartDate { get; private set; }
 }
 ```
 
-#### Custom Guard Example
+---
+
+## 4. Strongly‑Typed ID — `ProjectId.cs`
 
 ```csharp
-public static class GuardExtensions
+public readonly record struct ProjectId(int Value)
 {
-    public static void Negative(this IGuardClause guard, int value, string paramName) =>
-        Guard.Against.NegativeOrZero(value, paramName, "Value must be positive.");
+    public override string ToString() => Value.ToString();
+    public static implicit operator int(ProjectId id) => id.Value;
+    public static implicit operator ProjectId(int value) => new(value);
 }
 ```
 
-Guard extensions centralize domain validation logic. Use them to express rules succinctly and fail fast; they should throw exceptions rather
-than silently correcting bad input.
+---
 
-### Domain Events
-
-- Events are records deriving from `DomainEventBase` to provide a common base for dispatching.
-- Register events within aggregate methods rather than dispatching directly so that persistence can coordinate when they fire.
-- Events should describe completed business actions (e.g., `ProjectCompleted`) to keep them meaningful and side-effect free.
-- Handlers live in the UseCases layer or Infrastructure; Core only raises them to remain decoupled from implementation concerns.
+## 5. Unit Test for Specification — `ProjectsByOwnerSpecTests.cs`
 
 ```csharp
-public sealed class ProjectCompletedEvent(Project project) : DomainEventBase
+public class ProjectsByOwnerSpecTests
 {
-    public Project Project { get; init; } = project;
+    [Fact]
+    public void FiltersProjectsByOwnerAndOrdersDesc()
+    {
+        // Arrange
+        var owned = new Project(ProjectName.From("Mine")) { OwnerId = 42, CreatedOn = DateTime.UtcNow };
+        var notOwned = new Project(ProjectName.From("Yours")) { OwnerId = 7, CreatedOn = DateTime.UtcNow.AddDays(-1) };
+        var source = new[] { notOwned, owned }.AsQueryable();
+
+        var spec = new ProjectsByOwnerSpec(42);
+
+        // Act
+        var result = SpecificationEvaluator.Default.GetQuery(source, spec).ToList();
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal(owned, result[0]);
+    }
 }
 ```
 
-### Domain Service Example
+---
+
+## 6. Aggregate with Encapsulated Collection — `Project.cs` (condensed)
 
 ```csharp
-public interface IInvoiceNumberGenerator
+public class Project : EntityBase, IAggregateRoot
 {
-    InvoiceNumber Next();
-}
+    private readonly List<ToDoItem> _items = [];
+    public IReadOnlyList<ToDoItem> Items => _items;
 
-public sealed class InvoiceNumberService : IInvoiceNumberGenerator
-{
-    private int _current;
-    public InvoiceNumber Next() => new(++_current);
+    public Project AddItem(string title)
+    {
+        Guard.Against.NullOrWhiteSpace(title);
+        _items.Add(new ToDoItem(title));
+        return this;
+    }
 }
 ```
 
-Domain services encapsulate business logic that spans multiple aggregates or requires complex calculations. Keep them stateless and inject
-implementations via interfaces so that unit tests can substitute fakes.
+---
 
-## Repository Interfaces
+*End of snippets*
 
-- Define abstractions such as `IRepository<T>` here to decouple the domain from the data-access technology.
-- Persistence logic lives in Infrastructure implementations so Core can be tested without a database.
-- Methods should be asynchronous and cancellation-token friendly to support scalability and graceful shutdown.
-- Avoid leaking ORM types (e.g., `DbSet`) through the interface to prevent infrastructure-specific dependencies from creeping in.
+*Adapted from the sample project.*
 
-## Testing
+---
 
-- Aim for **≥95%** line coverage in this project to catch regressions early.
-- Unit tests must cover all public business logic.
-- Use xUnit, Shouldly, and NSubstitute for a consistent test stack.
-- Fakes for time or random number generation should live in the test projects to keep the Core project free from test-only code.
+## 5  Value Objects
+
+- Prefer **Vogen**‑generated structs for lightweight, performant IDs and simple VOs (e.g., `ProjectName`).
+- Alternative: classic immutable record or class inheriting from a `ValueObject` helper.
+- Validation lives in a static factory (`From(string)`), constructor, or Vogen `Validate()` delegate.
+
+---
+
+## 6  Domain Events
+
+- Base class: `DomainEventBase` (in **SharedKernel**).
+- Events named `<SomethingHappened>Event` and placed under `<Aggregate>Aggregate/Events/`.
+- Pass only primitives/IDs or aggregate references – never EF proxies.
+- Example: `NewItemAddedEvent` is raised in `Project.AddItem()`.
+
+---
+
+## 7  Specifications
+
+- Use **Ardalis.Specification** for rich queries.
+- Folder location: aggregate’s own `/Specifications` folder, or `/Core/Specifications` if shared.
+- Naming convention: `<Aggregate><Filter>Description>Spec` (e.g., `ProjectsByStatusSpec`).
+
+---
+
+## 8  Testing Checklist (Core)
+
+-
+
+---
+
+## 9  Agent Post‑Generation Steps
+
+1. `dotnet build src/<SolutionName>.Core -c Release` — zero warnings.
+2. `dotnet test tests/UnitTests --filter Category=Core` — all green.
+3. `dotnet format --verify-no-changes` — style passes.
+
+---
+
+## 10  Checklist for Agents (tick before committing)
+
+-
+
+---
+
+*End of Core guidelines*
+
