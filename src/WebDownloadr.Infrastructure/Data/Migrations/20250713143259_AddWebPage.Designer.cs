@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebDownloadr.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using WebDownloadr.Infrastructure.Data;
 namespace WebDownloadr.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250713143259_AddWebPage")]
+    partial class AddWebPage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
@@ -52,23 +55,6 @@ namespace WebDownloadr.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WebPages");
-                });
-
-            modelBuilder.Entity("WebDownloadr.Infrastructure.Data.DownloadedPage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("WebPageId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DownloadedPages");
                 });
 
             modelBuilder.Entity("WebDownloadr.Core.ContributorAggregate.Contributor", b =>

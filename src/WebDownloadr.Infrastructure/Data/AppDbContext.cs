@@ -1,5 +1,6 @@
 ﻿using WebDownloadr.Core.ContributorAggregate;
 using WebDownloadr.Core.WebPageAggregate;
+using WebDownloadr.Infrastructure.Data;
 
 namespace WebDownloadr.Infrastructure.Data;
 public class AppDbContext(DbContextOptions<AppDbContext> options,
@@ -9,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
   public DbSet<Contributor> Contributors => Set<Contributor>();
   public DbSet<WebPage> WebPages => Set<WebPage>();
+  public DbSet<DownloadedPage> DownloadedPages => Set<DownloadedPage>();
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

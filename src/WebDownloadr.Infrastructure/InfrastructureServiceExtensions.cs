@@ -1,7 +1,10 @@
-﻿using WebDownloadr.Core.Interfaces;
+﻿using MediatR;
+using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.Services;
+using WebDownloadr.Core.WebPageAggregate.Events;
 using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.Infrastructure.Data.Queries;
+using WebDownloadr.Infrastructure.EventHandlers;
 using WebDownloadr.Infrastructure.Web;
 using WebDownloadr.UseCases.Contributors.List;
 using WebDownloadr.UseCases.WebPages.List;
@@ -26,7 +29,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IListWebPagesQueryService, ListWebPagesQueryService>()
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
       .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
-      .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
+      .AddScoped<IDownloadWebPageService, DownloadWebPageService>()
+      .AddScoped<INotificationHandler<WebPageDownloadedEvent>, WebPageDownloadedHandler>();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

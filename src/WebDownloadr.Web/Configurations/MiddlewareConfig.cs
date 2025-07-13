@@ -1,4 +1,5 @@
 ﻿using Ardalis.ListStartupServices;
+using Microsoft.EntityFrameworkCore;
 using WebDownloadr.Infrastructure.Data;
 
 namespace WebDownloadr.Web.Configurations;
@@ -36,8 +37,7 @@ public static class MiddlewareConfig
     try
     {
       var context = services.GetRequiredService<AppDbContext>();
-      //          context.Database.Migrate();
-      context.Database.EnsureCreated();
+      context.Database.Migrate();
       await SeedData.InitializeAsync(context);
     }
     catch (Exception ex)

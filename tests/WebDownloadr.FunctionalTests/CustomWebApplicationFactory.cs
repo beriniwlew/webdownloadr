@@ -1,4 +1,11 @@
-﻿using WebDownloadr.Core.Interfaces;
+﻿using System.IO;
+using System.Linq;
+using Ardalis.Result;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.Infrastructure.Email;
 
@@ -6,51 +13,28 @@ namespace WebDownloadr.FunctionalTests;
 
 public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
-  /// <summary>
-  /// Overriding CreateHost to avoid creating a separate ServiceProvider per this thread:
-  /// https://github.com/dotnet-architecture/eShopOnWeb/issues/465
-  /// </summary>
-  /// <param name="builder"></param>
-  /// <returns></returns>
   protected override IHost CreateHost(IHostBuilder builder)
   {
-    builder.UseEnvironment("Development"); // will not send real emails
+    builder.UseEnvironment("Development");
     var host = builder.Build();
     host.Start();
 
-    // Get service provider.
-    var serviceProvider = host.Services;
-
-    // Create a scope to obtain a reference to the database
-    // context (AppDbContext).
-    using (var scope = serviceProvider.CreateScope())
+    using (var scope = host.Services.CreateScope())
     {
       var scopedServices = scope.ServiceProvider;
       var db = scopedServices.GetRequiredService<AppDbContext>();
+      var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TProgram>>>();
 
-      var logger = scopedServices
-          .GetRequiredService<ILogger<CustomWebApplicationFactory<TProgram>>>();
-
-      // Reset Sqlite database for each test run
-      // If using a real database, you'll likely want to remove this step.
       db.Database.EnsureDeleted();
-
-      // Ensure the database is created.
       db.Database.EnsureCreated();
 
       try
       {
-        // Can also skip creating the items
-        //if (!db.ToDoItems.Any())
-        //{
-        // Seed the database with test data.
         SeedData.PopulateTestDataAsync(db).Wait();
-        //}
       }
       catch (Exception ex)
       {
-        logger.LogError(ex, "An error occurred seeding the " +
-                            "database with test messages. Error: {exceptionMessage}", ex.Message);
+        logger.LogError(ex, "An error occurred seeding the database with test messages. Error: {exceptionMessage}", ex.Message);
       }
     }
 
@@ -59,16 +43,43 @@ public class CustomWebApplicationFactory<TProgram> : WebApplicationFactory<TProg
 
   protected override void ConfigureWebHost(IWebHostBuilder builder)
   {
-    builder
-        .ConfigureServices(services =>
-        {
-          // Replace email sender with fake implementation
-          var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IEmailSender));
-          if (descriptor != null)
-          {
-            services.Remove(descriptor);
-          }
-          services.AddScoped<IEmailSender, FakeEmailSender>();
-        });
+    builder.ConfigureServices(services =>
+    {
+      var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IEmailSender));
+      if (descriptor != null)
+      {
+        services.Remove(descriptor);
+      }
+      services.AddScoped<IEmailSender, FakeEmailSender>();
+
+      var downloaderDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IWebPageDownloader));
+      if (downloaderDescriptor != null)
+      {
+        services.Remove(downloaderDescriptor);
+      }
+      services.AddScoped<IWebPageDownloader, FakeDownloader>();
+    });
+  }
+
+  private class FakeDownloader : IWebPageDownloader
+  {
+    public Task<Result> DownloadWebPagesAsync(IEnumerable<string> urls, string outputDir, CancellationToken cancellationToken)
+    {
+      Directory.CreateDirectory(outputDir);
+      var url = urls.First();
+      var fileName = Path.Combine(outputDir, GetSafeFilename(url) + ".html");
+      File.WriteAllText(fileName, "<html></html>");
+      return Task.FromResult(Result.Success());
+    }
+
+    private static string GetSafeFilename(string url)
+    {
+      foreach (var c in Path.GetInvalidFileNameChars())
+      {
+        url = url.Replace(c, '_');
+      }
+
+      return url.Replace("https://", "").Replace("http://", "").Replace("/", "_");
+    }
   }
 }
