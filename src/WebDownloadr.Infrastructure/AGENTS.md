@@ -37,7 +37,7 @@
 - External adapters each get their own top‑level folder; the shipped template includes only **Email** by default.
 - If you add more adapters (e.g., `Files/`), follow the same flat folder pattern and keep one public type per file.
 
-## 3  Data Access (EF Core)  Data Access (EF Core)
+## 3  Data Access (EF Core)
 
 ### 3.1  AppDbContext
 
