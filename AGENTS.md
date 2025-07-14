@@ -51,11 +51,14 @@ This repository uses a layered architecture for maintainability, clear separatio
 ### 2.1. Getting Started
 1. **Fork and clone** the repository
 2. **Install prerequisites:**
+
    ```bash
    ./scripts/setup-dotnet.sh
    ./scripts/install-tools.sh
    ```
+   
 3. **Run initial setup:**
+
    ```bash
    ./scripts/selfcheck.sh --skip-test
    ```
@@ -88,7 +91,7 @@ This repository uses a layered architecture for maintainability, clear separatio
 - **Self-Validation:** AI agents must check outputs against these rules before proposing changes.
 - **Escalation:** If a rule is ambiguous or cannot be enforced, escalate via a GitHub Issue or tag a maintainer for review.
 - **Output Format:** All code, config, and documentation output by AI agents must be in valid, ready-to-commit format. Use the file block syntax specified by Copilot Spaces.
-- **Prompt Engineering:** Avoid forbidden prompt styles (see [Appendix A](#appendix-a-forbidden-prompt-styles-)).
+- **Prompt Engineering:** Avoid forbidden prompt styles (see [Appendix A](#appendix-a-forbidden-prompt-styles)).
 - **Resource Limits:**
   - Max 5 HTTP calls/run
   - Max 512MB memory
