@@ -255,5 +255,5 @@ public class ProjectsByOwnerSpecTests
 
 ---
 
-*End of Core guidelines*
+> *End of Core guidelines*
 

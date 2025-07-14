@@ -31,7 +31,7 @@
   └─ README.md                        # optional – quick dev notes
 ```
 
-**Notes**
+### Notes
 
 - Persistence code (repositories, unit‑of‑work, interceptors) lives in the **Data/** folder; the current template no longer has a separate `Repositories/` folder.
 - External adapters each get their own top‑level folder; the shipped template includes only **Email** by default.
@@ -152,6 +152,7 @@ public static class InfrastructureServiceRegistration
    ```bash
    dotnet ef migrations add InitialCreate -p src/<Solution>.Infrastructure -s src/<Solution>.Web -o Data/Migrations
    ```
+   
 2. **Apply migrations** on startup (`Web` project) with `db.Database.Migrate();`
 3. Seed development data in `AppDbContextSeed.SeedAsync()` and call it from `Program` after migration.
 
@@ -208,4 +209,4 @@ public class EfRepositoryAddTests
 
 ---
 
-*End of Infrastructure guidelines*
+> *End of Infrastructure guidelines*
