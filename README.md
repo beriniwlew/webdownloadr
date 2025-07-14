@@ -16,9 +16,11 @@ separate projects that isolate the domain model, application services, infrastru
 
 ## Architecture Decisions
 
-This project uses [Architecture Decision Records (ADRs)](docs/architecture-decisions/README.md) to document significant architectural choices. Key decisions include:
+This project uses [Architecture Decision Records (ADRs)](docs/architecture-decisions/README.md) to document significant architectural
+choices. Key decisions include:
 
-- **[0001: Adopt Clean Architecture](docs/architecture-decisions/0001-adopt-clean-architecture.md)** – Foundation for the layered architecture
+- **[0001: Adopt Clean Architecture](docs/architecture-decisions/0001-adopt-clean-architecture.md)** – Foundation for the layered
+  architecture
 - **[0002: Optimize AGENTS Usage](docs/architecture-decisions/0002-optimize-agents-usage.md)** – Standardized contribution guidelines
 - **[0003: Web Pages Functionality](docs/architecture-decisions/0003-web-pages-functionality.md)** – Domain-driven implementation approach
 - **[0004: .NET DI Adoption](docs/architecture-decisions/0004-dotnet-di-adoption.md)** – Technology choice for dependency injection
