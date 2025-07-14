@@ -4,3 +4,4 @@ node_modules/
 **/obj/**
 .vs/
 dist/
+AGENTS.md

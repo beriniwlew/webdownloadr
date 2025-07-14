@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="WebDownloadr Rules" Description="Code analysis rules for WebDownloadr" ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.CSharp.NetAnalyzers">
+    <Rule Id="CA1707" Action="None" /> <!-- Allow underscores in test method names -->
+    <Rule Id="CA1822" Action="None" /> <!-- Allow static analysis flexibility -->
+    <Rule Id="CA1303" Action="None" /> <!-- Ignore string literal warnings for test code -->
+  </Rules>
+</RuleSet> 

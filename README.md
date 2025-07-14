@@ -14,6 +14,19 @@ separate projects that isolate the domain model, application services, infrastru
 - **WebDownloadr.Web** – minimal API exposing endpoints (see [README](src/WebDownloadr.Web/README.md)).
 - **Tests** – unit, integration and functional test projects.
 
+## Architecture Decisions
+
+This project uses [Architecture Decision Records (ADRs)](docs/architecture-decisions/README.md) to document significant architectural
+choices. Key decisions include:
+
+- **[0001: Adopt Clean Architecture](docs/architecture-decisions/0001-adopt-clean-architecture.md)** – Foundation for the layered
+  architecture
+- **[0002: Optimize AGENTS Usage](docs/architecture-decisions/0002-optimize-agents-usage.md)** – Standardized contribution guidelines
+- **[0003: Web Pages Functionality](docs/architecture-decisions/0003-web-pages-functionality.md)** – Domain-driven implementation approach
+- **[0004: .NET DI Adoption](docs/architecture-decisions/0004-dotnet-di-adoption.md)** – Technology choice for dependency injection
+
+For new architectural decisions, see the [ADR guidelines](docs/architecture-decisions/AGENTS.md).
+
 ## Getting Started
 
 Restore packages and run the Web project:
@@ -53,11 +66,12 @@ The repository's `.gitattributes` enforces LF for text files and marks common bi
 
 After this commit, `./scripts/format.sh` (or `dotnet format`) runs in CI and must report no changes.
 
-Run `npx prettier --check .` and `npx markdownlint-cli2` to verify documentation formatting. See `AGENTS.md` for configuration details.
+Prettier and `markdownlint-cli2` enforce documentation style. They run automatically via pre-commit but you can verify manually with
+`npx prettier --check .` and `npx markdownlint-cli2`.
 
 ## Pre-commit
 
-Install [pre-commit](https://pre-commit.com/) and set up the git hook:
+Node.js **v20** or later is required for the documentation hooks. Install [pre-commit](https://pre-commit.com/) and set up the git hook:
 
 ```bash
 pip install pre-commit

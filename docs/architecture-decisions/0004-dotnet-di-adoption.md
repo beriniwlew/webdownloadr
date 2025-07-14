@@ -1,8 +1,9 @@
-# ADR 001: Replace Autofac with .NET Core Dependency Injection
+# 0004: Replace Autofac with .NET Core Dependency Injection
 
-## Status
-
-Accepted
+Status: Accepted  
+Date: 2024-01-15  
+Supersedes: N/A  
+Superseded-by: N/A
 
 ## Context
 
@@ -28,11 +29,29 @@ external dependencies.
 
 ## Consequences
 
+**Positive outcomes:**
+
 - **Simplified Codebase**: Removing Autofac results in a cleaner, more maintainable codebase that adheres to .NET standards.
 - **Reduced Complexity**: The transition eliminates the need for additional files and configurations specific to Autofac, making the project
   easier to understand for new contributors.
 - **Standardization**: Adopting .NET's built-in DI promotes consistency with other .NET projects, making it easier for developers familiar
   with the framework to contribute effectively.
+
+**Negative outcomes:**
+
+- Loss of some advanced Autofac features (though not needed for this project)
+- Migration effort required for existing implementations
+
+**Follow-up tasks:**
+
+- Remove Autofac dependencies from project files
+- Update service registration code to use .NET DI patterns
+- Update documentation to reflect the change
+
+## Alternatives Considered
+
+- **Continue using Autofac** – Would maintain advanced features but add unnecessary complexity
+- **Use a different DI container** – Other containers like Ninject or Unity were considered but rejected for similar reasons
 
 ## References
 
