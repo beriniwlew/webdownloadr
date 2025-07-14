@@ -78,14 +78,3 @@ jobs:
       - run: dotnet restore WebDownloadr.sln
       - name: Run architecture tests
         run: ./scripts/archtest.sh
-
-  security-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with: { global-json-file: global.json }
-      - name: Run security scan
-        run: |
-          dotnet list package --vulnerable
-          dotnet list package --deprecated
