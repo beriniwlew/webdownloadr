@@ -14,7 +14,7 @@
 
 ## 2 Folder & File Layout
 
-```
+```text
 /UseCases/<Feature>/
   • VerbNoun.cs            // Command (IRequest<TResult>)
   • VerbNounHandler.cs     // Sealed handler
@@ -26,7 +26,7 @@
 
 *For a ****multi‑request**** feature (e.g., **`Projects`** with **`Create`** & **`ListShallow`**), nest each request in its own sub‑folder:*
 
-```
+```text
 /UseCases/<Feature>/<Action>/
   • <Action>.cs              // Command or Query DTO
   • <Action>Handler.cs       // IRequestHandler implementation
@@ -81,7 +81,7 @@ For **every** new command/query:
 
 Below is a minimal, end‑to‑end slice that follows every rule above. Copy‑paste and adjust names for new features.
 
-```
+```text
 /UseCases/Todos/
   • CreateTodo.cs
   • CreateTodoHandler.cs
@@ -163,7 +163,7 @@ This example compiles under C# 12, passes the validator automatically via the 
 
 A more sophisticated slice taken from the **SampleToDo** project demonstrates both a **command** (write) and a **query** (read) plus the use of a **query‑service abstraction**.
 
-```
+```text
 /UseCases/Projects/
   • Create/CreateProjectCommand.cs
   • Create/CreateProjectHandler.cs
@@ -250,9 +250,8 @@ public sealed class ListProjectsShallowHandler(
 * **Commands** map *from* request DTO → domain entity inside the handler.
 * **Queries** map domain entity → response DTO *before* returning (never return entities).
 * Allowed mappers:
-
-    * Manual mapping (clear and explicit for simple cases).
-    * **Mapster** or **AutoMapper** configured in UseCases (interfaces only) with profiles defined inside `/UseCases/Mapping/`.
+  * Manual mapping (clear and explicit for simple cases).
+  * **Mapster** or **AutoMapper** configured in UseCases (interfaces only) with profiles defined inside `/UseCases/Mapping/`.
 * Keep mapper extension methods in `static` classes under `Mapping` to avoid cluttering handlers.
 
 ### 9.4 Example — ProjectDto
@@ -362,4 +361,4 @@ mock.Setup(m => m.ListAsync(null, null, It.IsAny<CancellationToken>()))
 
 ---
 
-*End of UseCases overrides*
+> *End of UseCases overrides*
