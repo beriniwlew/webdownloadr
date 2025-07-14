@@ -7,7 +7,8 @@ Superseded-by: N/A
 
 ## Context
 
-Explain the problem or forces driving this decision. Include relevant background information, constraints, and requirements that influenced the decision.
+Explain the problem or forces driving this decision. Include relevant background information, constraints, and requirements that influenced
+the decision.
 
 ## Decision
 
@@ -16,14 +17,17 @@ State the chosen option in one clear sentence. Be specific about what was decide
 ## Consequences
 
 **Positive outcomes:**
+
 - Benefit 1
 - Benefit 2
 
 **Negative outcomes:**
+
 - Trade-off 1
 - Trade-off 2
 
 **Follow-up tasks:**
+
 - Action item 1
 - Action item 2
 
