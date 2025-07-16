@@ -165,6 +165,7 @@ The `/scripts` folder contains tooling for environment setup and enforcement of 
 - Run `dotnet format` to auto-format C# code.
 - Run `shfmt -w` to format shell scripts.
 - Run `prettier --write .` for Markdown, JSON, and web assets (if applicable).
+- After changes, run `./scripts/autoformat.sh` to apply all formatting fixes.
 
 ### 5.3. Linting
 - `commitlint`: Enforces commit message conventions.
@@ -183,6 +184,7 @@ The `/scripts` folder contains tooling for environment setup and enforcement of 
 ### 5.6. CI/CD
 - Pre-commit and CI pipelines enforce all formatting, linting, and architectural rules.
 - See `.github/workflows/ci.yml` for full configuration details.
+- CI verifies formatting via `./scripts/format.sh` (also run by `selfcheck.sh`).
 
 ### 5.7. Automation
 All quality gates are enforced by:
@@ -343,7 +345,7 @@ This repository follows [Ardalis Clean Architecture](https://github.com/ardalis/
 ./scripts/selfcheck.sh
 
 # Format code
-./scripts/format.sh
+./scripts/autoformat.sh
 
 # Run architecture tests
 ./scripts/archtest.sh
