@@ -182,9 +182,9 @@ The `/scripts` folder contains tooling for environment setup and enforcement of 
 - Minimum coverage thresholds are enforced per project.
 
 ### 5.6. CI/CD
-- Pre-commit and CI pipelines enforce all formatting, linting, and architectural rules.
+- Pre-commit hooks enforce formatting. CI focuses on linting, tests, and architecture checks.
 - See `.github/workflows/ci.yml` for full configuration details.
-- CI verifies formatting via `./scripts/format.sh` (also run by `selfcheck.sh`).
+- Run `./scripts/format.sh` locally (or via pre-commit) to check formatting when needed.
 
 ### 5.7. Automation
 All quality gates are enforced by:
