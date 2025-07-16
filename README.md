@@ -64,7 +64,7 @@ git commit -m "style: normalize line endings to match .editorconfig"
 
 The repository's `.gitattributes` enforces LF for text files and marks common binaries.
 
-After this commit, `./scripts/format.sh` (or `dotnet format`) runs in CI and must report no changes.
+After this commit, run `./scripts/format.sh` (or `dotnet format`) locally to ensure no style fixes are needed.
 
 Prettier and `markdownlint-cli2` enforce documentation style. They run automatically via pre-commit but you can verify manually with
 `npx prettier --check .` and `npx markdownlint-cli2`.
