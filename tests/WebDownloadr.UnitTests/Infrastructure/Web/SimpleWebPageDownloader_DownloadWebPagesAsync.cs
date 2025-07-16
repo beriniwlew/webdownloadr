@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Flurl.Http.Testing;
+using Microsoft.Extensions.Options;
 using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.UnitTests.Infrastructure.Web;
