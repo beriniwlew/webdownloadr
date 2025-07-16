@@ -53,7 +53,7 @@ public class DownloadWebPageService_CancelDownloadAsync
   {
     public TaskCompletionSource Started { get; } = new();
 
-    public async Task<Result> DownloadWebPagesAsync(IEnumerable<string> urls, string outputDir, CancellationToken cancellationToken)
+    public async Task<Result> DownloadWebPagesAsync(IEnumerable<(Guid Id, string Url)> pages, string outputDir, CancellationToken cancellationToken)
     {
       Directory.CreateDirectory(outputDir);
       Started.SetResult();

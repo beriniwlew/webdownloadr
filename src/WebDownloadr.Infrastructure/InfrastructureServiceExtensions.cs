@@ -28,6 +28,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
       .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
 
+    services.Configure<SimpleWebPageDownloaderOptions>(config.GetSection("WebPageDownloader"));
+
     logger.LogInformation("{Project} services registered", "Infrastructure");
 
     return services;

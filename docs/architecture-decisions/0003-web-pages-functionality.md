@@ -39,7 +39,8 @@ download without tight coupling.
 
 **Follow-up tasks:**
 
-All initial web page features, validation and event handling have been implemented; no outstanding work remains.
+Initial web page features, validation and event handling have been implemented.
+Future enhancements may include allowing custom HTTP headers (e.g., a User-Agent) when downloading pages.
 
 ## Alternatives Considered
 

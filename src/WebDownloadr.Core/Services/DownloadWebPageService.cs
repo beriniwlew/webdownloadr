@@ -33,14 +33,15 @@ public class DownloadWebPageService(
     _activeDownloads[webPage.Id.Value] = linkedCts;
     try
     {
-      var result = await downloader.DownloadWebPagesAsync(new[] { webPage.Url.Value }, OutputDir, linkedCts.Token);
+      var pages = new[] { (webPage.Id.Value, webPage.Url.Value) };
+      var result = await downloader.DownloadWebPagesAsync(pages, OutputDir, linkedCts.Token);
 
       if (result.IsSuccess && !linkedCts.IsCancellationRequested)
       {
         webPage.UpdateStatus(DownloadStatus.DownloadCompleted);
         await repository.UpdateAsync(webPage, cancellationToken);
 
-        var filePath = Path.Combine(OutputDir, GetSafeFilename(webPage.Url.Value) + ".html");
+        var filePath = Path.Combine(OutputDir, $"{webPage.Id.Value}.html");
         var content = await File.ReadAllTextAsync(filePath, cancellationToken);
         await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), cancellationToken);
 
@@ -105,18 +106,4 @@ public class DownloadWebPageService(
     return Result.Success(webPage.Id.Value);
   }
 
-  /// <summary>
-  /// Replaces invalid file name characters so the URL can be used as a file name.
-  /// </summary>
-  /// <param name="url">The original page URL.</param>
-  /// <returns>A sanitized string safe for use as a file name.</returns>
-  private static string GetSafeFilename(string url)
-  {
-    foreach (var c in Path.GetInvalidFileNameChars())
-    {
-      url = url.Replace(c, '_');
-    }
-
-    return url.Replace("https://", "").Replace("http://", "").Replace("/", "_");
-  }
 }

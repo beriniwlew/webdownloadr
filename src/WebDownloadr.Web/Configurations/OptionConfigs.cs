@@ -1,5 +1,6 @@
 ﻿using Ardalis.ListStartupServices;
 using WebDownloadr.Infrastructure.Email;
+using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.Web.Configurations;
 
@@ -11,6 +12,7 @@ public static class OptionConfigs
                                                     WebApplicationBuilder builder)
   {
     services.Configure<MailserverConfiguration>(configuration.GetSection("Mailserver"))
+    .Configure<SimpleWebPageDownloaderOptions>(configuration.GetSection("WebPageDownloader"))
     // Configure Web Behavior
     .Configure<CookiePolicyOptions>(options =>
     {
