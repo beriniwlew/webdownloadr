@@ -5,6 +5,10 @@
 WebDownloadr demonstrates how to apply Clean Architecture to a simple web page downloader built with .NET 9. The solution is organized into
 separate projects that isolate the domain model, application services, infrastructure and API.
 
+This repository is optimized for **AI‑assisted development**. The [AGENTS.md](AGENTS.md) guidelines enable Codex and other AI agents to contribute safely by
+enforcing layer boundaries, formatting rules and documentation standards. Together these practices help maintain a clean architecture even as the
+project grows.
+
 ## Projects
 
 - **WebDownloadr.Core** – domain model containing the [`WebPage` aggregate](src/WebDownloadr.Core/WebPageAggregate/README.md).
