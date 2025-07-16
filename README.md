@@ -54,12 +54,12 @@ Formatting is enforced in CI. All text files use LF endings. Configure Git to co
 git config --global core.autocrlf input
 ```
 
-For the initial bootstrap, maintainers should normalize all files and format the solution:
+For the initial bootstrap, maintainers should normalize all files and run the autoformat script before committing:
 
 ```bash
 git add --renormalize .
 git commit -m "style: normalize line endings to match .editorconfig"
-./scripts/bootstrap-format.sh --commit
+./scripts/autoformat.sh
 ```
 
 The repository's `.gitattributes` enforces LF for text files and marks common binaries.
