@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Flurl.Http.Testing;
+using Microsoft.Extensions.Options;
 using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.UnitTests.Infrastructure.Web;
@@ -13,15 +14,18 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
     httpTest.RespondWith("<html>content</html>");
 
     var logger = Substitute.For<ILogger<SimpleWebPageDownloader>>();
-    var downloader = new SimpleWebPageDownloader(logger);
+    var options = Options.Create(new SimpleWebPageDownloaderOptions());
+    var downloader = new SimpleWebPageDownloader(logger, options);
     var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     try
     {
-      await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir, CancellationToken.None);
+      var id = Guid.NewGuid();
+      await downloader.DownloadWebPagesAsync(new[] { (id, "https://example.com") }, outputDir, CancellationToken.None);
 
       var files = Directory.GetFiles(outputDir);
       files.Length.ShouldBe(1);
       var file = files[0];
+      file.EndsWith($"{id}.html").ShouldBeTrue();
       (await File.ReadAllTextAsync(file)).ShouldBe("<html>content</html>");
     }
     finally
@@ -39,11 +43,12 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
     httpTest.RespondWith("success");
 
     var logger = Substitute.For<ILogger<SimpleWebPageDownloader>>();
-    var downloader = new SimpleWebPageDownloader(logger);
+    var options = Options.Create(new SimpleWebPageDownloaderOptions());
+    var downloader = new SimpleWebPageDownloader(logger, options);
     var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     try
     {
-      await downloader.DownloadWebPagesAsync(new[] { "https://example.com" }, outputDir, CancellationToken.None);
+      await downloader.DownloadWebPagesAsync(new[] { (Guid.NewGuid(), "https://example.com") }, outputDir, CancellationToken.None);
 
       httpTest.CallLog.Count.ShouldBe(2);
     }

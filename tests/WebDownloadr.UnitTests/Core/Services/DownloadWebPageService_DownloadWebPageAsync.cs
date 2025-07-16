@@ -104,23 +104,13 @@ public class DownloadWebPageService_DownloadWebPageAsync
     public const string Content = "<html>content</html>";
     private readonly bool _succeed = succeed;
 
-    public Task<Result> DownloadWebPagesAsync(IEnumerable<string> urls, string outputDir, CancellationToken cancellationToken)
+    public Task<Result> DownloadWebPagesAsync(IEnumerable<(Guid Id, string Url)> pages, string outputDir, CancellationToken cancellationToken)
     {
       Directory.CreateDirectory(outputDir);
-      var url = urls.First();
-      var fileName = Path.Combine(outputDir, GetSafeFilename(url) + ".html");
+      var page = pages.First();
+      var fileName = Path.Combine(outputDir, $"{page.Id}.html");
       File.WriteAllText(fileName, Content);
       return Task.FromResult(_succeed ? Result.Success() : Result.Error("fail"));
-    }
-
-    private static string GetSafeFilename(string url)
-    {
-      foreach (var c in Path.GetInvalidFileNameChars())
-      {
-        url = url.Replace(c, '_');
-      }
-
-      return url.Replace("https://", "").Replace("http://", "").Replace("/", "_");
     }
   }
 }
