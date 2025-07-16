@@ -13,30 +13,36 @@ patterns.
 
 ## Decision
 
-Implement web page functionality using a domain-driven approach with separate aggregates for WebPage and Contributor entities. Use CQRS
-pattern for separating read and write operations, and implement proper event handling for domain events.
+Implement web page functionality using a domain-driven approach. A `WebPage` aggregate lives under
+`src/WebDownloadr.Core/WebPageAggregate/` and encapsulates the page URL, download status and the
+`WebPageDownloadedEvent` domain event. The `DownloadWebPageService`
+(`src/WebDownloadr.Core/Services/DownloadWebPageService.cs`) orchestrates downloads using an
+`IWebPageDownloader` implementation and persists state changes via a repository. Download requests are
+handled by command handlers located in `src/WebDownloadr.UseCases.WebPages`, which queue work through
+the service (`DownloadWebPageHandler`, `DownloadWebPagesHandler`, `CancelDownloadHandler`,
+`RetryDownloadHandler`). The infrastructure project provides `SimpleWebPageDownloader`
+(`src/WebDownloadr.Infrastructure/Web/SimpleWebPageDownloader.cs`) that fetches pages over HTTP and
+saves them locally. Domain events are published via `IMediator` so additional behaviors can react to a
+completed download without tight coupling.
 
 ## Consequences
 
 **Positive outcomes:**
 
-- **Clear separation of concerns** through domain aggregates
-- **Scalable architecture** that can handle multiple web page operations
-- **Event-driven design** enables loose coupling and extensibility
-- **CQRS pattern** provides optimal performance for read and write operations
+- **Clear separation of concerns** through aggregates and use-case handlers
+- **Queued downloads** via `DownloadWebPageService` keep HTTP requests fast and allow cancellation or retry
+- **Domain events** let other features react to completed downloads asynchronously
+- **CQRS-style handlers** provide optimal performance for reads and writes
 
 **Negative outcomes:**
 
 - Increased complexity compared to a simple CRUD approach
-- More initial development time required
-- Learning curve for team members unfamiliar with DDD patterns
+- Additional coordination code is required to manage concurrent downloads
+- Learning curve for team members unfamiliar with event-driven patterns
 
 **Follow-up tasks:**
 
-- Implement WebPage aggregate with domain events
-- Create CQRS handlers for commands and queries
-- Set up event handlers for domain events
-- Add validation and error handling
+All initial web page features, validation and event handling have been implemented; no outstanding work remains.
 
 ## Alternatives Considered
 
