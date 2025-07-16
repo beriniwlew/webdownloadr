@@ -13,17 +13,14 @@ patterns.
 
 ## Decision
 
-Implement web page functionality using a domain-driven approach. A `WebPage` aggregate lives under
-`src/WebDownloadr.Core/WebPageAggregate/` and encapsulates the page URL, download status and the
-`WebPageDownloadedEvent` domain event. The `DownloadWebPageService`
-(`src/WebDownloadr.Core/Services/DownloadWebPageService.cs`) orchestrates downloads using an
-`IWebPageDownloader` implementation and persists state changes via a repository. Download requests are
-handled by command handlers located in `src/WebDownloadr.UseCases.WebPages`, which queue work through
-the service (`DownloadWebPageHandler`, `DownloadWebPagesHandler`, `CancelDownloadHandler`,
-`RetryDownloadHandler`). The infrastructure project provides `SimpleWebPageDownloader`
-(`src/WebDownloadr.Infrastructure/Web/SimpleWebPageDownloader.cs`) that fetches pages over HTTP and
-saves them locally. Domain events are published via `IMediator` so additional behaviors can react to a
-completed download without tight coupling.
+Implement web page functionality using a domain-driven approach. A `WebPage` aggregate lives under `src/WebDownloadr.Core/WebPageAggregate/`
+and encapsulates the page URL, download status and the `WebPageDownloadedEvent` domain event. The `DownloadWebPageService`
+(`src/WebDownloadr.Core/Services/DownloadWebPageService.cs`) orchestrates downloads using an `IWebPageDownloader` implementation and
+persists state changes via a repository. Download requests are handled by command handlers located in `src/WebDownloadr.UseCases.WebPages`,
+which queue work through the service (`DownloadWebPageHandler`, `DownloadWebPagesHandler`, `CancelDownloadHandler`, `RetryDownloadHandler`).
+The infrastructure project provides `SimpleWebPageDownloader` (`src/WebDownloadr.Infrastructure/Web/SimpleWebPageDownloader.cs`) that
+fetches pages over HTTP and saves them locally. Domain events are published via `IMediator` so additional behaviors can react to a completed
+download without tight coupling.
 
 ## Consequences
 

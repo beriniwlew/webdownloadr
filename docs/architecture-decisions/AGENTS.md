@@ -1,7 +1,8 @@
 # AGENTS.md – Architecture Decision Records (ADR)
 
 > **Purpose**  
-> This file defines how contributors—both humans and AI agents—should create, update, and review Architecture Decision Records (ADRs) in this directory. It ensures consistency, traceability, and clarity for all architectural decisions in the project.
+> This file defines how contributors—both humans and AI agents—should create, update, and review Architecture Decision Records (ADRs) in
+> this directory. It ensures consistency, traceability, and clarity for all architectural decisions in the project.
 
 ---
 
@@ -27,7 +28,9 @@
 ## 2. ADR Structure & Conventions
 
 - **Format:**
-  - All ADRs must follow [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-by-michael-nygard) (status, context, decision, consequences, etc).
+  - All ADRs must follow
+    [Michael Nygard’s template](https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-by-michael-nygard)
+    (status, context, decision, consequences, etc).
   - Use Markdown files, named sequentially: `0001-title.md`, `0002-another-decision.md`, etc.
 - **File Naming:**
   - Use all lowercase, words separated by hyphens.
@@ -62,7 +65,8 @@
 - **Escalation:**
   - If requirements are unclear or context is missing, propose an ADR draft and tag a maintainer for review.
 - **Improvement Recommendations:**
-  - AI agents should recommend updates to this AGENTS.md if better practices or automation can be identified (see [Section 6](#6-maintenance--improvement)).
+  - AI agents should recommend updates to this AGENTS.md if better practices or automation can be identified (see
+    [Section 6](#6-maintenance--improvement)).
 - **Output Format:**
   - All ADRs and communications must be in valid Markdown, ready for review and commit.
 - **Common Mistakes to Avoid:**
@@ -88,12 +92,15 @@ Supersedes: N/A
 Superseded-by: N/A
 
 ## Context
+
 ...
 
 ## Decision
+
 ...
 
 ## Consequences
+
 ...
 ```
 
@@ -102,19 +109,22 @@ Superseded-by: N/A
 ## 6. Maintenance & Improvement
 
 - Update this AGENTS.md whenever ADR standards or workflows change.
-- AI agents are encouraged to suggest improvements to this file as the project evolves. Propose such changes as PRs or draft issues for human review.
+- AI agents are encouraged to suggest improvements to this file as the project evolves. Propose such changes as PRs or draft issues for
+  human review.
 
 ---
 
 ## 7. Common Pitfalls & Best Practices
 
 **Pitfalls:**
+
 - Incomplete ADR sections (missing status, context, or consequences)
 - Inconsistent file naming or numbering
 - Lack of references to relevant issues or ADRs
 - Vague or non-actionable decisions
 
 **Best Practices:**
+
 - Use precise, descriptive titles
 - Keep one decision per ADR
 - Clearly state trade-offs and alternatives
