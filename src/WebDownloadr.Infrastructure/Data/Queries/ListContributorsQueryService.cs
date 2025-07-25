@@ -1,4 +1,5 @@
-﻿using WebDownloadr.UseCases.Contributors;
+﻿using Microsoft.EntityFrameworkCore;
+using WebDownloadr.UseCases.Contributors;
 using WebDownloadr.UseCases.Contributors.List;
 
 namespace WebDownloadr.Infrastructure.Data.Queries;
@@ -10,11 +11,9 @@ public class ListContributorsQueryService(AppDbContext _db) : IListContributorsQ
 
   public async Task<IEnumerable<ContributorDTO>> ListAsync()
   {
-    // NOTE: This will fail if testing with EF InMemory provider!
-    var result = await _db.Database.SqlQuery<ContributorDTO>(
-      $"SELECT Id, Name, PhoneNumber_Number AS PhoneNumber FROM Contributors") // don't fetch other big columns
+    return await _db.Contributors
+      .AsNoTracking()
+      .Select(c => new ContributorDTO(c.Id, c.Name, (object?)c.PhoneNumber != null ? c.PhoneNumber.Number : null))
       .ToListAsync();
-
-    return result;
   }
 }

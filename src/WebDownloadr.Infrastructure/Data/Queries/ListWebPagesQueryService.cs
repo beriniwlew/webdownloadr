@@ -1,4 +1,5 @@
-﻿using WebDownloadr.Infrastructure.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using WebDownloadr.Infrastructure.Data;
 using WebDownloadr.UseCases.WebPages;
 using WebDownloadr.UseCases.WebPages.List;
 
@@ -8,10 +9,9 @@ public class ListWebPagesQueryService(AppDbContext db) : IListWebPagesQueryServi
 {
   public async Task<IEnumerable<WebPageDTO>> ListAsync()
   {
-    var result = await db.Database.SqlQuery<WebPageDTO>(
-      $"SELECT Id, Url, Status FROM WebPages")
+    return await db.WebPages
+      .AsNoTracking()
+      .Select(p => new WebPageDTO(p.Id.Value, p.Url.Value, p.Status.Name))
       .ToListAsync();
-
-    return result;
   }
 }
