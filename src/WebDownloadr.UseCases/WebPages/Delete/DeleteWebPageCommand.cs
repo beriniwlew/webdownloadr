@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace WebDownloadr.UseCases.WebPages.Delete;
+﻿namespace WebDownloadr.UseCases.WebPages.Delete;
 
 /// <summary>
 /// Command to delete a tracked web page.
