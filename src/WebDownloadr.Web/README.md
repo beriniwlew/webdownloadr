@@ -10,3 +10,11 @@ The Web project exposes API endpoints using FastEndpoints. It wires up the appli
 - `POST /WebPages/download` — download multiple pages in one request.
 
 Run the project and visit `/swagger` for full API documentation.
+
+## Running Tests
+
+Functional tests hit the API using `WebApplicationFactory`.
+
+```bash
+dotnet test tests/WebDownloadr.FunctionalTests
+```
