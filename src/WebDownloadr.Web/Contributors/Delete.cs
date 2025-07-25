@@ -35,6 +35,5 @@ public class Delete(IMediator _mediator)
     {
       await SendNoContentAsync(cancellationToken);
     }
-    // TODO: Handle other issues as needed
   }
 }
