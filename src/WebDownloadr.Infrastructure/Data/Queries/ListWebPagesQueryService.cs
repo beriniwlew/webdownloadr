@@ -6,11 +6,11 @@ namespace WebDownloadr.Infrastructure.Data.Queries;
 
 public class ListWebPagesQueryService(AppDbContext db) : IListWebPagesQueryService
 {
-  public async Task<IEnumerable<WebPageDTO>> ListAsync()
+  public async Task<IEnumerable<WebPageDTO>> ListAsync(CancellationToken ct)
   {
     var result = await db.Database.SqlQuery<WebPageDTO>(
       $"SELECT Id, Url, Status FROM WebPages")
-      .ToListAsync();
+      .ToListAsync(ct);
 
     return result;
   }

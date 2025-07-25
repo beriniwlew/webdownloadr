@@ -14,7 +14,7 @@ public class ListWebPagesHandler(IListWebPagesQueryService query)
   /// <returns>Collection of pages wrapped in a successful result.</returns>
   public async Task<Result<IEnumerable<WebPageDTO>>> Handle(ListWebPagesQuery request, CancellationToken cancellationToken)
   {
-    var result = await query.ListAsync();
+    var result = await query.ListAsync(cancellationToken);
     return Result.Success(result);
   }
 }

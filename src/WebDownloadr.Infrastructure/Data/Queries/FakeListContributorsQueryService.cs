@@ -5,7 +5,7 @@ namespace WebDownloadr.Infrastructure.Data.Queries;
 
 public class FakeListContributorsQueryService : IListContributorsQueryService
 {
-  public Task<IEnumerable<ContributorDTO>> ListAsync()
+  public Task<IEnumerable<ContributorDTO>> ListAsync(CancellationToken ct)
   {
     IEnumerable<ContributorDTO> result =
         [new ContributorDTO(1, "Fake Contributor 1", ""),

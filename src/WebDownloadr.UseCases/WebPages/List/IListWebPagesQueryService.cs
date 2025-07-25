@@ -5,5 +5,5 @@
 /// </summary>
 public interface IListWebPagesQueryService
 {
-  Task<IEnumerable<WebPageDTO>> ListAsync();
+  Task<IEnumerable<WebPageDTO>> ListAsync(CancellationToken ct = default);
 }
