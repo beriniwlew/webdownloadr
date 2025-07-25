@@ -4,3 +4,16 @@ This project contains the domain model for WebDownloadr. It defines the entities
 pages are downloaded.
 
 The main aggregate is documented in [`WebPageAggregate`](WebPageAggregate/README.md).
+
+## Key Services
+
+`DownloadWebPageService` implements `IDownloadWebPageService` and manages the
+state of a `WebPage` while it downloads content.
+
+## Running Tests
+
+Execute the core unit tests with:
+
+```bash
+dotnet test tests/WebDownloadr.UnitTests
+```

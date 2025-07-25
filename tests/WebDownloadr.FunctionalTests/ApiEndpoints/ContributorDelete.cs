@@ -21,4 +21,11 @@ public class ContributorDelete(CustomWebApplicationFactory<Program> factory) : I
     string route = DeleteContributorRequest.BuildRoute(1000);
     _ = await _client.DeleteAndEnsureNotFoundAsync(route);
   }
+
+  [Fact]
+  public async Task ReturnsBadRequestGivenIdZero()
+  {
+    string route = DeleteContributorRequest.BuildRoute(0);
+    _ = await _client.DeleteAndEnsureBadRequestAsync(route);
+  }
 }

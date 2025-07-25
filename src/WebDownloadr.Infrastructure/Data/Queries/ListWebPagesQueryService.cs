@@ -7,7 +7,7 @@ namespace WebDownloadr.Infrastructure.Data.Queries;
 
 public class ListWebPagesQueryService(AppDbContext db) : IListWebPagesQueryService
 {
-  public async Task<IEnumerable<WebPageDTO>> ListAsync()
+  public async Task<IEnumerable<WebPageDTO>> ListAsync(CancellationToken ct)
   {
     return await db.WebPages
       .AsNoTracking()

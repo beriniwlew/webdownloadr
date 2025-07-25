@@ -30,7 +30,7 @@ public class ListWebPagesQueryServiceTests
 
     var service = new ListWebPagesQueryService(context);
 
-    var result = (await service.ListAsync()).ToList();
+    var result = (await service.ListAsync(CancellationToken.None)).ToList();
 
     result.Count.ShouldBe(2);
     result.Any(p => p.Url == "https://one.com").ShouldBeTrue();

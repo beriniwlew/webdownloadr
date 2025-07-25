@@ -9,7 +9,7 @@ public class ListContributorsQueryService(AppDbContext _db) : IListContributorsQ
   // You can use EF, Dapper, SqlClient, etc. for queries -
   // this is just an example
 
-  public async Task<IEnumerable<ContributorDTO>> ListAsync()
+  public async Task<IEnumerable<ContributorDTO>> ListAsync(CancellationToken ct)
   {
     return await _db.Contributors
       .AsNoTracking()

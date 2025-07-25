@@ -14,7 +14,7 @@ public class ListContributorsHandler(IListContributorsQueryService _query)
   /// <returns>Contributors returned by the query service.</returns>
   public async Task<Result<IEnumerable<ContributorDTO>>> Handle(ListContributorsQuery request, CancellationToken cancellationToken)
   {
-    var result = await _query.ListAsync();
+    var result = await _query.ListAsync(cancellationToken);
 
     return Result.Success(result);
   }
