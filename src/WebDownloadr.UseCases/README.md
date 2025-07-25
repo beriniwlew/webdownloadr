@@ -13,3 +13,16 @@ as well as running downloads. The download-specific handlers are further documen
 
 The `Contributors` folder demonstrates simple CRUD handlers for a secondary entity. These use cases are structured the same way as the ones
 for web pages.
+
+## Key Classes
+
+Handlers are implemented as MediatR requests and invoke
+`IDownloadWebPageService` when coordinating downloads.
+
+## Running Tests
+
+Run the use case tests with:
+
+```bash
+dotnet test tests/WebDownloadr.UnitTests
+```
