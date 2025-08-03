@@ -1,4 +1,6 @@
-﻿using WebDownloadr.Web.Configurations;
+﻿using Microsoft.Extensions.DependencyInjection;
+using WebDownloadr.Infrastructure.Data;
+using WebDownloadr.Web.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +29,14 @@ builder.AddServiceDefaults();
 
 var app = builder.Build();
 
-await app.UseAppMiddlewareAndSeedDatabase();
+using (var scope = app.Services.CreateScope())
+{
+  var seeder = scope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
+  await app.UseAppMiddlewareAndSeedDatabase(seeder);
+}
 
 app.Run();
 
 // Make the implicit Program.cs class public, so integration tests can reference the correct assembly for host building
 public partial class Program { }
+
