@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
+using System.Threading;
 using Flurl.Http.Testing;
 using Microsoft.Extensions.Options;
 using WebDownloadr.Infrastructure.Web;
@@ -15,24 +17,18 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
 
     var logger = Substitute.For<ILogger<SimpleWebPageDownloader>>();
     var options = Options.Create(new SimpleWebPageDownloaderOptions());
-    var downloader = new SimpleWebPageDownloader(logger, options);
-    var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-    try
-    {
-      var id = Guid.NewGuid();
-      await downloader.DownloadWebPagesAsync(new[] { (id, "https://example.com") }, outputDir, CancellationToken.None);
+    var fileSystem = new MockFileSystem();
+    var downloader = new SimpleWebPageDownloader(logger, options, fileSystem);
+    var outputDir = fileSystem.Path.Combine("temp", Guid.NewGuid().ToString());
 
-      var files = Directory.GetFiles(outputDir);
-      files.Length.ShouldBe(1);
-      var file = files[0];
-      file.EndsWith($"{id}.html").ShouldBeTrue();
-      (await File.ReadAllTextAsync(file)).ShouldBe("<html>content</html>");
-    }
-    finally
-    {
-      if (Directory.Exists(outputDir))
-        Directory.Delete(outputDir, true);
-    }
+    var id = Guid.NewGuid();
+    await downloader.DownloadWebPagesAsync(new[] { (id, "https://example.com") }, outputDir, CancellationToken.None);
+
+    var files = fileSystem.Directory.GetFiles(outputDir);
+    files.Length.ShouldBe(1);
+    var file = files[0];
+    file.EndsWith($"{id}.html").ShouldBeTrue();
+    (await fileSystem.File.ReadAllTextAsync(file)).ShouldBe("<html>content</html>");
   }
 
   [Fact]
@@ -44,18 +40,12 @@ public class SimpleWebPageDownloader_DownloadWebPagesAsync
 
     var logger = Substitute.For<ILogger<SimpleWebPageDownloader>>();
     var options = Options.Create(new SimpleWebPageDownloaderOptions());
-    var downloader = new SimpleWebPageDownloader(logger, options);
-    var outputDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-    try
-    {
-      await downloader.DownloadWebPagesAsync(new[] { (Guid.NewGuid(), "https://example.com") }, outputDir, CancellationToken.None);
+    var fileSystem = new MockFileSystem();
+    var downloader = new SimpleWebPageDownloader(logger, options, fileSystem);
+    var outputDir = fileSystem.Path.Combine("temp", Guid.NewGuid().ToString());
 
-      httpTest.CallLog.Count.ShouldBe(2);
-    }
-    finally
-    {
-      if (Directory.Exists(outputDir))
-        Directory.Delete(outputDir, true);
-    }
+    await downloader.DownloadWebPagesAsync(new[] { (Guid.NewGuid(), "https://example.com") }, outputDir, CancellationToken.None);
+
+    httpTest.CallLog.Count.ShouldBe(2);
   }
 }

@@ -37,6 +37,8 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="System.IO.Abstractions" Version="22.0.15" />
+    <PackageVersion Include="System.IO.Abstractions.TestingHelpers" Version="22.0.15" />
     <PackageVersion Include="Polly" Version="8.6.1" />
     <PackageVersion Include="ReportGenerator" Version="5.4.8" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />

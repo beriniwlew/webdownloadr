@@ -1,4 +1,5 @@
-﻿using Ardalis.Result;
+﻿using System.IO.Abstractions;
+using Ardalis.Result;
 using WebDownloadr.Core.Interfaces;
 
 namespace WebDownloadr.Infrastructure.Web;
@@ -10,10 +11,12 @@ using Polly;
 /// via HTTP and saves them to disk.
 /// </summary>
 public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger,
-    IOptions<SimpleWebPageDownloaderOptions> options) : IWebPageDownloader
+    IOptions<SimpleWebPageDownloaderOptions> options,
+    IFileSystem fileSystem) : IWebPageDownloader
 {
   private readonly ILogger<SimpleWebPageDownloader> _logger = logger;
   private readonly SimpleWebPageDownloaderOptions _options = options.Value;
+  private readonly IFileSystem _fileSystem = fileSystem;
 
   private IAsyncPolicy GetFlurlRetryPolicy() =>
     Policy
@@ -30,7 +33,7 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger,
     string outputDir,
     CancellationToken cancellationToken)
   {
-    Directory.CreateDirectory(outputDir);
+    _fileSystem.Directory.CreateDirectory(outputDir);
     var policy = GetFlurlRetryPolicy();
 
     using var semaphore = new SemaphoreSlim(_options.MaxConcurrentDownloads);
@@ -74,7 +77,7 @@ public class SimpleWebPageDownloader(ILogger<SimpleWebPageDownloader> logger,
       url.WithTimeout(_options.TimeoutSeconds).GetStreamAsync(cancellationToken: ct), cancellationToken);
 
     var fileName = Path.Combine(outputDir, $"{id}.html");
-    await using var file = File.Create(fileName);
+    await using var file = _fileSystem.File.Create(fileName);
     await stream.CopyToAsync(file, cancellationToken);
 
     return Result.Success();
