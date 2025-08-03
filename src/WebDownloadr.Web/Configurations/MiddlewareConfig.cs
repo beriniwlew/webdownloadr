@@ -5,7 +5,7 @@ namespace WebDownloadr.Web.Configurations;
 
 public static class MiddlewareConfig
 {
-  public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app)
+  public static async Task<IApplicationBuilder> UseAppMiddlewareAndSeedDatabase(this WebApplication app, IDatabaseSeeder seeder)
   {
     if (app.Environment.IsDevelopment())
     {
@@ -23,27 +23,9 @@ public static class MiddlewareConfig
 
     app.UseHttpsRedirection(); // Note this will drop Authorization headers
 
-    await SeedDatabase(app);
+    await seeder.SeedAsync();
 
     return app;
   }
-
-  static async Task SeedDatabase(WebApplication app)
-  {
-    using var scope = app.Services.CreateScope();
-    var services = scope.ServiceProvider;
-
-    try
-    {
-      var context = services.GetRequiredService<AppDbContext>();
-      //          context.Database.Migrate();
-      context.Database.EnsureCreated();
-      await SeedData.InitializeAsync(context);
-    }
-    catch (Exception ex)
-    {
-      var logger = services.GetRequiredService<ILogger<Program>>();
-      logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
-    }
-  }
 }
+

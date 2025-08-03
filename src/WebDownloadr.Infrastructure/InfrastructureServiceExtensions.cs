@@ -26,7 +26,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IListWebPagesQueryService, ListWebPagesQueryService>()
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
       .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
-      .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
+      .AddScoped<IDownloadWebPageService, DownloadWebPageService>()
+      .AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
     services.Configure<SimpleWebPageDownloaderOptions>(config.GetSection("WebPageDownloader"));
 
