@@ -30,7 +30,7 @@ public class ListContributorsQueryServiceTests
 
     var service = new ListContributorsQueryService(context);
 
-    var result = (await service.ListAsync()).ToList();
+    var result = (await service.ListAsync(CancellationToken.None)).ToList();
 
     result.Count.ShouldBe(2);
     result.Any(c => c.Name == "One").ShouldBeTrue();
