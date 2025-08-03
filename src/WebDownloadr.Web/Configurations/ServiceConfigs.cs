@@ -1,4 +1,5 @@
-﻿using WebDownloadr.Core.Interfaces;
+﻿using System.IO.Abstractions;
+using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Infrastructure;
 using WebDownloadr.Infrastructure.Email;
 
@@ -8,6 +9,8 @@ public static class ServiceConfigs
 {
   public static IServiceCollection AddServiceConfigs(this IServiceCollection services, Microsoft.Extensions.Logging.ILogger logger, WebApplicationBuilder builder)
   {
+    services.AddSingleton<IFileSystem, FileSystem>();
+
     services.AddInfrastructureServices(builder.Configuration, logger)
             .AddMediatrConfigs();
 
