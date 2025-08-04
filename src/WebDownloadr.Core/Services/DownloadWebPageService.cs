@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Abstractions;
-using System.Threading;
-using Ardalis.Result;
-using MediatR;
+﻿using System.IO.Abstractions;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.WebPageAggregate;
 using WebDownloadr.Core.WebPageAggregate.Events;
@@ -22,8 +17,6 @@ public class DownloadWebPageService(
   IActiveDownloadRegistry registry) : IDownloadWebPageService
 {
   private const string OutputDir = "downloads";
-  private readonly IFileSystem _fileSystem = fileSystem;
-  private readonly IActiveDownloadRegistry _registry = registry;
 
   /// <inheritdoc />
   public async Task<Result<Guid>> DownloadWebPageAsync(Guid id, CancellationToken cancellationToken)
@@ -38,7 +31,7 @@ public class DownloadWebPageService(
     await repository.UpdateAsync(webPage, cancellationToken);
 
     using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-    _registry.Register(webPage.Id.Value, linkedCts);
+    registry.Register(webPage.Id.Value, linkedCts);
     try
     {
       var pages = new[] { (webPage.Id.Value, webPage.Url.Value) };
@@ -47,35 +40,35 @@ public class DownloadWebPageService(
       if (result.IsSuccess && !linkedCts.IsCancellationRequested)
       {
         webPage.UpdateStatus(DownloadStatus.DownloadCompleted);
-        await repository.UpdateAsync(webPage, cancellationToken);
+        await repository.UpdateAsync(webPage, linkedCts.Token);
 
-        var filePath = _fileSystem.Path.Combine(OutputDir, $"{webPage.Id.Value}.html");
-        var content = await _fileSystem.File.ReadAllTextAsync(filePath, cancellationToken);
-        await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), cancellationToken);
+        var filePath = fileSystem.Path.Combine(OutputDir, $"{webPage.Id.Value}.html");
+        var content = await fileSystem.File.ReadAllTextAsync(filePath, linkedCts.Token);
+        await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), linkedCts.Token);
 
         return Result.Success(webPage.Id.Value);
       }
       if (linkedCts.IsCancellationRequested)
       {
         webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
-        await repository.UpdateAsync(webPage, cancellationToken);
+        await repository.UpdateAsync(webPage, linkedCts.Token);
         return Result.Success(webPage.Id.Value);
       }
 
       webPage.UpdateStatus(DownloadStatus.DownloadError);
-      await repository.UpdateAsync(webPage, cancellationToken);
+      await repository.UpdateAsync(webPage, linkedCts.Token);
 
       return Result<Guid>.Error(string.Join("; ", result.Errors));
     }
     catch (OperationCanceledException)
     {
       webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
-      await repository.UpdateAsync(webPage, cancellationToken);
+      await repository.UpdateAsync(webPage, linkedCts.Token);
       return Result.Success(webPage.Id.Value);
     }
     finally
     {
-      _registry.TryRemove(webPage.Id.Value, out _);
+      registry.TryRemove(webPage.Id.Value, out _);
     }
   }
 
@@ -103,9 +96,9 @@ public class DownloadWebPageService(
       return Result.NotFound();
     }
 
-    if (_registry.TryRemove(id, out var cts))
+    if (registry.TryRemove(id, out var cts))
     {
-      cts!.Cancel();
+      await cts!.CancelAsync();
     }
 
     webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
