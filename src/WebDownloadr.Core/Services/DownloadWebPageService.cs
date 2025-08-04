@@ -1,4 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.Threading;
+using Ardalis.Result;
+using MediatR;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.WebPageAggregate;
 using WebDownloadr.Core.WebPageAggregate.Events;
@@ -12,10 +17,13 @@ namespace WebDownloadr.Core.Services;
 public class DownloadWebPageService(
   IRepository<WebPage> repository,
   IWebPageDownloader downloader,
-  IMediator mediator) : IDownloadWebPageService
+  IMediator mediator,
+  IFileSystem fileSystem,
+  IActiveDownloadRegistry registry) : IDownloadWebPageService
 {
   private const string OutputDir = "downloads";
-  private static readonly ConcurrentDictionary<Guid, CancellationTokenSource> _activeDownloads = new();
+  private readonly IFileSystem _fileSystem = fileSystem;
+  private readonly IActiveDownloadRegistry _registry = registry;
 
   /// <inheritdoc />
   public async Task<Result<Guid>> DownloadWebPageAsync(Guid id, CancellationToken cancellationToken)
@@ -30,7 +38,7 @@ public class DownloadWebPageService(
     await repository.UpdateAsync(webPage, cancellationToken);
 
     using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-    _activeDownloads[webPage.Id.Value] = linkedCts;
+    _registry.Register(webPage.Id.Value, linkedCts);
     try
     {
       var pages = new[] { (webPage.Id.Value, webPage.Url.Value) };
@@ -41,8 +49,8 @@ public class DownloadWebPageService(
         webPage.UpdateStatus(DownloadStatus.DownloadCompleted);
         await repository.UpdateAsync(webPage, cancellationToken);
 
-        var filePath = Path.Combine(OutputDir, $"{webPage.Id.Value}.html");
-        var content = await File.ReadAllTextAsync(filePath, cancellationToken);
+        var filePath = _fileSystem.Path.Combine(OutputDir, $"{webPage.Id.Value}.html");
+        var content = await _fileSystem.File.ReadAllTextAsync(filePath, cancellationToken);
         await mediator.Publish(new WebPageDownloadedEvent(webPage.Id.Value, content), cancellationToken);
 
         return Result.Success(webPage.Id.Value);
@@ -67,7 +75,7 @@ public class DownloadWebPageService(
     }
     finally
     {
-      _activeDownloads.TryRemove(webPage.Id.Value, out _);
+      _registry.TryRemove(webPage.Id.Value, out _);
     }
   }
 
@@ -95,9 +103,9 @@ public class DownloadWebPageService(
       return Result.NotFound();
     }
 
-    if (_activeDownloads.TryRemove(id, out var cts))
+    if (_registry.TryRemove(id, out var cts))
     {
-      cts.Cancel();
+      cts!.Cancel();
     }
 
     webPage.UpdateStatus(DownloadStatus.DownloadCancelled);
@@ -105,5 +113,4 @@ public class DownloadWebPageService(
 
     return Result.Success(webPage.Id.Value);
   }
-
 }

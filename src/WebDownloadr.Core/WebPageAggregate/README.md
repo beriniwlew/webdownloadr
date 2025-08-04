@@ -1,7 +1,7 @@
 # WebPage Aggregate
 
-The WebPage aggregate represents a web page that can be downloaded by the application. It is the core domain model used by the
-`DownloadWebPageService` and related use cases.
+The WebPage aggregate represents a web page that can be downloaded by the application. It is the core domain model used by services
+implementing `IDownloadWebPageService` and related use cases.
 
 ## Aggregate Components
 
@@ -18,7 +18,7 @@ The WebPage aggregate represents a web page that can be downloaded by the applic
 ## Typical Workflow
 
 1. A `WebPage` is created using a valid `WebPageUrl`.
-2. The `DownloadWebPageService` updates the entity's `DownloadStatus` as the download progresses.
+2. An `IDownloadWebPageService` implementation updates the entity's `DownloadStatus` as the download progresses.
 3. Once the download completes successfully, `WebPageDownloadedEvent` is published so other parts of the system can react.
 
 This aggregate encapsulates all state and behavior related to downloading a single web page and should be the only entry point for modifying
