@@ -1,21 +1,15 @@
-﻿using WebDownloadr.Web.Configurations;
+﻿using Serilog;
+using WebDownloadr.Web.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var logger = Log.Logger = new LoggerConfiguration()
-  .Enrich.FromLogContext()
-  .WriteTo.Console()
-  .CreateLogger();
+builder.Host.UseSerilog((context, config) =>
+  config.ReadFrom.Configuration(context.Configuration));
 
-logger.Information("Starting web host");
+Log.Information("Starting web host");
 
-builder.AddLoggerConfigs();
-
-var appLogger = new SerilogLoggerFactory(logger)
-    .CreateLogger<Program>();
-
-builder.Services.AddOptionConfigs(builder.Configuration, appLogger, builder);
-builder.Services.AddServiceConfigs(appLogger, builder);
+builder.Services.AddOptionConfigs(builder.Configuration, builder);
+builder.Services.AddServiceConfigs(builder);
 
 builder.Services.AddFastEndpoints()
                 .SwaggerDocument(o =>
@@ -33,3 +27,4 @@ app.Run();
 
 // Make the implicit Program.cs class public, so integration tests can reference the correct assembly for host building
 public partial class Program { }
+

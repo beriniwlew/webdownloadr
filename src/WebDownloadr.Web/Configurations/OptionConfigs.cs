@@ -1,4 +1,6 @@
-﻿using Ardalis.ListStartupServices;
+﻿using System.Collections.Generic;
+using Ardalis.ListStartupServices;
+using Microsoft.Extensions.DependencyInjection;
 using WebDownloadr.Infrastructure.Email;
 using WebDownloadr.Infrastructure.Web;
 
@@ -8,7 +10,6 @@ public static class OptionConfigs
 {
   public static IServiceCollection AddOptionConfigs(this IServiceCollection services,
                                                     IConfiguration configuration,
-                                                    Microsoft.Extensions.Logging.ILogger logger,
                                                     WebApplicationBuilder builder)
   {
     services.Configure<MailserverConfiguration>(configuration.GetSection("Mailserver"))
@@ -32,8 +33,9 @@ public static class OptionConfigs
       });
     }
 
-    logger.LogInformation("{Project} were configured", "Options");
+    Log.Information("{Project} were configured", "Options");
 
     return services;
   }
 }
+

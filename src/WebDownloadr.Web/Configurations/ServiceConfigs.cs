@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Infrastructure;
 using WebDownloadr.Infrastructure.Email;
@@ -7,13 +8,12 @@ namespace WebDownloadr.Web.Configurations;
 
 public static class ServiceConfigs
 {
-  public static IServiceCollection AddServiceConfigs(this IServiceCollection services, Microsoft.Extensions.Logging.ILogger logger, WebApplicationBuilder builder)
+  public static IServiceCollection AddServiceConfigs(this IServiceCollection services, WebApplicationBuilder builder)
   {
     services.AddSingleton<IFileSystem, FileSystem>();
 
-    services.AddInfrastructureServices(builder.Configuration, logger)
+    services.AddInfrastructureServices(builder.Configuration)
             .AddMediatrConfigs();
-
 
     if (builder.Environment.IsDevelopment())
     {
@@ -30,10 +30,9 @@ public static class ServiceConfigs
       services.AddScoped<IEmailSender, MimeKitEmailSender>();
     }
 
-    logger.LogInformation("{Project} services registered", "Mediatr and Email Sender");
+    Log.Information("{Project} services registered", "Mediatr and Email Sender");
 
     return services;
   }
-
-
 }
+

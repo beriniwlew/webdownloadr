@@ -12,8 +12,7 @@ public static class InfrastructureServiceExtensions
 {
   public static IServiceCollection AddInfrastructureServices(
     this IServiceCollection services,
-    ConfigurationManager config,
-    ILogger logger)
+    ConfigurationManager config)
   {
     string? connectionString = config.GetConnectionString("SqliteConnection");
     Guard.Against.Null(connectionString);
@@ -29,8 +28,6 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IDownloadWebPageService, DownloadWebPageService>();
 
     services.Configure<SimpleWebPageDownloaderOptions>(config.GetSection("WebPageDownloader"));
-
-    logger.LogInformation("{Project} services registered", "Infrastructure");
 
     return services;
   }
