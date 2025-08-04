@@ -7,8 +7,8 @@ The main aggregate is documented in [`WebPageAggregate`](WebPageAggregate/README
 
 ## Key Services
 
-`DownloadWebPageService` implements `IDownloadWebPageService` and manages the
-state of a `WebPage` while it downloads content.
+`IDownloadWebPageService` defines operations for downloading web pages and managing their lifecycle. Its implementation resides in this
+project under `Services/DownloadWebPageService`.
 
 ## Running Tests
 

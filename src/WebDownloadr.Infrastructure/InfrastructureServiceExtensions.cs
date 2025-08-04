@@ -27,9 +27,8 @@ public static class InfrastructureServiceExtensions
       .AddScoped<IDeleteContributorService, DeleteContributorService>()
       .AddScoped<IWebPageDownloader, SimpleWebPageDownloader>()
       .AddScoped<IDownloadWebPageService, DownloadWebPageService>()
-      .AddScoped<IDatabaseSeeder, DatabaseSeeder>();
-
-    services.Configure<SimpleWebPageDownloaderOptions>(config.GetSection("WebPageDownloader"));
+      .AddScoped<IDatabaseSeeder, DatabaseSeeder>()
+      .AddSingleton<IActiveDownloadRegistry, ActiveDownloadRegistry>();
 
     logger.LogInformation("{Project} services registered", "Infrastructure");
 

@@ -1,9 +1,13 @@
-﻿using Ardalis.Result;
-using NSubstitute;
-using Shouldly;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
+using System.Threading;
+using System.Threading.Tasks;
+using Ardalis.Result;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.Services;
-using WebDownloadr.Core.WebPageAggregate;
+using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.UnitTests.Core.Services;
 
@@ -11,12 +15,15 @@ public class DownloadWebPageService_CancelDownloadAsync
 {
   private readonly IRepository<WebPage> _repository = Substitute.For<IRepository<WebPage>>();
   private readonly IMediator _mediator = Substitute.For<IMediator>();
-  private readonly FakeDownloader _downloader = new();
+  private readonly MockFileSystem _fileSystem = new();
+  private readonly ActiveDownloadRegistry _registry = new();
+  private readonly FakeDownloader _downloader;
   private readonly DownloadWebPageService _service;
 
   public DownloadWebPageService_CancelDownloadAsync()
   {
-    _service = new DownloadWebPageService(_repository, _downloader, _mediator);
+    _downloader = new FakeDownloader(_fileSystem);
+    _service = new DownloadWebPageService(_repository, _downloader, _mediator, _fileSystem, _registry);
   }
 
   [Fact]
@@ -47,15 +54,18 @@ public class DownloadWebPageService_CancelDownloadAsync
     await downloadTask;
 
     page.Status.ShouldBe(DownloadStatus.DownloadCancelled);
+    _registry.TryRemove(page.Id.Value, out _).ShouldBeFalse();
   }
 
   private class FakeDownloader : IWebPageDownloader
   {
     public TaskCompletionSource Started { get; } = new();
+    private readonly IFileSystem _fileSystem;
+    public FakeDownloader(IFileSystem fileSystem) => _fileSystem = fileSystem;
 
     public async Task<Result> DownloadWebPagesAsync(IEnumerable<(Guid Id, string Url)> pages, string outputDir, CancellationToken cancellationToken)
     {
-      Directory.CreateDirectory(outputDir);
+      _fileSystem.Directory.CreateDirectory(outputDir);
       Started.SetResult();
       await Task.Delay(Timeout.Infinite, cancellationToken);
       return Result.Success();

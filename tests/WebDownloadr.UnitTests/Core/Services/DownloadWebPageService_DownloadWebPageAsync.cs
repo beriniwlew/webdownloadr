@@ -1,14 +1,13 @@
-﻿using System.Collections.Concurrent;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
-using System.Reflection;
+using System.Threading;
 using Ardalis.Result;
-using NSubstitute;
-using Shouldly;
 using WebDownloadr.Core.Interfaces;
 using WebDownloadr.Core.Services;
-using WebDownloadr.Core.WebPageAggregate;
-using WebDownloadr.Core.WebPageAggregate.Events;
+using WebDownloadr.Infrastructure.Web;
 
 namespace WebDownloadr.UnitTests.Core.Services;
 
@@ -20,96 +19,60 @@ public class DownloadWebPageService_DownloadWebPageAsync
   [Fact]
   public async Task UpdatesStatusAndPublishesEventOnSuccess()
   {
-    var downloader = new FakeDownloader(true);
-    var service = new DownloadWebPageService(_repository, downloader, _mediator);
+    var fileSystem = new MockFileSystem();
+    var registry = new ActiveDownloadRegistry();
+    var downloader = new FakeDownloader(true, fileSystem);
+    var service = new DownloadWebPageService(_repository, downloader, _mediator, fileSystem, registry);
     var page = new WebPage(WebPageUrl.From("https://example.com")) { Id = WebPageId.From(Guid.NewGuid()) };
     _repository.GetByIdAsync<Guid>(page.Id.Value, Arg.Any<CancellationToken>()).Returns(page);
     _repository.UpdateAsync(page, Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
 
-    ClearActiveDownloads();
-    try
-    {
-      var result = await service.DownloadWebPageAsync(page.Id.Value, CancellationToken.None);
+    var result = await service.DownloadWebPageAsync(page.Id.Value, CancellationToken.None);
 
-      result.IsSuccess.ShouldBeTrue();
-      page.Status.ShouldBe(DownloadStatus.DownloadCompleted);
-      var calls = _mediator.ReceivedCalls().ToList();
-      calls.ShouldContain(c => c.GetMethodInfo().Name == "Publish");
-      var published = calls.First(c => c.GetMethodInfo().Name == "Publish").GetArguments()[0]!;
-      published.GetType().Name.ShouldBe("WebPageDownloadedEvent");
-      var idProperty = published.GetType().GetProperty("Id")!;
-      var idProp = (Guid)idProperty.GetValue(published)!;
-      idProp.ShouldBe(page.Id.Value);
-      var contentProperty = published.GetType().GetProperty("Content")!;
-      var contentProp = (string)contentProperty.GetValue(published)!;
-      contentProp.ShouldBe(FakeDownloader.Content);
-      IsDownloadActive(page.Id.Value).ShouldBeFalse();
-    }
-    finally
-    {
-      Cleanup();
-    }
+    result.IsSuccess.ShouldBeTrue();
+    page.Status.ShouldBe(DownloadStatus.DownloadCompleted);
+    var calls = _mediator.ReceivedCalls().ToList();
+    calls.ShouldContain(c => c.GetMethodInfo().Name == "Publish");
+    var published = calls.First(c => c.GetMethodInfo().Name == "Publish").GetArguments()[0]!;
+    published.GetType().Name.ShouldBe("WebPageDownloadedEvent");
+    var idProperty = published.GetType().GetProperty("Id")!;
+    ((Guid)idProperty.GetValue(published)!).ShouldBe(page.Id.Value);
+    var contentProperty = published.GetType().GetProperty("Content")!;
+    ((string)contentProperty.GetValue(published)!).ShouldBe(FakeDownloader.Content);
+    registry.TryRemove(page.Id.Value, out _).ShouldBeFalse();
   }
 
   [Fact]
   public async Task SetsErrorStatusOnFailure()
   {
-    var downloader = new FakeDownloader(false);
-    var service = new DownloadWebPageService(_repository, downloader, _mediator);
+    var fileSystem = new MockFileSystem();
+    var registry = new ActiveDownloadRegistry();
+    var downloader = new FakeDownloader(false, fileSystem);
+    var service = new DownloadWebPageService(_repository, downloader, _mediator, fileSystem, registry);
     var page = new WebPage(WebPageUrl.From("https://example.com")) { Id = WebPageId.From(Guid.NewGuid()) };
     _repository.GetByIdAsync<Guid>(page.Id.Value, Arg.Any<CancellationToken>()).Returns(page);
     _repository.UpdateAsync(page, Arg.Any<CancellationToken>()).Returns(Task.FromResult(1));
 
-    ClearActiveDownloads();
-    try
-    {
-      var result = await service.DownloadWebPageAsync(page.Id.Value, CancellationToken.None);
+    var result = await service.DownloadWebPageAsync(page.Id.Value, CancellationToken.None);
 
-      result.IsSuccess.ShouldBeFalse();
-      page.Status.ShouldBe(DownloadStatus.DownloadError);
-      _mediator.ReceivedCalls().ShouldNotContain(c => c.GetMethodInfo().Name == "Publish");
-      IsDownloadActive(page.Id.Value).ShouldBeFalse();
-    }
-    finally
-    {
-      Cleanup();
-    }
+    result.IsSuccess.ShouldBeFalse();
+    page.Status.ShouldBe(DownloadStatus.DownloadError);
+    _mediator.ReceivedCalls().ShouldNotContain(c => c.GetMethodInfo().Name == "Publish");
+    registry.TryRemove(page.Id.Value, out _).ShouldBeFalse();
   }
 
-  private static bool IsDownloadActive(Guid id)
-  {
-    var dict = GetActiveDownloads();
-    return dict.ContainsKey(id);
-  }
-
-  private static void ClearActiveDownloads()
-  {
-    GetActiveDownloads().Clear();
-  }
-
-  private static ConcurrentDictionary<Guid, CancellationTokenSource> GetActiveDownloads()
-  {
-    var field = typeof(DownloadWebPageService).GetField("_activeDownloads", BindingFlags.Static | BindingFlags.NonPublic)!;
-    return (ConcurrentDictionary<Guid, CancellationTokenSource>)field.GetValue(null)!;
-  }
-
-  private static void Cleanup()
-  {
-    if (Directory.Exists("downloads"))
-      Directory.Delete("downloads", true);
-  }
-
-  private class FakeDownloader(bool succeed) : IWebPageDownloader
+  private class FakeDownloader(bool succeed, IFileSystem fileSystem) : IWebPageDownloader
   {
     public const string Content = "<html>content</html>";
     private readonly bool _succeed = succeed;
+    private readonly IFileSystem _fileSystem = fileSystem;
 
     public Task<Result> DownloadWebPagesAsync(IEnumerable<(Guid Id, string Url)> pages, string outputDir, CancellationToken cancellationToken)
     {
-      Directory.CreateDirectory(outputDir);
+      _fileSystem.Directory.CreateDirectory(outputDir);
       var page = pages.First();
-      var fileName = Path.Combine(outputDir, $"{page.Id}.html");
-      File.WriteAllText(fileName, Content);
+      var fileName = _fileSystem.Path.Combine(outputDir, $"{page.Id}.html");
+      _fileSystem.File.WriteAllText(fileName, Content);
       return Task.FromResult(_succeed ? Result.Success() : Result.Error("fail"));
     }
   }

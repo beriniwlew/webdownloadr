@@ -3,7 +3,7 @@
 /// <summary>
 /// Raised when a web page download completes successfully.
 /// </summary>
-internal sealed class WebPageDownloadedEvent(Guid id, string content) : DomainEventBase
+public sealed class WebPageDownloadedEvent(Guid id, string content) : DomainEventBase
 {
   /// <summary>
   /// Identifier of the downloaded page.

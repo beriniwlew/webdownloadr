@@ -10,6 +10,7 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Vogen" />
+    <PackageReference Include="System.IO.Abstractions" />
   </ItemGroup>
 
 </Project>
